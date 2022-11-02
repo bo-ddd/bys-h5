@@ -15,8 +15,8 @@ a {
 }
 
 .wrap {
-  width: 32.7rem;
-  margin: 0 auto;
+  width: 100%;
+  padding: 0 2.4rem;
 }
 
 .inline-block {

@@ -5,29 +5,29 @@ export default function () {
         {
             id: 1,
             title: "招聘会",
-            iconUrl: "icon-home.png",
-            activeUrl: "icon-home_hover.png",
+            iconUrl: "icon-jobfairs.png",
+            activeUrl: "icon-jobfairs_hover.png",
             navigator: "jobfairs"
         },
         {
             id: 2,
             title: "职位推荐",
-            iconUrl: "icon-classification.png",
-            activeUrl: "icon-classification_hover.png",
+            iconUrl: "icon-position.png",
+            activeUrl: "icon-position_hover.png",
             navigator: "position"
         },
         {
             id: 3,
             title: "消息",
-            iconUrl: "icon-shoppingcar.png",
-            activeUrl: "icon-shoppingcar_hover.png",
+            iconUrl: "icon-news.png",
+            activeUrl: "icon-news_hover.png",
             navigator: "news"
         },
         {
             id: 4,
             title: "我的",
-            iconUrl: "icon-my.png",
-            activeUrl: "icon-my_hover.png",
+            iconUrl: "icon-mine.png",
+            activeUrl: "icon-mine_hover.png",
             navigator: "mine"
         }
     ];

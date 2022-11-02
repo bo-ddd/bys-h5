@@ -4,7 +4,7 @@
 
 <template>
  <div>
-   this is home page
+   this is jobfairs page
  </div>
 </template>
 

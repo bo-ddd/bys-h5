@@ -7,7 +7,11 @@
 
         <div class="nav">
             <Tabbar.Warp v-model="select" @tab="nav">
-                <Tabbar.Item v-for="item in tabbar" :name="item.navigator" :src="parseAssetFile(item.iconUrl)"
+                <!-- <Tabbar.Item v-for="item in tabbar" :key="item.id" :name="item.navigator" :src="parseAssetFile(item.iconUrl)"
+                    :active-url="parseAssetFile(item.activeUrl)">
+                    {{item.title}}
+                </Tabbar.Item> -->
+                <Tabbar.Item v-for="item in tabbar" :key="item.id" :name="item.navigator" :src="parseAssetFile(item.iconUrl)"
                     :active-url="parseAssetFile(item.activeUrl)">
                     {{item.title}}
                 </Tabbar.Item>

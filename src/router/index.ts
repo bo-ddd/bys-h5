@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import Layout from '@/views/layout/Layout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -6,7 +7,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'layout',
-      component: () => import('@/views/layout/Layout.vue'),
+      component: Layout,
       children:[
         {
           path: '/jobfairs',

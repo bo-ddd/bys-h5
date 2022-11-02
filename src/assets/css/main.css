@@ -1,0 +1,110 @@
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+.wrap {
+  width: 31rem;
+  margin: 0 auto;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+
+.flex-ja-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.just-center {
+  display: flex;
+  justify-content: center;
+}
+
+.just-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.align-center {
+  display: flex;
+  align-items: center;
+}
+
+.flex {
+  display: flex;
+}
+
+.pl-10 {
+  padding-left: 1rem;
+}
+
+.mt-20 {
+  margin-top: 1rem;
+}
+.mt-10{
+  margin-top: .5rem;
+}
+
+.mb-20 {
+  margin-bottom: 1rem;
+}
+
+.mt-24 {
+  margin-top: 2.4rem;
+}
+
+.mt-14 {
+  margin-top: 1.4rem;
+}
+
+.pt-18 {
+  padding-top: 1.8rem;
+}
+
+.mb-18 {
+  margin-bottom: 1.8rem;
+}
+
+.center {
+  text-align: center;
+}
+
+.mt-58 {
+  margin-top: 5.8rem;
+}
+
+.btn-pd {
+  padding: 1.8rem 2.5rem;
+}
+
+.pd-tb_18 {
+  padding: 1.8rem 0;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.pd-tb_43 {
+  padding: 4.3rem 0;
+}
+
+.ml-23 {
+  margin-left: 2.3rem;
+}

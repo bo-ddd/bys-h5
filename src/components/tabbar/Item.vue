@@ -7,7 +7,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { toRefs, inject, type Ref, computed } from 'vue';
+import { inject, type Ref, computed } from 'vue';
 let props = defineProps<{
     src: string;
     activeUrl: string;
@@ -17,7 +17,7 @@ let props = defineProps<{
 let { src, activeUrl, name } = props;
 let selected = inject('selected') as Ref<string>;
 let url = computed(() => selected.value == name ? activeUrl : src)
-let style = computed(() => selected.value == name ? 'color:#5756b3' : ' ')
+let style = computed(() => selected.value == name ? 'color:#1468cc' : ' ')
 
 let handleTabClick = inject('handleTabClick') as (name: string) => void;
 

@@ -14,58 +14,11 @@
     </header>
     <!-- list -->
     <main>
-      <van-cell center :border="false" class="mt-20" value="" is-link>
+      <van-cell center :border="false" class="mt-20" v-for="item in list"
+       :key="item.id" :value="item.value" is-link :to="item.link">
         <template #title>
-          <van-icon :name="parseAssetFile('icon-resume.png')" is-link to="" />
-          <span class="custom-title">请创建简历</span>
-        </template>
-      </van-cell>
-      <van-cell :border="false" class="mt-20" value="上传附件简历/作品集" is-link>
-        <template #title>
-          <van-icon :name="parseAssetFile('icon-file.png')" is-link to="" />
-          <span class="custom-title">附件简历</span>
-        </template>
-      </van-cell>
-      <van-cell :border="false" class="mt-20" value="" is-link>
-        <template #title>
-          <van-icon :name="parseAssetFile('icon-occupation.png')" is-link to="" />
-          <span class="custom-title">职业测评</span>
-        </template>
-      </van-cell>
-      <van-cell :border="false" class="mt-20" value="" is-link>
-        <template #title>
-          <van-icon :name="parseAssetFile('icon-delivery.png')" is-link to="" />
-          <span class="custom-title">投递反馈</span>
-        </template>
-      </van-cell>
-      <van-cell :border="false" class="mt-20" value="" is-link>
-        <template #title>
-          <van-icon :name="parseAssetFile('icon-collection.png')" is-link to="" />
-          <span class="custom-title">我的收藏</span>
-        </template>
-      </van-cell>
-      <van-cell :border="false" class="mt-20" value="" is-link>
-        <template #title>
-          <van-icon :name="parseAssetFile('icon-interview.png')" is-link to="" />
-          <span class="custom-title">我的面试</span>
-        </template>
-      </van-cell>
-      <van-cell :border="false" class="mt-20" value="积极求职中" is-link>
-        <template #title>
-          <van-icon :name="parseAssetFile('icon-job.png')" is-link to="" />
-          <span class="custom-title">求职状态</span>
-        </template>
-      </van-cell>
-      <van-cell :border="false" class="mt-20" value="" is-link>
-        <template #title>
-          <van-icon :name="parseAssetFile('icon-opinion.png')" is-link to="" />
-          <span class="custom-title">意见反馈</span>
-        </template>
-      </van-cell>
-      <van-cell :border="false" class="mt-20" value="北京理工大学" is-link>
-        <template #title>
-          <van-icon :name="parseAssetFile('icon-site.png')" is-link to="" />
-          <span class="custom-title">站点设置</span>
+          <van-icon :name="parseAssetFile(item.icon)" />
+          <span class="custom-title">{{item.title}}</span>
         </template>
       </van-cell>
     </main>
@@ -84,6 +37,73 @@
 
 <script setup lang="ts">
 import { parseAssetFile } from '@/assets/util';
+
+let list = [
+  {
+    id:1,
+    title:'请创建简历',
+    value:'',
+    link:'/createResume',
+    icon:'icon-resume.png',
+  },
+  {
+    id:2,
+    title:'附件简历',
+    value:'上传附件简历/作品集',
+    link:'/appendixResume',
+    icon:'icon-file.png',
+  },
+  {
+    id:3,
+    title:'职业测评',
+    value:'',
+    link:'/evaluation',
+    icon:'icon-occupation.png',
+  },
+  {
+    id:4,
+    title:'投递反馈',
+    value:'',
+    link:'/deliveryfeedback',
+    icon:'icon-delivery.png',
+  },
+  {
+    id:5,
+    title:'我的收藏',
+    value:'',
+    link:'/collection',
+    icon:'icon-collection.png',
+  },
+  {
+    id:6,
+    title:'我的面试',
+    value:'',
+    link:'/inter',
+    icon:'icon-interview.png',
+  },
+  {
+    id:7,
+    title:'求职状态',
+    value:'',
+    link:'/jobStatus',
+    icon:'icon-job.png',
+  },
+  {
+    id:8,
+    title:'意见反馈',
+    value:'',
+    link:'/feedBack',
+    icon:'icon-opinion.png',
+  },
+  {
+    id:9,
+    title:'站点设置',
+    value:'',
+    link:'/siteSettings',
+    icon:'icon-site.png',
+  },
+]
+
 </script>
   
 <style lang="scss" scoped>

@@ -1,18 +1,18 @@
 <template>
  <div>
-    <feedBackList>
+    <FeedBackList>
         <template #title>
             请选择反馈内容
         </template>
         <template #item>
-            <van-cell v-for="item in 8" title="单元格" is-link />
+            <van-cell v-for="(item,index) in 8" title="单元格" is-link  :key="index"/>
         </template>
-    </feedBackList>
+    </FeedBackList>
  </div>
 </template>
 
 <script setup lang="ts">
-import feedBackList from "@/components/feedback/feedBackList.vue";
+import FeedBackList from "@/components/feedback/FeedBackList.vue";
 </script>
 
 <style>

@@ -7,12 +7,8 @@
 
         <div class="nav">
             <Tabbar.Warp v-model="select" @tab="nav">
-                <!-- <Tabbar.Item v-for="item in tabbar" :key="item.id" :name="item.navigator" :src="parseAssetFile(item.iconUrl)"
-                    :active-url="parseAssetFile(item.activeUrl)">
-                    {{item.title}}
-                </Tabbar.Item> -->
-                <Tabbar.Item v-for="item in tabbar" :key="item.id" :name="item.navigator" :src="parseAssetFile(item.iconUrl)"
-                    :active-url="parseAssetFile(item.activeUrl)">
+                <Tabbar.Item v-for="item in tabbar" :key="item.id" :name="item.navigator" :src="url(item.iconUrl)"
+                    :active-url="url(item.activeUrl)">
                     {{item.title}}
                 </Tabbar.Item>
             </Tabbar.Warp>
@@ -24,13 +20,12 @@
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
-import useUtil from '@/assets/util';
 import Tabbar from '@/components/tabbar';
 import useTabbar from './composables/useTabbar';
-
 let { tabbar, select, nav } = useTabbar();
-let { parseAssetFile } = useUtil();
-
+function url(url: string): string {
+    return new URL(`../../assets/images/${url}`, import.meta.url).href;
+}
 </script>
 <style scoped>
 .active {

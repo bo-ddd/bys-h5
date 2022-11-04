@@ -6,14 +6,21 @@
         </div>
 
         <div class="nav">
-            <van-tabbar v-model="active" route>
-                <van-tabbar-item v-for="item in tabbar " :key="item.id" :to="item.navigator">
+            <van-tabbar v-model="active">
+                <van-tabbar-item v-for="item, index in tabbar" :key="index" :to="item.navigator">
                     {{ item.title }}
                     <template #icon="props">
                         <img :src="props.active ? parseAssetFile(item.activeUrl) : parseAssetFile(item.iconUrl)" />
                     </template>
                 </van-tabbar-item>
             </van-tabbar>
+
+            <!-- <van-tabbar v-model="active" @change="onChange">
+                <van-tabbar-item icon="home-o">标签</van-tabbar-item>
+                <van-tabbar-item icon="search">标签</van-tabbar-item>
+                <van-tabbar-item icon="friends-o">标签</van-tabbar-item>
+                <van-tabbar-item icon="setting-o">标签</van-tabbar-item>
+            </van-tabbar> -->
         </div>
     </div>
 
@@ -22,10 +29,14 @@
 
 
 <script setup lang="ts">
-import { RouterView } from 'vue-router';
-import { ref } from 'vue'
+import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue'
 import { parseAssetFile } from '@/assets/util';
-
+let active = ref(0);
+let router = useRouter();
+onMounted(() => {
+    router.push({ path: "/jobfairs" })
+})
 let tabbar = [
     {
         id: 1,
@@ -56,11 +67,6 @@ let tabbar = [
         navigator: "/mine"
     }
 ];
-
-const active = ref(0);
-    // const onChange = (index) =>{
-    //     console.log(index)
-    // }
 </script>
 <style scoped>
 .active {

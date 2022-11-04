@@ -103,6 +103,24 @@ const router = createRouter({
       name: "siteSettings",
       component: () => import('@/views/siteSettings/SiteSettings.vue')
     },
+    {
+      // 上传简历选择方式
+      path: "/uploadResumeChoice",
+      name: "uploadResumeChoice",
+      component: () => import('@/views/uploadResume/UploadResumeChoice.vue')
+    },
+    {
+      // 上传简历详情
+      path: "/uploadResumeDetails",
+      name: "uploadResumeDetails",
+      component: () => import('@/views/uploadResume/UploadResumeDetails.vue')
+    },
+    {
+      // 上传简历电脑端操作指引
+      path: "/uploadResumeComputer",
+      name: "uploadResumeComputer",
+      component: () => import('@/views/uploadResume/UploadResumeComputer.vue')
+    },
   ]
 })
 

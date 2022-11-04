@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="append-page">
     <van-nav-bar title="附件简历" left-text left-arrow @click-left="onClickLeft" />
     <div class="content">
       <img class="mt-80 img" :src="parseAssetFile('file-tip.png')" alt />
@@ -19,13 +19,18 @@ const to = function (path: any) {
 };
 </script>
 <style lang="scss" scoped>
+.append-page{
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 4.6rem auto;
+}
 .flex-noshrink {
   flex-shrink: 0;
   height: 100%;
 }
 .content {
   background-color: #f2f3f6;
-  height: calc(100vh - 4.6rem);
+//   height: calc(100vh - 4.7rem);
   box-sizing: border-box;
   padding: 2rem;
   position: relative;

@@ -6,26 +6,61 @@
         </div>
 
         <div class="nav">
-            <Tabbar.Warp v-model="select" @tab="nav">
-                <Tabbar.Item v-for="item in tabbar" :key="item.id" :name="item.navigator" :src="url(item.iconUrl)"
-                    :active-url="url(item.activeUrl)">
-                    {{item.title}}
-                </Tabbar.Item>
-            </Tabbar.Warp>
+            <van-tabbar v-model="active" route>
+                <van-tabbar-item v-for="item in tabbar " :key="item.id" :to="item.navigator">
+                    {{ item.title }}
+                    <template #icon="props">
+                        <img :src="props.active ? parseAssetFile(item.activeUrl) : parseAssetFile(item.iconUrl)" />
+                    </template>
+                </van-tabbar-item>
+            </van-tabbar>
         </div>
     </div>
 
 
 </template>
 
+
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
-import Tabbar from '@/components/tabbar';
-import useTabbar from './composables/useTabbar';
-let { tabbar, select, nav } = useTabbar();
-function url(url: string): string {
-    return new URL(`../../assets/images/${url}`, import.meta.url).href;
-}
+import { ref } from 'vue'
+import { parseAssetFile } from '@/assets/util';
+
+let tabbar = [
+    {
+        id: 1,
+        title: "招聘会",
+        iconUrl: "icon-jobfairs.png",
+        activeUrl: "icon-jobfairs_hover.png",
+        navigator: "/jobfairs"
+    },
+    {
+        id: 2,
+        title: "职位推荐",
+        iconUrl: "icon-position.png",
+        activeUrl: "icon-position_hover.png",
+        navigator: "/position"
+    },
+    {
+        id: 3,
+        title: "消息",
+        iconUrl: "icon-news.png",
+        activeUrl: "icon-news_hover.png",
+        navigator: "/news"
+    },
+    {
+        id: 4,
+        title: "我的",
+        iconUrl: "icon-mine.png",
+        activeUrl: "icon-mine_hover.png",
+        navigator: "/mine"
+    }
+];
+
+const active = ref(0);
+    // const onChange = (index) =>{
+    //     console.log(index)
+    // }
 </script>
 <style scoped>
 .active {

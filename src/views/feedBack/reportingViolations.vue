@@ -1,5 +1,6 @@
 <template>
     <div>
+        <van-nav-bar title="标题" left-text="返回" left-arrow @click-left="onClickLeft" />
        <FeedBackList>
            <template #title>
                请选择投诉原因
@@ -15,6 +16,7 @@
    import FeedBackList from "@/components/feedback/feedBackList.vue";
    import { useRouter } from 'vue-router';
    let router = useRouter();
+   const onClickLeft = () => history.back();
    let list = ["欺诈","色情低俗","诱导","传播不实信息","违法犯罪","骚扰","侵权","混淆他人投诉","恶意营销","与服务类目不符","隐私信息收集","其他"];
    let feedBackSumbit = (item:string)=>{
     router.push({path:"/feedBackSumbit",query:{title:item}})

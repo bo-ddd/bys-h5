@@ -1,6 +1,7 @@
 <template>
     <div class="main">
         <div>
+            <van-nav-bar title="标题" left-text="返回" left-arrow @click-left="onClickLeft" />
             <div class="proposal">
                 <div class="proposal-header">
                     {{route.query.title}}
@@ -42,6 +43,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRoute } from 'vue-router';
+const onClickLeft = () => history.back();
 let route = useRoute();
 let message = ref("")
 const checked = ref('');
@@ -49,7 +51,7 @@ const fileList = ref([
     { url: 'https://unpkg.com/@vant/assets/leaf.jpeg' },
     // Uploader 根据文件后缀来判断是否为图片文件
     // 如果图片 URL 中不包含类型信息，可以添加 isImage 标记来声明
-    { url: 'https://cloud-image', isImage: true },
+    { url: '', isImage: true },
 ]);
 </script>
 

@@ -1,5 +1,6 @@
 <template>
     <div class="feed-back">
+        <van-nav-bar title="标题" left-text="返回" left-arrow @click-left="onClickLeft" />
           <div class="wrap">
                <div class="title">
                 <h2>请选择反馈类型</h2>
@@ -59,6 +60,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
  let router = useRouter();
+ const onClickLeft = () => history.back();
  let jump = (params:any)=>{
      router.push({path:params.path,query:params.params})
  }

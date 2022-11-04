@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="upload-page">
     <van-nav-bar title="上传简历" left-text left-arrow @click-left="onClickLeft2" />
     <div class="content">
       <div class="content-head">支持pdf、doc、docx格式附件，大小不超过20M</div>
@@ -10,7 +10,7 @@
             <div class="back back-img1 mt-10"></div>
           </van-step>
           <van-step>
-            <h3 class="linheight-35">
+            <h3 class="linheight-20">
               2.点击下方<span class="fw-700">立即上传</span>。找到刚才发送的对象，选择上传的简历。
             </h3>
             <div class="back back-img2 mt-10"></div>
@@ -25,6 +25,11 @@
 let onClickLeft2 = () => history.back();
 </script>
 <style lang="scss" scoped>
+.upload-page{
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 4.6rem auto;
+}
 .content {
   height: calc(100vh - 4.6rem);
   box-sizing: border-box;
@@ -41,8 +46,8 @@ let onClickLeft2 = () => history.back();
     position: relative;
     box-sizing: border-box;
     padding: 2rem;
-    .linheight-35{
-        line-height: 3.5rem;
+    .linheight-20{
+        line-height: 2rem;
     }
   }
   h3 {

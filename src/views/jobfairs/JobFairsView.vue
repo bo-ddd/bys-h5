@@ -5,9 +5,9 @@
     </div>
 
     <div class="main">
-          <div class="header-banner">
+      <div class="header-banner">
 
-          </div>
+      </div>
     </div>
   </div>
 </template>
@@ -19,6 +19,7 @@
 <style lang="scss" scoped>
 .jobfairs {
   height: 100%;
+
   .header {
     display: flex;
     justify-content: center;
@@ -28,15 +29,14 @@
     font-size: 1.8rem;
     padding-bottom: 2rem;
   }
+
   .main {
     height: calc(100% - 8rem);
     overflow: auto;
-    .header-banner{
-      background-image: url('@/assets/images/banner.png');
-      height:20rem;
-      background-repeat: no-repeat;
-      background-size: 100%;
-    }
+    background-image: url('@/assets/images/banner.png');
+    height: 20rem;
+    background-repeat: no-repeat;
+    background-size: 100%;
   }
 }
 </style>

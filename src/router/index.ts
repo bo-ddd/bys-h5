@@ -121,6 +121,12 @@ const router = createRouter({
       name: "uploadResumeComputer",
       component: () => import('@/views/uploadResume/UploadResumeComputer.vue')
     },
+    {
+      // 公司详情
+      path: "/companyDetails",
+      name: "companyDetails",
+      component: () => import('@/views/companyDetails/CompanyDetails.vue')
+    },
   ]
 })
 

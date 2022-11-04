@@ -3,7 +3,7 @@
         <div>
             <div class="proposal">
                 <div class="proposal-header">
-                    产品建议
+                    {{route.query.title}}
                 </div>
                 <div class="proposal-item">
                     <van-cell-group inset>
@@ -19,6 +19,7 @@
                     <van-uploader class="ml-30" v-model="fileList" multiple />
                 </div>
 
+                
                 <div class="proposal-item ">
                     <van-cell-group inset>
                         <van-field label="联系方式" placeholder="请输入用户名" />
@@ -40,6 +41,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useRoute } from 'vue-router';
+let route = useRoute();
 let message = ref("")
 const checked = ref('');
 const fileList = ref([
@@ -68,6 +71,8 @@ const fileList = ref([
         border-top: .1rem solid rgb(240, 240, 240);
         border-bottom: .1rem solid rgb(240, 240, 240);
         padding: 2rem 3.2rem;
+        font-size: 1.4rem;
+        color: black;
     }
 
     .proposal-item {

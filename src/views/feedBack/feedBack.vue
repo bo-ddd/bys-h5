@@ -9,7 +9,10 @@
                     向开发者反馈
                 </div>
                 <div class="main-item">
-                    <h3 class="pt-8">
+                    <h3 class="pt-8" @click="jump({
+                        path:'/abnormalFunction',
+                        params:{}
+                    })">
                         功能异常
                     </h3>
                     <span class="color-180180">
@@ -17,7 +20,12 @@
                     </span>
                 </div>
 
-                <div class="main-item">
+                <div class="main-item" @click="jump({
+                        path:'/feedBackSumbit',
+                        params:{
+                            title:'产品建议',
+                        }
+                    })">
                     <h3 class="pt-8">
                         产品建议
                     </h3>
@@ -30,7 +38,12 @@
                     向微信平台投诉
                 </div>
 
-                <div class="main-item">
+                <div class="main-item" @click="jump({
+                        path:'/reportingViolations',
+                        params:{
+                            title:'',
+                        }
+                    })">
                     <h3 class="pt-8">
                        违规举报
                     </h3>
@@ -44,8 +57,11 @@
 </template>
   
 <script setup lang="ts">
-import { ref } from "vue";
-
+import { useRouter } from 'vue-router';
+ let router = useRouter();
+ let jump = (params:any)=>{
+     router.push({path:params.path,query:params.params})
+ }
 </script>
     
 <style lang="scss" scoped>

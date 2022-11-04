@@ -10,9 +10,8 @@
             <div class="back back-img1 mt-10"></div>
           </van-step>
           <van-step>
-            <h3>
-              2.点击下方
-              <span class="fw-700">立即上传</span>。找到刚才发送的对象，选择上传的简历。
+            <h3 class="linheight-35">
+              2.点击下方<span class="fw-700">立即上传</span>。找到刚才发送的对象，选择上传的简历。
             </h3>
             <div class="back back-img2 mt-10"></div>
           </van-step>
@@ -42,6 +41,9 @@ let onClickLeft2 = () => history.back();
     position: relative;
     box-sizing: border-box;
     padding: 2rem;
+    .linheight-35{
+        line-height: 3.5rem;
+    }
   }
   h3 {
     font-size: 1.8rem;

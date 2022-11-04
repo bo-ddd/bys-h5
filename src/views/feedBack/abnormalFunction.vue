@@ -1,5 +1,6 @@
 <template>
     <div>
+        <van-nav-bar title="标题" left-text="返回" left-arrow @click-left="onClickLeft" />
        <FeedBackList>
            <template #title>
                请选择反馈内容
@@ -15,6 +16,7 @@
    import FeedBackList from "@/components/feedback/feedBackList.vue";
    import { useRouter } from 'vue-router';
    let router = useRouter();
+   const onClickLeft = () => history.back();
    let list =  ["无法打开小程序","小程序闪退","卡顿","黑屏白屏","死机","界面错位","界面加载慢","其他异常"];
    let feedBackSumbit = (item:string)=>{
     router.push({path:"/feedBackSumbit",query:{title:item}})

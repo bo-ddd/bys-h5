@@ -140,7 +140,7 @@ let cardList = [
 
 <style lang="scss" scoped>
 .position {
-  height: 100vh;
+  height: 100%;
 
   header {
     height: 7.2rem;
@@ -170,7 +170,7 @@ let cardList = [
     }
   }
   main{
-    height: calc(100vh - 7.2rem);
+    height: calc(100% - 7.2rem);
     overflow: auto;
   }
 }

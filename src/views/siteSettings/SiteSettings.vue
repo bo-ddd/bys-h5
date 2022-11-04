@@ -1,7 +1,7 @@
 <template>
     <div class="siteSettings">
         <div class="nav-bar">
-            <van-nav-bar title="标题" left-text="返回" left-arrow @click-left="onClickLeft" />
+            <van-nav-bar title="站点设置" left-text="返回" left-arrow @click-left="onClickLeft" />
         </div>
         <div class="bgd ">
             <div class="title just-between">
@@ -19,10 +19,6 @@
 
 <script setup lang="ts">
 const onClickLeft = () => history.back();
-
-
-
-
 </script>
 
 <style lang="scss" scoped>
@@ -30,8 +26,20 @@ const onClickLeft = () => history.back();
     margin-top: 1.6rem;
 }
 
-:deep(.nav-bar) {
+:deep(.nav-bar .van-nav-bar) {
     background-color: rgba(0, 0, 0, 0);
+
+    i {
+        color: #fff;
+    }
+
+    span {
+        color: #fff;
+    }
+
+    .van-ellipsis {
+        color: #fff;
+    }
 }
 
 .siteSettings {
@@ -42,8 +50,6 @@ const onClickLeft = () => history.back();
         top: 0;
         width: 100%;
     }
-
-
 
     &>.bgd {
         width: 100%;

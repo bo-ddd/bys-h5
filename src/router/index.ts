@@ -125,7 +125,7 @@ const router = createRouter({
       // 公司详情
       path: "/companyDetails",
       name: "companyDetails",
-      component: () => import('@/components/companyDetails/CompanyDetails.vue')
+      component: () => import('@/views/companyDetails/CompanyDetails.vue')
     },
   ]
 })

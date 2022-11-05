@@ -149,11 +149,14 @@ function cancel() {
             padding: 6rem 0rem 4rem 0rem;
 
             .popup-header {
-                padding: 1rem 1.6rem 3rem 1.6rem;
-                &>.dialog{
+                padding: 1rem 1.4rem 3rem 1.4rem;
+
+                &>.dialog {
                     color: #cccccc;
+                    font-size: 1.5rem;
                 }
-                &>.popupIsok{
+
+                &>.popupIsok {
                     color: #427de3;
                     font-size: 1.5rem;
                 }

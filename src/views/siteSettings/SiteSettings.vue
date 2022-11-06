@@ -23,7 +23,7 @@
                     </div>
                 </van-cell>
                 <van-popup position="bottom" :style="{ height: '75%' }" v-model:show="popupShow">
-                    <div class="header just-between">
+                    <div class="popup-header just-between">
                         <div class="dialog">
                             <van-icon @click="cancel" class="van-icon_cross" name="cross" />
                         </div>
@@ -36,6 +36,11 @@
                 </van-popup>
             </div>
         </div>
+        <div class="footer">
+            <div class="footer-test">
+                十万企业 | 百万岗位 | 职等你来
+            </div>
+        </div>
     </div>
 </template>
 
@@ -43,6 +48,7 @@
 import { ref } from 'vue';
 import { Dialog } from 'vant';
 const onClickLeft = () => history.back();
+// popupShow 弹层打开与否
 const popupShow = ref(false);
 const popupValue = ref('');
 let text = ref('');
@@ -58,6 +64,7 @@ const hindPopup = () => {
 // 弹层
 function cancel() {
     Dialog.confirm({
+        confirmButtonColor:'#3687f2',
         message:
             '名称尚未保存,确认要退出吗?',
     })
@@ -109,6 +116,18 @@ function cancel() {
 
 .siteSettings {
     position: relative;
+    height: 100vh;
+
+    .footer {
+        width: 100%;
+        position: absolute;
+        bottom: 5rem;
+
+        .footer-test {
+            color: #8f8f8f;
+            text-align: center;
+        }
+    }
 
     &>.nav-bar {
         position: absolute;
@@ -118,8 +137,8 @@ function cancel() {
 
     &>.bgd {
         width: 100%;
-        height: 35rem;
         background-image: url('@/assets/images/site-settings-bgd.png');
+        background-repeat: no-repeat;
         background-size: 37.5rem 35rem;
         box-sizing: border-box;
         padding: 8.4rem 1.2rem 0 1.2rem;
@@ -145,7 +164,22 @@ function cancel() {
         &>.subject {
             background-color: #fff;
             box-sizing: border-box;
-            padding: 6rem 0rem 4rem 0rem;
+            border-radius: .8rem .8rem 0 0;
+            padding: 6rem 0rem 7rem 0;
+
+            .popup-header {
+                padding: 1rem 1.4rem 3rem 1.4rem;
+
+                &>.dialog {
+                    color: #cccccc;
+                    font-size: 1.5rem;
+                }
+
+                &>.popupIsok {
+                    color: #427de3;
+                    font-size: 1.5rem;
+                }
+            }
 
             .border_button::after {
                 content: '';

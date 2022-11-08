@@ -174,6 +174,45 @@
           </template>
         </JobFairsNav>
 
+        <JobFairsNav title="专场招聘" class="mt-20">
+          <template #content>
+            <van-swipe :show-indicators="false" class="my-swipe" :autoplay="4000" indicator-color="white">
+              <van-swipe-item class="ptl-20">
+                <div class="swipe-enterprise_box">
+                  <div class="just-between">
+                    <div><img src="@/assets/images/banner1.png" alt=""></div>
+                    <div><img src="@/assets/images/banner2.jpg" alt=""></div>
+                    <div><img src="@/assets/images/banner3.png" alt=""></div>
+                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                  </div>
+                  <div class="just-between">
+                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                  </div>
+                </div>
+              </van-swipe-item>
+              <van-swipe-item class="ptl-20">
+                <div class="swipe-enterprise_box">
+                  <div class="just-between">
+                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                  </div>
+                  <div class="just-between">
+                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                  </div>
+                </div>
+              </van-swipe-item>
+            </van-swipe>
+          </template>
+        </JobFairsNav>
+
       </div>
     </div>
   </div>

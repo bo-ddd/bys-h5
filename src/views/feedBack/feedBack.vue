@@ -75,10 +75,8 @@ let useFeedBack = useFeedbackStore();
      console.log(res);
   }
 
-  feedBack()
+//   feedBack()
 
-
- 
 </script>
     
 <style lang="scss" scoped>

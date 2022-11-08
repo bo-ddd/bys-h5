@@ -220,12 +220,19 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useHomeStore } from "@/stores/home";
 import JobFairsNav from "@/components/jobfairs/JobFairsNav.vue";
+let useHome = useHomeStore();
 let isOpen = ref(false);
-
 let isOpenFn = ()=>{
   isOpen.value =  isOpen.value == true ? false : true; 
 }
+
+ let  selectLogo = async ()=>{
+      let res = await useHome.selectLogo({});
+      console.log(res);    
+ }
+selectLogo();
 </script>
 
 <style lang="scss" scoped>

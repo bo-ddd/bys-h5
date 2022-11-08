@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="upload-page">
     <van-nav-bar title="电脑端操作指引" left-text left-arrow @click-left="onClickLeft1" />
     <div class="box">
       <div class="content">
@@ -29,8 +29,12 @@ import { parseAssetFile } from "@/assets/util";
 let onClickLeft1 = () => history.back();
 </script>
 <style lang="scss" scoped>
+.upload-page{
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 4.6rem auto;
+}
 .box {
-  height: calc(100vh - 4.6rem);
   box-sizing: border-box;
   background-color: #f3f7ff;
   padding: 1.5rem;

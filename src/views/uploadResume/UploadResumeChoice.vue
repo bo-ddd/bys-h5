@@ -1,5 +1,5 @@
  <template>
-  <div>
+  <div class="upload-page">
     <van-nav-bar title="上传简历" left-text left-arrow @click-left="onClickLeft" />
     <div class="content">
       <div class="fs-20 fw-700">选择一种方式上传简历/作品集</div>
@@ -44,13 +44,17 @@ const to = function (path: any) {
 };
 </script>
 <style lang="scss" scoped>
+.upload-page{
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 4.6rem auto;
+}
 .flex-noshrink {
   flex-shrink: 0;
   height: 100%;
 }
 .content {
   background-color: #f2f3f6;
-  height: calc(100vh - 4.6rem);
   box-sizing: border-box;
   padding: 2rem;
   position: relative;

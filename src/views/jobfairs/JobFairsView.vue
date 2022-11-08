@@ -9,28 +9,28 @@
 
       <div class="data-statistics">
         <div class="filx-column_center">
-          <div>{{data.companyCount}}</div>
+          <div>{{ data.companyCount }}</div>
           <div>
             <div class="line"></div>
           </div>
           <div class="fs-12">招聘企业</div>
         </div>
         <div class="filx-column_center">
-          <div>{{data.positionCount }}</div>
+          <div>{{ data.positionCount }}</div>
           <div>
             <div class="line"></div>
           </div>
           <div class="fs-12">发布职位</div>
         </div>
         <div class="filx-column_center">
-          <div>{{data.positionSize }}</div>
+          <div>{{ data.positionSize }}</div>
           <div>
             <div class="line"></div>
           </div>
           <div class="fs-12">用人需求</div>
         </div>
         <div class="filx-column_center">
-          <div>{{data.positionType }}</div>
+          <div>{{ data.positionType }}</div>
           <div>
             <div class="line"></div>
           </div>
@@ -91,44 +91,21 @@
             <span class="fs-14 c-747474">查看全部 ></span>
           </template>
           <template #content>
-            <van-swipe class="my-swipe" :autoplay="4000" indicator-color="white">
-              <van-swipe-item class="ptl-20">
-                <div class="swipe-enterprise_box">
-                  <div class="just-between">
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                <van-swipe class="my-swipe" :touchable="true" :lazy-render="true" :autoplay="4000" indicator-color="white">
+                <van-swipe-item class="ptl-20" v-for="item in formatData(data.companyList,8)">
+                  <div class="swipe-enterprise_box">
+                    <div class="enterprise-item_box">
+                      <div v-for="chil in item.child">
+                        <img src="@/assets/images/icon-invitation.png">
+                      </div>
+                    </div>
                   </div>
-                  <div class="just-between">
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                  </div>
-                </div>
-              </van-swipe-item>
-              <van-swipe-item class="ptl-20">
-                <div class="swipe-enterprise_box">
-                  <div class="just-between">
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                  </div>
-                  <div class="just-between">
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                  </div>
-                </div>
-              </van-swipe-item>
-            </van-swipe>
+                </van-swipe-item>
+              </van-swipe>
           </template>
         </JobFairsNav>
 
-        <JobFairsNav title="招聘职位" class="mt-38">
+        <JobFairsNav title="招聘职位" class="mt-20">
           <template #content>
             <div class="position-box">
               <div :class="isOpen ? 'is-item-box' : 'item-box'">
@@ -168,24 +145,25 @@
                 <div class="item">淘宝职位</div>
               </div>
               <div class="is-open">
-                <span  @click="isOpenFn">{{isOpen ? 'close' : "open"}}</span>
+                <span @click="isOpenFn">{{ isOpen ? 'close' : "open" }}</span>
               </div>
             </div>
           </template>
         </JobFairsNav>
 
-        <JobFairsNav title="专场招聘" class="mt-20">
+        <JobFairsNav title="专场招聘" class="mt-38">
+          <template #header>
+            <span class="fs-14 c-747474">查看全部 ></span>
+          </template>
           <template #content>
             <van-swipe :show-indicators="false" class="my-swipe" :autoplay="4000" indicator-color="white">
               <van-swipe-item class="ptl-20">
                 <div class="swipe-enterprise_box">
-                  <div class="just-between">
-                    <div><img src="@/assets/images/banner1.png" alt=""></div>
-                    <div><img src="@/assets/images/banner2.jpg" alt=""></div>
-                    <div><img src="@/assets/images/banner3.png" alt=""></div>
+                  <div class="enterprise-item_box">
                     <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                  </div>
-                  <div class="just-between">
+                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
                     <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
                     <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
                     <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
@@ -193,18 +171,10 @@
                   </div>
                 </div>
               </van-swipe-item>
+
               <van-swipe-item class="ptl-20">
                 <div class="swipe-enterprise_box">
-                  <div class="just-between">
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                  </div>
-                  <div class="just-between">
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                  <div class="enterprise-item_box">
                     <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
                   </div>
                 </div>
@@ -219,23 +189,42 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, } from "vue";
 import { useHomeStore } from "@/stores/home";
 import JobFairsNav from "@/components/jobfairs/JobFairsNav.vue";
 let useHome = useHomeStore();
+
 let isOpen = ref(false);
-let data = ref()
-let isOpenFn = ()=>{
-  isOpen.value =  isOpen.value == true ? false : true; 
+let isOpenFn = () => {
+  isOpen.value = isOpen.value == true ? false : true;
 }
 
- let  selectLogo = async ()=>{
-      let res:any = await useHome.selectLogo({});
-      if(res.code==200){
-        data.value = res.data
-      }   
- }
+let data:any = ref({})
+let selectLogo = async () => {
+  let res: any = await useHome.selectLogo({});
+  if (res.code == 200) {
+    data.value = res.data;
+  }
+}
 selectLogo();
+
+
+let formatData = (data: any[], pageSize: number): any[] => {
+  let list = [];
+  if (data) {
+    console.log(1);
+    let pageTotal = Math.ceil(data.length / pageSize);    
+    for (let i = 1; i <= pageTotal; i++) {
+      list.push(
+        {
+          "current": i,
+          "child": data.slice((i - 1) * pageSize, i * pageSize)
+        }
+      )
+    }
+  }
+  return list;
+}
 </script>
 
 <style lang="scss" scoped>
@@ -274,45 +263,54 @@ selectLogo();
       padding: 0 2rem;
 
       .position-box {
-        .is-open{
+        .is-open {
           text-align: center;
           margin-top: 2rem;
           font-size: 1.6rem;
           color: #acacac;
         }
-       .is-item-box {
-          margin-top:1.8rem;
+
+        .is-item-box {
+          margin-top: 1.8rem;
           display: flex;
           flex-wrap: wrap;
           align-items: center;
-          gap:1.4rem 2.8rem;
+          gap: 1.4rem 2.8rem;
+
           .item {
             text-align: center;
             width: 6.2rem;
             font-size: 1.4rem;
           }
         }
+
         .item-box {
-          margin-top:1.8rem;
+          margin-top: 1.8rem;
           display: flex;
           flex-wrap: wrap;
           overflow: hidden;
-          height:15rem;
+          height: 15rem;
           align-items: center;
-          gap:1.4rem 2.8rem;
+          gap: 1.4rem 2.8rem;
+
           .item {
             text-align: center;
             width: 6.2rem;
             font-size: 1.4rem;
           }
         }
-
       }
 
       .swipe-enterprise_box {
-        margin: 0 auto;
-        width: 95%;
-
+        width: 100%;
+        display: flex;
+        .enterprise-item_box {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          max-width: 39rem;
+          gap: 0 1.2rem;
+        }
         img {
           width: 7rem;
           height: 7rem;

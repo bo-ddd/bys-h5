@@ -9,32 +9,32 @@
 
       <div class="data-statistics">
         <div class="filx-column_center">
-          <div>503</div>
+          <div>{{data.companyCount}}</div>
           <div>
             <div class="line"></div>
           </div>
           <div class="fs-12">招聘企业</div>
         </div>
         <div class="filx-column_center">
-          <div>503</div>
+          <div>{{data.positionCount }}</div>
           <div>
             <div class="line"></div>
           </div>
-          <div class="fs-12">招聘企业</div>
+          <div class="fs-12">发布职位</div>
         </div>
         <div class="filx-column_center">
-          <div>503</div>
+          <div>{{data.positionSize }}</div>
           <div>
             <div class="line"></div>
           </div>
-          <div class="fs-12">招聘企业</div>
+          <div class="fs-12">用人需求</div>
         </div>
         <div class="filx-column_center">
-          <div>503</div>
+          <div>{{data.positionType }}</div>
           <div>
             <div class="line"></div>
           </div>
-          <div class="fs-12">招聘企业</div>
+          <div class="fs-12">职位种类</div>
         </div>
       </div>
 
@@ -224,13 +224,16 @@ import { useHomeStore } from "@/stores/home";
 import JobFairsNav from "@/components/jobfairs/JobFairsNav.vue";
 let useHome = useHomeStore();
 let isOpen = ref(false);
+let data = ref()
 let isOpenFn = ()=>{
   isOpen.value =  isOpen.value == true ? false : true; 
 }
 
  let  selectLogo = async ()=>{
-      let res = await useHome.selectLogo({});
-      console.log(res);    
+      let res:any = await useHome.selectLogo({});
+      if(res.code==200){
+        data.value = res.data
+      }   
  }
 selectLogo();
 </script>

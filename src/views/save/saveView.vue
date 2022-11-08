@@ -18,7 +18,8 @@ let onRefresh = async ()=>{
 <template>
     <div class="save">
         <!-- 导航栏 -->
-        <van-nav-bar class="title" title="我的收藏"  left-arrow @click-left="back()" /> <!-- 这个是选择 -->
+        <van-nav-bar class="title" title="我的收藏"  left-arrow @click-left="back()" /> 
+        <!-- 这个是选择 -->
         <van-tabs v-model:active="active" color="#75a5fd" title-active-color="#75a5fd">
             <van-tab title="职位" class="position">
                 <div class="container" v-show="false">

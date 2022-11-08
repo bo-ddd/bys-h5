@@ -2,7 +2,7 @@ import axios from 'axios';
 import { postConfig } from './config'
 
 
-axios.interceptors.request.use(function(config:any) {
+axios.interceptors.request.use(function (config: any) {
     // 在发送请求之前做些什么,一般配置一些请求头的公共信息；
     config.headers.token = sessionStorage.getItem('token');
     return config;
@@ -26,8 +26,16 @@ axios.interceptors.response.use(function (response) {
 
 
 export default {
+    /**
+     * 查询主页图标
+     * @returns 
+     */
+    selectLogo: (params: {}) => {
+        return axios.post('/phone/selectLogo', params, postConfig)
+    },
+
     //feedback     
-    feedback : (params:{userId:number,opinion:string})=>{
-        return axios.post('/phone/feedback',params,postConfig)
+    feedback: (params: { userId: number, opinion: string }) => {
+        return axios.post('/phone/feedback', params, postConfig)
     }
 }

@@ -13,8 +13,8 @@
 </template>
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
-const router = useRouter();
 import { parseAssetFile } from "@/assets/util";
+const router = useRouter();
 const to = function (path: any) {
   router.push(path);
 };

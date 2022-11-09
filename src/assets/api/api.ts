@@ -13,5 +13,15 @@ export default {
     //feedback     
     feedback: (params: { userId: number, opinion: string }) => {
         return axios.post('/phone/feedback', params, postConfig)
+    },
+
+  //查询投递反馈
+    selectDelivery:(params:{deliveryStatus:number,userId:number}) =>{
+        return axios.post("/phone/selectDelivery",params,postConfig)
+    },
+
+ 
+      getStage:(params:{}) =>{
+        return axios.post("/drop/getStage",params,postConfig)
     }
 }

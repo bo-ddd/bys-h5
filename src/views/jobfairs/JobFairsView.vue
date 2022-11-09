@@ -6,34 +6,28 @@
 
     <div class="main">
       <div class="banner-box"></div>
-
       <div class="data-statistics">
         <div class="filx-column_center">
           <div>{{ data.companyCount }}</div>
-          <div>
-            <div class="line"></div>
-          </div>
+          <div><div class="line"></div></div>
           <div class="fs-12">招聘企业</div>
         </div>
+
         <div class="filx-column_center">
           <div>{{ data.positionCount }}</div>
-          <div>
-            <div class="line"></div>
-          </div>
+          <div><div class="line"></div></div>
           <div class="fs-12">发布职位</div>
         </div>
+
         <div class="filx-column_center">
           <div>{{ data.positionSize }}</div>
-          <div>
-            <div class="line"></div>
-          </div>
+          <div><div class="line"></div></div>
           <div class="fs-12">用人需求</div>
         </div>
+
         <div class="filx-column_center">
           <div>{{ data.positionType }}</div>
-          <div>
-            <div class="line"></div>
-          </div>
+          <div><div class="line"></div></div>
           <div class="fs-12">职位种类</div>
         </div>
       </div>
@@ -42,43 +36,11 @@
         <JobFairsNav title="热门职位">
           <template #content>
             <van-swipe class="my-swipe" :autoplay="4000" indicator-color="white">
-              <van-swipe-item class="ptl-20">
+              <van-swipe-item class="ptl-20" v-for="item in positionList">
                 <div class="swipe-item_box">
-                  <div>
+                  <div v-for="child in item.child">
                     <img src="@/assets/images/icon-collection.png" alt="">
-                    <p class="pt-6">1</p>
-                  </div>
-                  <div>
-                    <img src="@/assets/images/icon-collection.png" alt="">
-                    <p class="pt-6">实习生</p>
-                  </div>
-                  <div>
-                    <img src="@/assets/images/icon-collection.png" alt="">
-                    <p class="pt-6">实习生</p>
-                  </div>
-                  <div>
-                    <img src="@/assets/images/icon-collection.png" alt="">
-                    <p class="pt-6">实习生</p>
-                  </div>
-                </div>
-              </van-swipe-item>
-              <van-swipe-item class="ptl-20 ml-10">
-                <div class="swipe-item_box">
-                  <div>
-                    <img src="@/assets/images/icon-collection.png" alt="">
-                    <p class="pt-6">实习生</p>
-                  </div>
-                  <div>
-                    <img src="@/assets/images/icon-collection.png" alt="">
-                    <p class="pt-6">实习生</p>
-                  </div>
-                  <div>
-                    <img src="@/assets/images/icon-collection.png" alt="">
-                    <p class="pt-6">实习生</p>
-                  </div>
-                  <div>
-                    <img src="@/assets/images/icon-collection.png" alt="">
-                    <p class="pt-6">实习生</p>
+                    <p class="pt-6">{{ child.positionName }}</p>
                   </div>
                 </div>
               </van-swipe-item>
@@ -91,17 +53,17 @@
             <span class="fs-14 c-747474">查看全部 ></span>
           </template>
           <template #content>
-                <van-swipe class="my-swipe" :touchable="true" :lazy-render="true" :autoplay="4000" indicator-color="white">
-                <van-swipe-item class="ptl-20" v-for="item in formatData(data.companyList,8)">
-                  <div class="swipe-enterprise_box">
-                    <div class="enterprise-item_box">
-                      <div v-for="chil in item.child">
-                        <img src="@/assets/images/icon-invitation.png">
-                      </div>
+            <van-swipe class="my-swipe" :touchable="true" :lazy-render="true" :autoplay="4000" indicator-color="white">
+              <van-swipe-item class="ptl-20" v-for="item in companyList">
+                <div class="swipe-enterprise_box">
+                  <div class="enterprise-item_box">
+                    <div v-for="chil in item.child">
+                      <img src="@/assets/images/icon-invitation.png">
                     </div>
                   </div>
-                </van-swipe-item>
-              </van-swipe>
+                </div>
+              </van-swipe-item>
+            </van-swipe>
           </template>
         </JobFairsNav>
 
@@ -109,40 +71,7 @@
           <template #content>
             <div class="position-box">
               <div :class="isOpen ? 'is-item-box' : 'item-box'">
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
-                <div class="item">淘宝职位</div>
+                <div class="item" v-for="item in data.positionNameList">{{item}}</div>
               </div>
               <div class="is-open">
                 <span @click="isOpenFn">{{ isOpen ? 'close' : "open" }}</span>
@@ -152,30 +81,12 @@
         </JobFairsNav>
 
         <JobFairsNav title="专场招聘" class="mt-38">
-          <template #header>
-            <span class="fs-14 c-747474">查看全部 ></span>
-          </template>
           <template #content>
             <van-swipe :show-indicators="false" class="my-swipe" :autoplay="4000" indicator-color="white">
-              <van-swipe-item class="ptl-20">
+              <van-swipe-item class="ptl-20" v-for="item in specialList">
                 <div class="swipe-enterprise_box">
                   <div class="enterprise-item_box">
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
-                  </div>
-                </div>
-              </van-swipe-item>
-
-              <van-swipe-item class="ptl-20">
-                <div class="swipe-enterprise_box">
-                  <div class="enterprise-item_box">
-                    <div><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                    <div v-for="child in item.child"><img src="@/assets/images/icon-invitation.png" alt=""></div>
                   </div>
                 </div>
               </van-swipe-item>
@@ -199,21 +110,28 @@ let isOpenFn = () => {
   isOpen.value = isOpen.value == true ? false : true;
 }
 
-let data:any = ref({})
+let data: any = ref({})
+let positionList: any = ref([]);      //热门职位列表 ,
+let companyList: any = ref([]);       //公司列表
+// let positionNameList: any = ref([]); 专场职位列表
+let specialList :any = ref([]);       //专场列表
 let selectLogo = async () => {
   let res: any = await useHome.selectLogo({});
   if (res.code == 200) {
     data.value = res.data;
+    console.log(data.value);
+    positionList.value = formatData(data.value.positionList, 4);
+    // positionNameList.value = formatData(data.value.positionNameList, 8);
+    companyList.value = formatData(data.value.companyList, 8);
+    specialList.value = formatData(data.value.specialList,8)
   }
 }
 selectLogo();
 
-
 let formatData = (data: any[], pageSize: number): any[] => {
   let list = [];
   if (data) {
-    console.log(1);
-    let pageTotal = Math.ceil(data.length / pageSize);    
+    let pageTotal = Math.ceil(data.length / pageSize);
     for (let i = 1; i <= pageTotal; i++) {
       list.push(
         {
@@ -302,15 +220,17 @@ let formatData = (data: any[], pageSize: number): any[] => {
       }
 
       .swipe-enterprise_box {
-        width: 100%;
         display: flex;
+        justify-content: center;
+
         .enterprise-item_box {
           display: flex;
           flex-wrap: wrap;
-          justify-content: center;
+          justify-content: space-between;
           max-width: 39rem;
           gap: 0 1.2rem;
         }
+
         img {
           width: 7rem;
           height: 7rem;

@@ -1,10 +1,18 @@
 <script lang="ts" setup>
 import { ref , watch} from "vue";
+import { useRouter } from "vue-router";
+let router = useRouter();
 let checked = ref(1);
 
 watch(checked,()=>{
     console.log(checked.value);
 })
+
+let toQuestion = ()=>{
+    router.push({
+        name:'question'
+    });
+}
 </script>
 <template>
     <div class="evaluation">
@@ -12,7 +20,7 @@ watch(checked,()=>{
             <img src="@/assets/images/ydd-1.png">
             <p class="fs-16 mt-36 fw-700">您未完成职业测评</p>
             <p class="pd-10_0 cl-grey">请点击下方按钮测评</p>
-            <div class="btn fs-16 cl-fff mt-40">开始测评</div>
+            <div class="btn fs-16 cl-fff mt-40" @click="toQuestion()">开始测评</div>
         </div>
     </div>
 </template>

@@ -64,7 +64,7 @@ const router = createRouter({
       // 我的收藏
       path: "/collection",
       name: "collection",
-      component: () => import('@/views/collection/CollectionView.vue')
+      component: () => import('@/views/save/saveView.vue')
     },
     {
       // 我的面试

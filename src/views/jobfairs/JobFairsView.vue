@@ -8,95 +8,141 @@
       <div class="banner-box"></div>
       <div class="data-statistics">
         <div class="filx-column_center">
-          <div>503</div>
-          <div>
-            <div class="line"></div>
-          </div>
+          <div>{{ data.companyCount }}</div>
+          <div><div class="line"></div></div>
           <div class="fs-12">招聘企业</div>
         </div>
+
         <div class="filx-column_center">
-          <div>503</div>
-          <div>
-            <div class="line"></div>
-          </div>
-          <div class="fs-12">招聘企业</div>
+          <div>{{ data.positionCount }}</div>
+          <div><div class="line"></div></div>
+          <div class="fs-12">发布职位</div>
         </div>
+
         <div class="filx-column_center">
-          <div>503</div>
-          <div>
-            <div class="line"></div>
-          </div>
-          <div class="fs-12">招聘企业</div>
+          <div>{{ data.positionSize }}</div>
+          <div><div class="line"></div></div>
+          <div class="fs-12">用人需求</div>
         </div>
+
         <div class="filx-column_center">
-          <div>503</div>
-          <div>
-            <div class="line"></div>
-          </div>
-          <div class="fs-12">招聘企业</div>
+          <div>{{ data.positionType }}</div>
+          <div><div class="line"></div></div>
+          <div class="fs-12">职位种类</div>
         </div>
       </div>
 
       <div class="content">
-        <div class="popularPositions">
-          <div class="popularPositions-header">
-            <div>
-              <div class="beam"></div>
-            </div>
-            <div>热门职位</div>
-          </div>
-          <div class="swiper-box">
+        <JobFairsNav title="热门职位">
+          <template #content>
             <van-swipe class="my-swipe" :autoplay="4000" indicator-color="white">
-              <van-swipe-item class="ptl-20">
+              <van-swipe-item class="ptl-20" v-for="item in positionList">
                 <div class="swipe-item_box">
-                  <div>
+                  <div v-for="child in item.child">
                     <img src="@/assets/images/icon-collection.png" alt="">
-                    <p class="pt-6">1</p>
-                  </div>
-                  <div>
-                    <img src="@/assets/images/icon-collection.png" alt="">
-                    <p class="pt-6">实习生</p>
-                  </div>
-                  <div>
-                    <img src="@/assets/images/icon-collection.png" alt="">
-                    <p class="pt-6">实习生</p>
-                  </div>
-                  <div>
-                    <img src="@/assets/images/icon-collection.png" alt="">
-                    <p class="pt-6">实习生</p>
-                  </div>
-                </div>
-              </van-swipe-item>
-              <van-swipe-item class="ptl-20 ml-10">
-                <div class="swipe-item_box">
-                  <div>
-                    <img src="@/assets/images/icon-collection.png" alt="">
-                    <p class="pt-6">实习生</p>
-                  </div>
-                  <div>
-                    <img src="@/assets/images/icon-collection.png" alt="">
-                    <p class="pt-6">实习生</p>
-                  </div>
-                  <div>
-                    <img src="@/assets/images/icon-collection.png" alt="">
-                    <p class="pt-6">实习生</p>
-                  </div>
-                  <div>
-                    <img src="@/assets/images/icon-collection.png" alt="">
-                    <p class="pt-6">实习生</p>
+                    <p class="pt-6">{{ child.positionName }}</p>
                   </div>
                 </div>
               </van-swipe-item>
             </van-swipe>
-          </div>
-        </div>
+          </template>
+        </JobFairsNav>
+
+        <JobFairsNav title="招聘企业" class="mt-38">
+          <template #header>
+            <span class="fs-14 c-747474">查看全部 ></span>
+          </template>
+          <template #content>
+            <van-swipe class="my-swipe" :touchable="true" :lazy-render="true" :autoplay="4000" indicator-color="white">
+              <van-swipe-item class="ptl-20" v-for="item in companyList">
+                <div class="swipe-enterprise_box">
+                  <div class="enterprise-item_box">
+                    <div v-for="chil in item.child">
+                      <img src="@/assets/images/icon-invitation.png">
+                    </div>
+                  </div>
+                </div>
+              </van-swipe-item>
+            </van-swipe>
+          </template>
+        </JobFairsNav>
+
+        <JobFairsNav title="招聘职位" class="mt-20">
+          <template #content>
+            <div class="position-box">
+              <div :class="isOpen ? 'is-item-box' : 'item-box'">
+                <div class="item" v-for="item in data.positionNameList">{{item}}</div>
+              </div>
+              <div class="is-open">
+                <span @click="isOpenFn">{{ isOpen ? 'close' : "open" }}</span>
+              </div>
+            </div>
+          </template>
+        </JobFairsNav>
+
+        <JobFairsNav title="专场招聘" class="mt-38">
+          <template #content>
+            <van-swipe :show-indicators="false" class="my-swipe" :autoplay="4000" indicator-color="white">
+              <van-swipe-item class="ptl-20" v-for="item in specialList">
+                <div class="swipe-enterprise_box">
+                  <div class="enterprise-item_box">
+                    <div v-for="child in item.child"><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                  </div>
+                </div>
+              </van-swipe-item>
+            </van-swipe>
+          </template>
+        </JobFairsNav>
+
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, } from "vue";
+import { useHomeStore } from "@/stores/home";
+import JobFairsNav from "@/components/jobfairs/JobFairsNav.vue";
+let useHome = useHomeStore();
 
+let isOpen = ref(false);
+let isOpenFn = () => {
+  isOpen.value = isOpen.value == true ? false : true;
+}
+
+let data: any = ref({})
+let positionList: any = ref([]);      //热门职位列表 ,
+let companyList: any = ref([]);       //公司列表
+// let positionNameList: any = ref([]); 专场职位列表
+let specialList :any = ref([]);       //专场列表
+let selectLogo = async () => {
+  let res: any = await useHome.selectLogo({});
+  if (res.code == 200) {
+    data.value = res.data;
+    console.log(data.value);
+    positionList.value = formatData(data.value.positionList, 4);
+    // positionNameList.value = formatData(data.value.positionNameList, 8);
+    companyList.value = formatData(data.value.companyList, 8);
+    specialList.value = formatData(data.value.specialList,8)
+  }
+}
+selectLogo();
+
+let formatData = (data: any[], pageSize: number): any[] => {
+  let list = [];
+  if (data) {
+    let pageTotal = Math.ceil(data.length / pageSize);
+    for (let i = 1; i <= pageTotal; i++) {
+      list.push(
+        {
+          "current": i,
+          "child": data.slice((i - 1) * pageSize, i * pageSize)
+        }
+      )
+    }
+  }
+  return list;
+}
 </script>
 
 <style lang="scss" scoped>
@@ -105,19 +151,6 @@
 
   .pt-6 {
     padding-top: .6rem;
-  }
-
-  .swipe-item_box {
-    display: flex;
-    gap: 2rem 0;
-    justify-content: space-between;
-    width: 90%;
-    margin: 0 auto;
-
-    img {
-      width: 4rem;
-      height: 4rem;
-    }
   }
 
   .filx-column_center {
@@ -141,24 +174,66 @@
   .main {
     height: calc(100% - 7rem);
     overflow: auto;
-    background: #F8F8F8;
+    background: #ffffff;
 
     .content {
       margin-top: 7rem;
       padding: 0 2rem;
-    }
 
-    .popularPositions {
-      .popularPositions-header {
+      .position-box {
+        .is-open {
+          text-align: center;
+          margin-top: 2rem;
+          font-size: 1.6rem;
+          color: #acacac;
+        }
+
+        .is-item-box {
+          margin-top: 1.8rem;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 1.4rem 2.8rem;
+
+          .item {
+            text-align: center;
+            width: 6.2rem;
+            font-size: 1.4rem;
+          }
+        }
+
+        .item-box {
+          margin-top: 1.8rem;
+          display: flex;
+          flex-wrap: wrap;
+          overflow: hidden;
+          height: 15rem;
+          align-items: center;
+          gap: 1.4rem 2.8rem;
+
+          .item {
+            text-align: center;
+            width: 6.2rem;
+            font-size: 1.4rem;
+          }
+        }
+      }
+
+      .swipe-enterprise_box {
         display: flex;
-        font-size: 1.9rem;
-        align-items: center;
-        gap: 0 .6rem;
+        justify-content: center;
 
-        .beam {
-          width: .4rem;
-          background: blue;
-          height: 1.9rem;
+        .enterprise-item_box {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          max-width: 39rem;
+          gap: 0 1.2rem;
+        }
+
+        img {
+          width: 7rem;
+          height: 7rem;
         }
       }
 
@@ -166,6 +241,20 @@
         font-size: 1.4rem;
         margin-top: 2rem;
         padding-bottom: 2rem;
+
+        .swipe-item_box {
+          img {
+            width: 4rem;
+            height: 4rem;
+          }
+
+          display: flex;
+          gap: 2rem 0;
+          justify-content: space-between;
+          width: 90%;
+          margin: 0 auto;
+          text-align: center;
+        }
       }
     }
 
@@ -192,6 +281,7 @@
       justify-content: space-between;
       padding: 1.6rem 2rem;
       font-size: 1.4rem;
+      box-shadow: 0rem .4rem 0rem 0rem rgb(240, 240, 240);
       z-index: 999;
     }
   }
@@ -203,7 +293,7 @@
 
 :deep(.van-swipe__indicator) {
   background: rgb(154, 154, 154);
- 
+
 }
 
 :deep(.van-swipe__indicator--active) {

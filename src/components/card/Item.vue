@@ -23,8 +23,15 @@
         <div class="operation">
             <p class=" mt-14 c-fb5530 fs-14 fw-600">{{ options.wages }}</p>
             <van-button class="mt-20 btn " size="mini" type="primary" @click="isShow = true">申请</van-button>
-            <van-action-sheet v-model:show="isShow" title="标题">
-                <div class="content">内容</div>
+            <van-action-sheet v-model:show="isShow" title="确认投递简历">
+                <div class="content flex">
+                    <van-icon name="checked" size="2.5rem" color="#2979ff"/>
+                    <div class="title">
+                        <p class="fs-16">在线投递简历</p>
+                        <span class="fs-12 c-747474">2022-11-10 17:49 更新</span>
+                    </div>
+                    <p class="fs-14 c-747474">完成度：<span class="c-2979ff">60%</span></p>
+                </div>
             </van-action-sheet>
         </div>
     </div>
@@ -88,6 +95,14 @@ let isShow = ref(false);
     }
 
     .operation {
+        .content{
+            height: 61vh;
+            padding: 2rem;
+            gap: 1rem;
+            .title{
+                line-height: 2.5rem;
+            }
+        }
         .btn {
             margin-top: 2rem;
             border-radius: .5rem;

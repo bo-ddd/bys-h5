@@ -192,7 +192,7 @@ let onRefresh = async ()=>{
        background: #fff;
        &>.left{
          &>img{
-            border: 2px solid #ccc;
+            border: 1px solid #f3f3f3;
          }
        }
        &>.right{

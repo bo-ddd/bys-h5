@@ -12,9 +12,6 @@
       </div>
       <div class="btn">
         <van-button class="btn-plain" size="mini" color="#3b80fb" plain>去填写</van-button>
-
- 
-
       </div>
     </header>
     <main class="container">

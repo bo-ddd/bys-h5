@@ -134,6 +134,9 @@ const container = ref(null);
   .info-body {
     font-size: 1.4rem;
     color: #666666;
+    :deep(.van-tabs__content){
+      min-height: calc(100vh - 31rem);
+    }
     :deep(.van-tabs__wrap) {
       position: sticky;
       top: -0.1rem;

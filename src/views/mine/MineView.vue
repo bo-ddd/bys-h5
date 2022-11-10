@@ -21,7 +21,7 @@
           <van-icon :name="parseAssetFile(item.icon)" />
           <span class="custom-title">{{ item.title }}</span>
         </template>
-        <!-- 点击弹弹层的模板 -->
+        <!-- 点击求职状态弹层的模板-------------------------- -->
         <template #title v-else>
           <div @click="showPopup">
             <div class="van-cell__title">
@@ -34,8 +34,9 @@
         <template #value v-if="item.ispopup">
           <span @click="showPopup">{{ popupText }}</span>
         </template>
+        <!-- 求职状态结束------------------------- -->
       </van-cell>
-      <!-- popup -->
+      <!-- 弹层组件 -->
       <van-popup position="bottom" :style="{ height: '50%' }" v-model:show="show">
         <van-picker :columns="popupData" @cancel="cancel" @confirm="onConfirm" />
       </van-popup>
@@ -46,7 +47,7 @@
         <p class="fs-16 fw-600 ">请关注公众号</p>
         <van-button class="btn mt-10" round color="#3472e1" size="mini" type="success">去关注</van-button>
       </div>
-      <div class="footer  flex-ja-center">
+      <div class="footer flex-ja-center">
         <van-button class="btn fs-14 " size="mini">退出登录</van-button>
       </div>
     </footer>

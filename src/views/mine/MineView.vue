@@ -46,7 +46,7 @@
         <p class="fs-16 fw-600 ">请关注公众号</p>
         <van-button class="btn mt-10" round color="#3472e1" size="mini" type="success">去关注</van-button>
       </div>
-      <div class="footer pd-tb_43 flex-ja-center">
+      <div class="footer  flex-ja-center">
         <van-button class="btn fs-14 " size="mini">退出登录</van-button>
       </div>
     </footer>
@@ -191,8 +191,9 @@ footer {
   }
 
   .footer {
+    padding: 20px 0 80px;
     .btn {
-      border: 0;
+      border: 0; 
     }
   }
 }

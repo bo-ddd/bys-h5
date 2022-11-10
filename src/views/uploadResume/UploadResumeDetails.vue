@@ -16,7 +16,9 @@
             <div class="back back-img2 mt-10"></div>
           </van-step>
         </van-steps>
-        <van-button class="upload-btn" type="primary" @click="to('/uploadResumeChoice')">立即上传</van-button>
+        <van-uploader class="upload-btn" accept='text'>
+        <van-button type="primary"  block @click="to('/uploadResumeChoice')">立即上传</van-button>
+        </van-uploader>
       </div>
     </div>
   </div>
@@ -71,6 +73,9 @@ let onClickLeft2 = () => history.back();
     position: absolute;
     bottom: 2rem;
     width: calc(100% - 4rem);
+    :deep(.van-uploader__input-wrapper){
+      width: 100%;
+    }
   }
 }
 :deep(.van-step) {

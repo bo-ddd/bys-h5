@@ -46,8 +46,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from "vue-router";
 import { Dialog } from 'vant';
-const onClickLeft = () => history.back();
+const router = useRouter();
+const onClickLeft = () => {
+    router.go(-1)
+};
 // popupShow 弹层打开与否
 const popupShow = ref(false);
 const popupValue = ref('');

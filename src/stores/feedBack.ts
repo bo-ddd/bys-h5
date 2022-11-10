@@ -6,5 +6,15 @@ export const useFeedbackStore = defineStore('feedback', () => {
       return Api.feedback(payload);
   }
 
-  return { feedback }
+  //查询投递反馈
+  let selectDelivery = (payload:{deliveryStatus:number,userId:number}) =>{     
+    return Api.selectDelivery(payload);
+}
+
+  //查询投递反馈
+  let getStage = (payload:{}) =>{     
+    return Api.getStage(payload);
+}
+
+  return { feedback,selectDelivery,getStage }
 })

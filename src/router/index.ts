@@ -82,17 +82,17 @@ const router = createRouter({
       // 意见反馈
       path: "/feedBack",
       name: "feedBack",
-      component: () => import('@/views/feedBack/feedBack.vue'),  
+      component: () => import('@/views/feedBack/feedBack.vue'),
     },
     {
       path: "/abnormalFunction",
       name: "abnormalFunction",
       component: () => import('@/views/feedBack/abnormalFunction.vue')
-    },{
+    }, {
       path: "/feedBackSumbit",
       name: "feedBackSumbit",
       component: () => import('@/views/feedBack/feedBackSumbit.vue')
-    },{
+    }, {
       path: "/reportingViolations",
       name: "reportingViolations",
       component: () => import('@/views/feedBack/reportingViolations.vue')
@@ -126,6 +126,23 @@ const router = createRouter({
       path: "/companyDetails",
       name: "companyDetails",
       component: () => import('@/views/companyDetails/CompanyDetails.vue')
+    },
+    {
+      // 登录页面
+      path: "/login",
+      name: "Login",
+      component: () => import('@/views/login/Login.vue')
+    },
+    {
+      path: "/jobIntention",
+      name: "JobIntention",
+      component: () => import("@/views/position/JobIntention.vue")
+    },
+    {
+      // 企业招聘列表
+      path: "/companyList",
+      name: "companyList",
+      component: () => import('@/views/list/EeterPrise/enterPriseList.vue')
     },
   ]
 })

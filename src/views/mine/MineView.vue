@@ -20,9 +20,9 @@
             <h1>登录毕业申</h1>
           </div>
           <div>
-            <van-button type="primary" class="ft">微信账号快捷登录</van-button>
+            <van-button type="primary" class="ft" @click="">微信账号快捷登录</van-button>
           </div>
-          <div class="c-747474">手机号码验证登录</div>
+          <div class="c-747474" @click="jump('login')">手机号码验证登录</div>
         </div>
       </div>
     </van-popup>
@@ -72,6 +72,8 @@
 import { parseAssetFile } from '@/assets/util';
 import { ref } from 'vue';
 import { Toast } from 'vant';
+import { useRouter } from 'vue-router';
+let router = useRouter();
 const showCount = ref(false);
 let list = [
   {
@@ -165,6 +167,10 @@ const onConfirm = (value: any) => {
   popupText.value = value;
   show.value = false;
 };
+
+let jump = (src:string)=>{
+  router.push({path:src})
+}
 </script>
   
 <style lang="scss" scoped>

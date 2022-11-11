@@ -143,6 +143,11 @@ const router = createRouter({
       path: "/companyList",
       name: "companyList",
       component: () => import('@/views/list/EeterPrise/enterPriseList.vue')
+    },{
+      // 企业招聘列表
+      path: "/positionLIst",
+      name: "positionLIst",
+      component: () => import('@/views/position/PositionLIst.vue')
     },
     {
       // 职业详情

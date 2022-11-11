@@ -11,7 +11,7 @@
         </div>
       </div>
       <div class="btn">
-        <van-button class="btn-plain" size="mini" color="#3b80fb" plain>去填写</van-button>
+        <van-button class="btn-plain" size="mini" color="#3b80fb" plain @click="jump('/jobIntention')">去填写</van-button>
       </div>
     </header>
     <main class="container">
@@ -25,7 +25,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Card from '@/components/card'
+import { useRouter } from 'vue-router';
+let router = useRouter();
 
+let jump = (src:string)=>{
+  router.push({path:src})
+}
 
 
 let cardList = [

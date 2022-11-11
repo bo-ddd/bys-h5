@@ -20,7 +20,7 @@
             <h1>登录毕业申</h1>
           </div>
           <div>
-            <van-button type="primary" class="ft" @click="">微信账号快捷登录</van-button>
+            <van-button type="primary" class="ft">微信账号快捷登录</van-button>
           </div>
           <div class="c-747474" @click="jump('login')">手机号码验证登录</div>
         </div>

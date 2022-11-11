@@ -7,6 +7,7 @@
 .drop-menu-wrap{
     display: flex;
     justify-content: space-around;
+    align-items: center;
     position: relative;
 }
 </style>

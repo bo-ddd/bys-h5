@@ -31,7 +31,7 @@ import {  parseAssetFile } from "@/assets/util/index"
             <p :class="[checkItem == title ? 'cl-active' : '','fs-16']">{{title}}</p>
             <img :src="parseAssetFile(showImg)" class="icon-8 mg-0_5">
         </div>
-        <div  ref="container">
+        <div  ref="container" >
             <div v-show="checkItem == title" class="container">
                 <slot></slot>
             </div> 
@@ -47,8 +47,8 @@ import {  parseAssetFile } from "@/assets/util/index"
     }
     & .container{
         position: absolute;
-        background: #d2d2d2;
-        opacity: .3;
+        background-color: rgba(210, 210, 210, 0.3);
+        backdrop-filter: blur(1rem);
         height: calc(v-bind(heigt));
         width: 100vw;
         left: 0;

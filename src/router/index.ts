@@ -149,6 +149,12 @@ const router = createRouter({
       name: "positionLIst",
       component: () => import('@/views/position/PositionLIst.vue')
     },
+    {
+      // 职业详情
+      path: "/positionDetail",
+      name: "positionDetail",
+      component: () => import('@/views/positionDetatil/positionDetail.vue')
+    },
   ]
 })
 

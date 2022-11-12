@@ -21,12 +21,12 @@
 
             </van-cell>
             <p class="fs-14">期望工作地</p>
-            <van-cell center title="WEB前端开发" :border="false" class="fs-16" is-link 
+            <van-cell center title="WEB前端开发" :border="false" class="fs-16" 
                 @click="showWorkplace = true">
-                <van-action-sheet v-model:show="showWorkplace" title="标题">
-                    <div class="content">内容</div>
-                </van-action-sheet>
             </van-cell>
+            <van-action-sheet v-model:show="showWorkplace" title="标题">
+                <div class="content">内容</div>
+            </van-action-sheet>
         </main>
     </div>
 </template>

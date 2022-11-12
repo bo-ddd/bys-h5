@@ -148,6 +148,11 @@ const router = createRouter({
       path: "/positionLIst",
       name: "positionLIst",
       component: () => import('@/views/position/PositionLIst.vue')
+    },{
+      // 企业招聘列表
+      path: "/resumeDetails",
+      name: "resumeDetails",
+      component: () => import('@/views/uploadResume/resumeDetails.vue')
     },
   ]
 })

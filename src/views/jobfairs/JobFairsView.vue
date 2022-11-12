@@ -198,7 +198,7 @@ let formatData = (data: any[], pageSize: number): any[] => {
           flex-wrap: wrap;
           align-items: center;
           gap: 1.4rem 2.8rem;
-
+          min-height: 12rem;
           .item {
             text-align: center;
             width: 6.2rem;
@@ -211,7 +211,7 @@ let formatData = (data: any[], pageSize: number): any[] => {
           display: flex;
           flex-wrap: wrap;
           overflow: hidden;
-          height: 15rem;
+          height:12rem;
           align-items: center;
           gap: 1.4rem 2.8rem;
 

@@ -154,6 +154,12 @@ const router = createRouter({
       name: "resumeDetails",
       component: () => import('@/views/uploadResume/resumeDetails.vue')
     },
+    {
+      // 职业详情
+      path: "/positionDetail",
+      name: "positionDetail",
+      component: () => import('@/views/positionDetatil/positionDetail.vue')
+    },
   ]
 })
 

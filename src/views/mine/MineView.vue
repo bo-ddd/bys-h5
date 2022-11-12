@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <!-- 头部 -->
-    <header class="wrap header c-ffffff">
+    <header class="wrap header c-ffffff" @click="showCount = true">
       <div class="container just-between ">
         <div class="title">
           <p class="fs-22 fw-600">请创建简历</p>
@@ -12,6 +12,20 @@
         </div>
       </div>
     </header>
+
+    <van-popup v-model:show="showCount" closeable  round :style="{ height: '25%', width: '80%' }">
+      <div class="show-count_box">
+        <div class="show-wrap">
+          <div>
+            <h1>登录毕业申</h1>
+          </div>
+          <div>
+            <van-button type="primary" class="ft">微信账号快捷登录</van-button>
+          </div>
+          <div class="c-747474" @click="jump('login')">手机号码验证登录</div>
+        </div>
+      </div>
+    </van-popup>
     <!-- list -->
     <main>
       <van-cell center :border="false" class="mt-20" v-for="item in list" :key="item.id" :value="item.value" is-link
@@ -21,7 +35,7 @@
           <van-icon :name="parseAssetFile(item.icon)" />
           <span class="custom-title">{{ item.title }}</span>
         </template>
-        <!-- 点击弹弹层的模板 -->
+        <!-- 点击求职状态弹层的模板-------------------------- -->
         <template #title v-else>
           <div @click="showPopup">
             <div class="van-cell__title">
@@ -34,8 +48,9 @@
         <template #value v-if="item.ispopup">
           <span @click="showPopup">{{ popupText }}</span>
         </template>
+        <!-- 求职状态结束------------------------- -->
       </van-cell>
-      <!-- popup -->
+      <!-- 弹层组件 -->
       <van-popup position="bottom" :style="{ height: '50%' }" v-model:show="show">
         <van-picker :columns="popupData" @cancel="cancel" @confirm="onConfirm" />
       </van-popup>
@@ -46,7 +61,7 @@
         <p class="fs-16 fw-600 ">请关注公众号</p>
         <van-button class="btn mt-10" round color="#3472e1" size="mini" type="success">去关注</van-button>
       </div>
-      <div class="footer pd-tb_43 flex-ja-center">
+      <div class="footer flex-ja-center">
         <van-button class="btn fs-14 " size="mini">退出登录</van-button>
       </div>
     </footer>
@@ -57,7 +72,9 @@
 import { parseAssetFile } from '@/assets/util';
 import { ref } from 'vue';
 import { Toast } from 'vant';
-
+import { useRouter } from 'vue-router';
+let router = useRouter();
+const showCount = ref(false);
 let list = [
   {
     id: 1,
@@ -150,6 +167,10 @@ const onConfirm = (value: any) => {
   popupText.value = value;
   show.value = false;
 };
+
+let jump = (src:string)=>{
+  router.push({path:src})
+}
 </script>
   
 <style lang="scss" scoped>
@@ -159,8 +180,28 @@ const onConfirm = (value: any) => {
   gap: 1.8rem;
 }
 
+.show-count_box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  .show-wrap{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    h1{
+      font-weight: 500;
+    }
+    .ft{
+      font-size: 1.8rem;
+    }
+  }
+}
+
 .header {
   background-color: #3472e1;
+
 
   .container {
     padding: 2.8rem 0;
@@ -191,6 +232,8 @@ footer {
   }
 
   .footer {
+    padding: 20px 0 80px;
+
     .btn {
       border: 0;
     }

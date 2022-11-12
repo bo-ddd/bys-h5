@@ -34,7 +34,7 @@
                 </van-checkbox>
             </div>
             <div class="submit-btn_box">
-                <van-button class="submit-btn" type="success">提交</van-button>
+                <van-button class="submit-btn" type="success" @click="feedBack()">提交</van-button>
             </div>
         </div>
     </div>
@@ -42,10 +42,24 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useFeedbackStore } from "@/stores/feedBack";
 import { useRoute } from 'vue-router';
-const onClickLeft = () => history.back();
 let route = useRoute();
+let useFeedBack = useFeedbackStore();
+
 let message = ref("")
+let feedBack = async ()=>{
+     let res:any = await useFeedBack.feedback({
+        userId:10000,
+        opinion:message.value
+     })
+     if(res.code = 200){
+        console.log(res);
+        
+     }
+  }
+
+const onClickLeft = () => history.back();
 const checked = ref('');
 const fileList = ref([
     { url: 'https://unpkg.com/@vant/assets/leaf.jpeg' },

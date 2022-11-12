@@ -11,20 +11,27 @@
         </div>
       </div>
       <div class="btn">
-        <van-button class="btn-plain" size="mini" color="#3b80fb" plain>去填写</van-button>
+        <van-button class="btn-plain" size="mini" color="#3b80fb" plain @click="jump('/jobIntention')">去填写</van-button>
       </div>
     </header>
     <main class="container">
       <Card.Wrap>
-        <Card.Item v-for="item in cardList" :key="item.id" :options="item"></Card.Item>
+        <Card.Item v-for="item in cardList" :key="item.id" :options="item" ></Card.Item>
       </Card.Wrap>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 import Card from '@/components/card'
+import { useRouter } from 'vue-router';
+let router = useRouter();
+
+let jump = (src:string)=>{
+  router.push({path:src})
+}
+
 
 let cardList = [
   {
@@ -169,7 +176,8 @@ let cardList = [
       }
     }
   }
-  main{
+
+  main {
     height: calc(100% - 7.2rem);
     overflow: auto;
   }

@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import { Toast } from 'vant';
 import { useRouter } from "vue-router";
+import { useSaveStore } from "@/stores/save";
+let SaveStore:any = useSaveStore();
 let active = ref();
 let router = useRouter();
 let back = ()=>{
@@ -9,11 +11,27 @@ let back = ()=>{
 }    
 let count = ref(1);
 const loading = ref(false);
+let companyList = reactive([]);
+let positionList=reactive([]);
 let onRefresh = async ()=>{
     Toast('刷新成功');
     loading.value = false;
-    count.value ++;
+    getSaveList();
 }
+let getSaveList = async ()=>{
+    let res = await SaveStore.getSaveList({
+        userId:10000,
+    });
+    if(res.code == 200){
+        console.log(res);
+        companyList.push(...((res.data).company));
+        positionList.push(...((res.data).position));
+        
+        companyList=[...new Set(...[companyList])];
+        positionList=[...new Set(...[positionList])];
+    }
+}
+getSaveList();
 </script>
 <template>
     <div class="save">
@@ -22,7 +40,7 @@ let onRefresh = async ()=>{
         <!-- 这个是选择 -->
         <van-tabs v-model:active="active" color="#75a5fd" title-active-color="#75a5fd">
             <van-tab title="职位" class="position">
-                <div class="container" v-show="false">
+                <div class="container" v-show="!positionList.length">
                     <div class="none-content">
                         <img src="@/assets/images/icon-save.png">
                         <p>暂无收藏职位</p>
@@ -35,7 +53,7 @@ let onRefresh = async ()=>{
                     class="refresh"
                     >
                     <!-- 这个是内容每一项 -->
-                    <div class="position-item mb-5" v-for="i in count" :key="i">
+                    <div class="position-item mb-5" v-for="item in positionList" :key="item.id">
                         <div class="title">
                             <p>数据研发类</p>
                             <p class="cl-red fs-16">10-30k</p>
@@ -58,7 +76,7 @@ let onRefresh = async ()=>{
                             <div class="right">
                                 <p class="fw-700 fs-14">中金所研究院</p>
                                 <div class="desc mt-5">
-                                    <p class="fs-12">100-499人</p>
+                                    <p class="fs-12">{{item.companySize}}</p>
                                     <div class="line mg-0_5"></div>
                                     <p class="fs-12">证券/期货</p>
                                 </div>
@@ -69,7 +87,7 @@ let onRefresh = async ()=>{
                 <div class="bottom fs-14">没有更多数据了</div>
             </van-tab>
             <van-tab title="企业">
-                <div class="container" v-if="false">
+                <div class="container" v-if="!companyList.length">
                     <div class="none-content" >
                         <img src="@/assets/images/icon-save.png">
                         <p>暂无收藏企业</p>
@@ -82,13 +100,13 @@ let onRefresh = async ()=>{
                     class="refresh"
                     >
                     <!-- 这个是内容每一项 -->
-                    <div class="enterprise-item mb-5">
+                    <div class="enterprise-item mb-5" v-for="item in companyList" :key="item.id">
                         <div class="left">
                             <img src="@/assets/images/icon-collection.png" class="icon">
                         </div>
                         <div class="right ml-5">
                             <div class="top">
-                                <p class="fs-14 fw-700">人保科技</p>
+                                <p class="fs-14 fw-700">{{item.companyName}}</p>
                                 <div class="desc fs-12">
                                     <p>上海市</p>
                                     <div class="line mg-0_5"></div>
@@ -192,7 +210,7 @@ let onRefresh = async ()=>{
        background: #fff;
        &>.left{
          &>img{
-            border: 2px solid #ccc;
+            border: 1px solid #f3f3f3;
          }
        }
        &>.right{

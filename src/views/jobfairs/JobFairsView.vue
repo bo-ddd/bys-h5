@@ -38,7 +38,7 @@
             <van-swipe class="my-swipe" :autoplay="4000" indicator-color="white">
               <van-swipe-item class="ptl-20" v-for="item in positionList">
                 <div class="swipe-item_box">
-                  <div v-for="child in item.child">
+                  <div  @click="jump('/positionLIst')" v-for="child in item.child">
                     <img src="@/assets/images/icon-collection.png" alt="">
                     <p class="pt-6">{{ child.positionName }}</p>
                   </div>
@@ -103,7 +103,12 @@
 import { ref, } from "vue";
 import { useHomeStore } from "@/stores/home";
 import JobFairsNav from "@/components/jobfairs/JobFairsNav.vue";
+import { useRouter } from 'vue-router';
 let useHome = useHomeStore();
+ let router = useRouter();
+ let jump = (url:string)=>{
+     router.push({path:url})
+ }
 
 let isOpen = ref(false);
 let isOpenFn = () => {
@@ -113,7 +118,6 @@ let isOpenFn = () => {
 let data: any = ref({})
 let positionList: any = ref([]);      //热门职位列表 ,
 let companyList: any = ref([]);       //公司列表
-// let positionNameList: any = ref([]); 专场职位列表
 let specialList :any = ref([]);       //专场列表
 let selectLogo = async () => {
   let res: any = await useHome.selectLogo({});

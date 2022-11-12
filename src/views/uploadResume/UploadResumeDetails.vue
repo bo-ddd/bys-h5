@@ -16,7 +16,7 @@
             <div class="back back-img2 mt-10"></div>
           </van-step>
         </van-steps>
-        <van-uploader class="upload-btn" accept='text'>
+        <van-uploader class="upload-btn" accept=".pdf,.doc,.docx">
         <van-button type="primary"  block @click="to('/uploadResumeChoice')">立即上传</van-button>
         </van-uploader>
       </div>
@@ -24,7 +24,13 @@
   </div>
 </template>
 <script lang="ts" setup>
-let onClickLeft2 = () => history.back();
+import { useRouter } from "vue-router";
+import { parseAssetFile } from "@/assets/util";
+const router = useRouter();
+let onClickLeft2 = () => history.back()
+const to = function (path: any) {
+  router.push(path);
+};
 </script>
 <style lang="scss" scoped>
 .upload-page{

@@ -9,25 +9,33 @@
       <div class="data-statistics">
         <div class="filx-column_center">
           <div>{{ data.companyCount }}</div>
-          <div><div class="line"></div></div>
+          <div>
+            <div class="line"></div>
+          </div>
           <div class="fs-12">招聘企业</div>
         </div>
 
         <div class="filx-column_center">
           <div>{{ data.positionCount }}</div>
-          <div><div class="line"></div></div>
+          <div>
+            <div class="line"></div>
+          </div>
           <div class="fs-12">发布职位</div>
         </div>
 
         <div class="filx-column_center">
           <div>{{ data.positionSize }}</div>
-          <div><div class="line"></div></div>
+          <div>
+            <div class="line"></div>
+          </div>
           <div class="fs-12">用人需求</div>
         </div>
 
         <div class="filx-column_center">
           <div>{{ data.positionType }}</div>
-          <div><div class="line"></div></div>
+          <div>
+            <div class="line"></div>
+          </div>
           <div class="fs-12">职位种类</div>
         </div>
       </div>
@@ -38,7 +46,7 @@
             <van-swipe class="my-swipe" :autoplay="4000" indicator-color="white">
               <van-swipe-item class="ptl-20" v-for="item in positionList">
                 <div class="swipe-item_box">
-                  <div  @click="jump('/positionLIst')" v-for="child in item.child">
+                  <div @click="jump('/positionLIst')" v-for="child in item.child">
                     <img src="@/assets/images/icon-collection.png" alt="">
                     <p class="pt-6">{{ child.positionName }}</p>
                   </div>
@@ -57,7 +65,7 @@
               <van-swipe-item class="ptl-20" v-for="item in companyList">
                 <div class="swipe-enterprise_box">
                   <div class="enterprise-item_box">
-                    <div v-for="chil in item.child">
+                    <div v-for="chil in item.child" @click="jump('/companyDetails')">
                       <img src="@/assets/images/icon-invitation.png">
                     </div>
                   </div>
@@ -71,7 +79,7 @@
           <template #content>
             <div class="position-box">
               <div :class="isOpen ? 'is-item-box' : 'item-box'">
-                <div class="item" v-for="item in data.positionNameList">{{item}}</div>
+                <div class="item" v-for="item in data.positionNameList" @click="jump('/positionLIst')">{{ item }}</div>
               </div>
               <div class="is-open">
                 <span @click="isOpenFn">{{ isOpen ? 'close' : "open" }}</span>
@@ -86,7 +94,9 @@
               <van-swipe-item class="ptl-20" v-for="item in specialList">
                 <div class="swipe-enterprise_box">
                   <div class="enterprise-item_box">
-                    <div v-for="child in item.child"><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                    <div v-for="child in item.child" @click="jump('/companyList')">
+                      <img src="@/assets/images/icon-invitation.png" alt="">
+                    </div>
                   </div>
                 </div>
               </van-swipe-item>
@@ -105,10 +115,10 @@ import { useHomeStore } from "@/stores/home";
 import JobFairsNav from "@/components/jobfairs/JobFairsNav.vue";
 import { useRouter } from 'vue-router';
 let useHome = useHomeStore();
- let router = useRouter();
- let jump = (url:string)=>{
-     router.push({path:url})
- }
+let router = useRouter();
+let jump = (url: string) => {
+  router.push({ path: url })
+}
 
 let isOpen = ref(false);
 let isOpenFn = () => {
@@ -118,7 +128,7 @@ let isOpenFn = () => {
 let data: any = ref({})
 let positionList: any = ref([]);      //热门职位列表 ,
 let companyList: any = ref([]);       //公司列表
-let specialList :any = ref([]);       //专场列表
+let specialList: any = ref([]);       //专场列表
 let selectLogo = async () => {
   let res: any = await useHome.selectLogo({});
   if (res.code == 200) {
@@ -127,7 +137,7 @@ let selectLogo = async () => {
     positionList.value = formatData(data.value.positionList, 4);
     // positionNameList.value = formatData(data.value.positionNameList, 8);
     companyList.value = formatData(data.value.companyList, 8);
-    specialList.value = formatData(data.value.specialList,8)
+    specialList.value = formatData(data.value.specialList, 8)
   }
 }
 selectLogo();
@@ -199,6 +209,7 @@ let formatData = (data: any[], pageSize: number): any[] => {
           align-items: center;
           gap: 1.4rem 2.8rem;
           min-height: 12rem;
+
           .item {
             text-align: center;
             width: 6.2rem;
@@ -211,7 +222,7 @@ let formatData = (data: any[], pageSize: number): any[] => {
           display: flex;
           flex-wrap: wrap;
           overflow: hidden;
-          height:12rem;
+          height: 12rem;
           align-items: center;
           gap: 1.4rem 2.8rem;
 
@@ -226,7 +237,7 @@ let formatData = (data: any[], pageSize: number): any[] => {
       .swipe-enterprise_box {
         display: flex;
         justify-content: center;
-
+        
         .enterprise-item_box {
           display: flex;
           flex-wrap: wrap;

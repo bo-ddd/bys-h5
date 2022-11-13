@@ -7,7 +7,7 @@
 
         <div class="nav">
             <van-tabbar v-model="active">
-                <van-tabbar-item v-for="item, index in tabbar" :key="index" :to="item.navigator">
+                <van-tabbar-item v-for="item, index in tabbar" :key="index" :name="item.navigator" :to="item.navigator">
                     {{ item.title }}
                     <template #icon="props">
                         <img :src="props.active ? parseAssetFile(item.activeUrl) : parseAssetFile(item.iconUrl)" />
@@ -22,14 +22,18 @@
 
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import { ref, onMounted } from 'vue'
+import { useRouter,useRoute } from 'vue-router';
+import { ref } from 'vue'
 import { parseAssetFile } from '@/assets/util';
-let active = ref(0);
+let active = ref("/jobfairs");
 let router = useRouter();
-onMounted(() => {
-    router.push({ path: "/jobfairs" })
-})
+let route = useRoute();
+if(route.path == '/'){
+    router.push({ path: "/jobfairs" });
+}else{
+    active.value = route.path;
+}
+
 let tabbar = [
     {
         id: 1,

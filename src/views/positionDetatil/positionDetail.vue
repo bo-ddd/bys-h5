@@ -68,11 +68,11 @@
         <div class="bottom">
             <div class="options">
                 <div class="option">
-                    <img src="@/assets/images/company.png" class="icon-20">
+                    <img src="@/assets/images/icon-share.png" class="icon-20">
                     <p class="fs-14">分享</p>
                 </div>
                 <div class="option">
-                    <img src="@/assets/images/company.png" class="icon-20">
+                    <img src="@/assets/images/icon-star_active.png" class="icon-20">
                     <p class="fs-14">收藏</p>
                 </div>
             </div>

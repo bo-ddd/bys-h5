@@ -49,7 +49,7 @@
                     <div class="fs-14">上海市青浦区华纺路99弄(张江工业园青浦分园)99号6幢3楼</div>
                 </div>
             </div>
-            <div class="company-profile">
+            <div class="company-profile" @click="jump('/companyDetails')">
                 <h2 class="fs-20">企业简介</h2>
                 <div class="msg mt-20">
                     <img src="@/assets/images/company.png" class="icon-40">
@@ -87,6 +87,9 @@ let router = useRouter();
 let back = ()=>{
     router.go(-1);
 }  
+let jump = (url: string) => {
+  router.push({ path: url })
+}
 </script>
 <style lang="scss" scoped>
 .position-detail{

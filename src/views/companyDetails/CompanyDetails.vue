@@ -34,7 +34,7 @@
               <div class>在招职位</div>
             </template>
             <div class="info-list">
-              <div class="item just-between">
+              <div class="item just-between" @click="jump('/positionDetail')">
                 <div class="item-left">
                   <div class="title">后台开发工程师</div>
                   <div class="info mt-5">
@@ -92,9 +92,16 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { parseAssetFile } from "@/assets/util";
+import { useRouter } from "vue-router";
 let onClickLeft1 = () => history.back();
 const active = ref(0);
 const container = ref(null);
+
+let router = useRouter();
+
+let jump = (url: string) => {
+  router.push({ path: url })
+}
 </script>
 <style lang="scss" scoped>
 :deep(.van-tabs__content) {

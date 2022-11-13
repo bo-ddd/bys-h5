@@ -5,6 +5,11 @@ import Drop from "@/components/dropMenu/index";
 import { areaList } from '@vant/area-data';
 
 let router = useRouter();
+
+let jump = (url: string) => {
+  router.push({ path: url })
+}
+
 let checkItem = ref('');
 let back = () => {
     router.go(-1);
@@ -134,7 +139,7 @@ provide('checkItemFn', checkFn);
             </Drop.Item>
         </Drop.Wrap>
         <div class="list mask">
-            <div class="item mb-5">
+            <div class="item mb-5" @click="jump('/companyDetails')">
                 <div class="left">
                     <img src="@/assets/images/company.png" class="icon-40">
                 </div>

@@ -49,6 +49,34 @@
                     <div class="fs-14">上海市青浦区华纺路99弄(张江工业园青浦分园)99号6幢3楼</div>
                 </div>
             </div>
+            <div class="company-profile" @click="jump('/companyDetails')">
+                <h2 class="fs-20">企业简介</h2>
+                <div class="msg mt-20">
+                    <img src="@/assets/images/company.png" class="icon-40">
+                    <div class="company  ml-15">
+                        <p>慧石(上海)测控科技</p>
+                        <div class="desc">
+                            <p>100-499人</p>
+                            <div class="line"></div>
+                            <p>机械/制造,仪器仪表/工业自动化</p>
+                        </div>
+                    </div>
+                    <img src="@/assets/images/icon-arrow_right.png" class="icon-16">
+                </div>
+            </div>
+        </div>
+        <div class="bottom">
+            <div class="options">
+                <div class="option">
+                    <img src="@/assets/images/icon-share.png" class="icon-20">
+                    <p class="fs-14">分享</p>
+                </div>
+                <div class="option">
+                    <img src="@/assets/images/icon-star_active.png" class="icon-20">
+                    <p class="fs-14">收藏</p>
+                </div>
+            </div>
+            <div class="btn cl-fff fs-14">投递简历</div>
         </div> 
     </div>
 </template>
@@ -59,6 +87,9 @@ let router = useRouter();
 let back = ()=>{
     router.go(-1);
 }  
+let jump = (url: string) => {
+  router.push({ path: url })
+}
 </script>
 <style lang="scss" scoped>
 .position-detail{
@@ -111,6 +142,45 @@ let back = ()=>{
                 grid-template-columns: 2rem auto;
             }
         }
+        &>.company-profile{
+            padding: 2rem 0 8rem 0;
+            &>.msg{
+                display: grid;
+                grid-template-columns: 4rem auto 2rem;
+                align-items: center;
+                &>.company{
+                    &>.desc{
+                        display: flex;
+                        align-items: center;
+                    }
+                }
+            }
+        }
+    }
+    &>.bottom{
+        bottom: 0;
+        width: 100vw;
+        box-sizing: border-box;
+        position: fixed;
+        padding: 1rem 1.5rem;
+        background: #fff;
+        display: flex;
+        justify-content: space-between;
+        &>.options{
+            display: flex;
+            flex: 1;
+            justify-content: space-around;
+            align-items: center;
+            &>.option{
+                text-align: center;
+            }
+        }
+        &>.btn{
+            display: inline-block;
+            padding: 1.5rem 8rem;
+            border-radius: .5rem;
+            background: #1989fa;
+        }
     }
     .cl-red{
         color: #fb6342;
@@ -137,6 +207,18 @@ let back = ()=>{
     }
     .icon-16{
         width: 1.6rem;
+    }
+    .icon-40{
+        width: 4rem;
+    }
+    .ml-15{
+        margin-left: 1.5rem;
+    }
+    .cl-fff{
+        color: #fff;
+    }
+    .icon-20{
+        width: 2rem;
     }
 }
 </style>

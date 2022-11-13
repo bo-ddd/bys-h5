@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 import Card from '@/components/card'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router';
 
+let router = useRouter();
+let jump = (url: string) => {
+  router.push({ path: url })
+}
 
 let cardList = [
     {
@@ -151,7 +156,7 @@ const onConfirm = () => {
                 </div>
             </van-dropdown-item>
         </van-dropdown-menu>
-        <Card.Wrap>
+        <Card.Wrap @click="jump('/positionDetail')">
             <Card.Item v-for="item in cardList" :key="item.id" :options="item"></Card.Item>
         </Card.Wrap>
     </div>

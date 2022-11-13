@@ -65,7 +65,7 @@
               <van-swipe-item class="ptl-20" v-for="item in companyList">
                 <div class="swipe-enterprise_box">
                   <div class="enterprise-item_box">
-                    <div v-for="chil in item.child">
+                    <div v-for="chil in item.child" @click="jump('/companyDetails')">
                       <img src="@/assets/images/icon-invitation.png">
                     </div>
                   </div>
@@ -79,7 +79,7 @@
           <template #content>
             <div class="position-box">
               <div :class="isOpen ? 'is-item-box' : 'item-box'">
-                <div class="item" v-for="item in data.positionNameList">{{ item }}</div>
+                <div class="item" v-for="item in data.positionNameList" @click="jump('/positionLIst')">{{ item }}</div>
               </div>
               <div class="is-open">
                 <span @click="isOpenFn">{{ isOpen ? 'close' : "open" }}</span>
@@ -94,7 +94,9 @@
               <van-swipe-item class="ptl-20" v-for="item in specialList">
                 <div class="swipe-enterprise_box">
                   <div class="enterprise-item_box">
-                    <div v-for="child in item.child"><img src="@/assets/images/icon-invitation.png" alt=""></div>
+                    <div v-for="child in item.child" @click="jump('/companyList')">
+                      <img src="@/assets/images/icon-invitation.png" alt="">
+                    </div>
                   </div>
                 </div>
               </van-swipe-item>

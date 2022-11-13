@@ -144,12 +144,12 @@ const router = createRouter({
       name: "companyList",
       component: () => import('@/views/list/EeterPrise/enterPriseList.vue')
     },{
-      // 企业招聘列表
+      // 职位招聘列表
       path: "/positionLIst",
       name: "positionLIst",
       component: () => import('@/views/position/PositionLIst.vue')
     },{
-      // 企业招聘列表
+      // 简历详情页面
       path: "/resumeDetails",
       name: "resumeDetails",
       component: () => import('@/views/uploadResume/resumeDetails.vue')

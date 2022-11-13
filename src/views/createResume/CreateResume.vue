@@ -34,7 +34,7 @@
             type="primary"
             color="#f9350b"
             block
-            @click="to('/uploadResumeChoice')"
+            @click="to('/resumeDetails')"
           >创建</van-button>
         </div>
       </div>

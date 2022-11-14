@@ -160,6 +160,36 @@ const router = createRouter({
       name: "positionDetail",
       component: () => import('@/views/positionDetatil/positionDetail.vue')
     },
+    {
+      // 修改个人情况页面
+      path: "/editInfo",
+      name: "editInfo",
+      component: () => import('@/views/uploadResume/EditInfo.vue')
+    },
+    {
+      // 实习经历页面
+      path: "/internshipInfo",
+      name: "internshipInfo",
+      component: () => import('@/views/uploadResume/InternshipInfo.vue')
+    },
+    {
+      // 教育经历页面
+      path: "/educationInfo",
+      name: "educationInfo",
+      component: () => import('@/views/uploadResume/EducationInfo.vue')
+    },
+    {
+      // 项目经历页面
+      path: "/projectInfo",
+      name: "projectInfo",
+      component: () => import('@/views/uploadResume/ProjectInfo.vue')
+    },
+    {
+      // 个人基本信息页面
+      path: "/personalInfo",
+      name: "personalInfo",
+      component: () => import('@/views/uploadResume/PersonalInfo.vue')
+    },
   ]
 })
 

@@ -293,6 +293,7 @@ const customFieldName = {
 };
 const indexs = ref(0);
 const indexs2 = ref(0);
+const indexs3 = ref(0);
 const onConfirm = (value: any, index: any) => {
   Toast(`当前值: ${value}, 当前索引: ${index}`);
   ming.value = value;

@@ -31,7 +31,7 @@
                     </div>
                     <van-cell-group inset>
                         <div class="tips">请填写您的学校</div>
-                        <van-field v-model="text" class="field-srk" clearable placeholder="请输入" />
+                        <van-field v-model="fieldText" class="field-srk" clearable placeholder="请输入" />
                     </van-cell-group>
                 </van-popup>
             </div>
@@ -48,6 +48,8 @@
 import { ref } from 'vue';
 import { useRouter } from "vue-router";
 import { Dialog } from 'vant';
+import { useMineStore } from '@/stores/mineStores';
+const use = useMineStore();
 const router = useRouter();
 const onClickLeft = () => {
     router.go(-1)
@@ -55,7 +57,7 @@ const onClickLeft = () => {
 // popupShow 弹层打开与否
 const popupShow = ref(false);
 const popupValue = ref('');
-let text = ref('');
+let fieldText = ref('');
 // showPopup 打开遮罩层
 const showPopup = () => {
     popupShow.value = true;
@@ -63,12 +65,25 @@ const showPopup = () => {
 // hindPopup 关闭遮罩层
 const hindPopup = () => {
     popupShow.value = false;
-    popupValue.value = text.value;
+    // 调用修改站点接口
+    setSite({ site: fieldText.value, userId: 10000 })
+}
+
+// 修改站点接口
+interface setSiteType {
+    site: string,
+    userId: Number,
+}
+let setSite = async function (payload: setSiteType) {
+    let res: any = await use.setSite(payload)
+    if (res.code == 200) {
+        popupValue.value = fieldText.value;
+    }
 }
 // 弹层
 function cancel() {
     Dialog.confirm({
-        confirmButtonColor:'#3687f2',
+        confirmButtonColor: '#3687f2',
         message:
             '名称尚未保存,确认要退出吗?',
     })

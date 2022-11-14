@@ -1,36 +1,11 @@
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
-import { Toast } from 'vant';
 import { useRouter } from "vue-router";
-import { useSaveStore } from "@/stores/save";
-let SaveStore:any = useSaveStore();
-let active = ref();
+import useSaveCompasable from "./compasable/useSaveCompasable";
+let {active, count,loading,companyList,positionList,onRefresh,getSaveList } = useSaveCompasable();
 let router = useRouter();
 let back = ()=>{
     router.go(-1);
 }    
-let count = ref(1);
-const loading = ref(false);
-let companyList = reactive([]);
-let positionList=reactive([]);
-let onRefresh = async ()=>{
-    Toast('刷新成功');
-    loading.value = false;
-    getSaveList();
-}
-let getSaveList = async ()=>{
-    let res = await SaveStore.getSaveList({
-        userId:10000,
-    });
-    if(res.code == 200){
-        console.log(res);
-        companyList.push(...((res.data).company));
-        positionList.push(...((res.data).position));
-        
-        companyList=[...new Set(...[companyList])];
-        positionList=[...new Set(...[positionList])];
-    }
-}
 getSaveList();
 </script>
 <template>

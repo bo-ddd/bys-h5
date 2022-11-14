@@ -190,6 +190,18 @@ const router = createRouter({
       name: "personalInfo",
       component: () => import('@/views/uploadResume/PersonalInfo.vue')
     },
+    {
+      // 学校列表页面
+      path: "/schoolList",
+      name: "schoolList",
+      component: () => import('@/views/uploadResume/SchoolList.vue')
+    },
+    {
+      // 专业列表页面
+      path: "/majorlList",
+      name: "majorList",
+      component: () => import('@/views/uploadResume/MajorList.vue')
+    },
   ]
 })
 

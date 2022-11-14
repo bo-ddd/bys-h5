@@ -8,7 +8,7 @@
         <div class="nav">
             <van-tabbar v-model="active">
                 <van-tabbar-item v-for="item, index in tabbar" :key="index" :name="item.navigator" :to="item.navigator">
-                    {{ item.title }}
+                   <span class="fs-12"> {{ item.title }}</span>
                     <template #icon="props">
                         <img :src="props.active ? parseAssetFile(item.activeUrl) : parseAssetFile(item.iconUrl)" />
                     </template>
@@ -45,8 +45,8 @@ let tabbar = [
     {
         id: 2,
         title: "职位推荐",
-        iconUrl: "icon-position.png",
-        activeUrl: "icon-position_hover.png",
+        iconUrl: "icon-position-recommend.png",
+        activeUrl: "icon-position-recommend_hover.png",
         navigator: "/position"
     },
     {
@@ -66,6 +66,10 @@ let tabbar = [
 ];
 </script>
 <style scoped>
+:deep(.van-tabbar-item__icon img){
+    width: 2rem;
+    height: 2rem;
+}
 .active {
     color: red;
 }

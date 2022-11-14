@@ -76,6 +76,14 @@ console.log(items)
     flex: 2;
 }
 
+:deep(.van-sidebar-item--select:before){
+    right: 2rem;
+    left: none;
+    width: 1rem;
+    height: 1rem;
+    background-color: #3b80fb;
+    border-radius: 1rem;
+}
 .wrap {
     padding: 0 2rem;
 

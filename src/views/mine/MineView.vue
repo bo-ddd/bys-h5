@@ -28,7 +28,7 @@
     </van-popup>
     <!-- list -->
     <main>
-      <van-cell center :border="false" class="mt-20" v-for="item in list" :key="item.id" :value="item.value" is-link
+      <van-cell center :border="false" class="mt-20 fs-16" v-for="item in list" :key="item.id" :value="item.value" is-link
         :to="item.link">
         <!-- 正常跳转页面的模板 -->
         <template #title v-if="!item.ispopup">

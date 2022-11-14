@@ -32,7 +32,6 @@ let jump = (src:string)=>{
   router.push({path:src})
 }
 
-
 let cardList = [
   {
     id: 1,

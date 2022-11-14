@@ -22,7 +22,7 @@ import { defineProps, toRefs } from "vue";
 const props = defineProps<{
   title: string;
 }>();
-const { title } = props;
+const { title } = toRefs(props);
 </script>
 <style lang="scss" scoped>
 .infocard-box {

@@ -13,7 +13,7 @@
       </div>
     </header>
 
-    <van-popup v-model:show="showCount" closeable  round :style="{ height: '25%', width: '80%' }">
+    <van-popup v-model:show="showCount" closeable round :style="{ height: '25%', width: '80%' }">
       <div class="show-count_box">
         <div class="show-wrap">
           <div>
@@ -28,8 +28,8 @@
     </van-popup>
     <!-- list -->
     <main>
-      <van-cell center :border="false" class="mt-20 fs-16" v-for="item in list" :key="item.id" :value="item.value" is-link
-        :to="item.link">
+      <van-cell center :border="false" class="mt-20 fs-16" v-for="item in list" :key="item.id" :value="item.value"
+        is-link :to="item.link">
         <!-- 正常跳转页面的模板 -->
         <template #title v-if="!item.ispopup">
           <van-icon :name="parseAssetFile(item.icon)" />
@@ -73,7 +73,9 @@ import { parseAssetFile } from '@/assets/util';
 import { ref } from 'vue';
 import { Toast } from 'vant';
 import { useRouter } from 'vue-router';
-let router = useRouter();
+import { useMineStore } from '@/stores/mineStores';
+const use = useMineStore();
+const router = useRouter();
 const showCount = ref(false);
 let list = [
   {
@@ -156,20 +158,41 @@ const show = ref(false);
 const popupText = ref('');
 const showPopup = () => show.value = true;
 // popup 数据
-let popupData = ['积极求职中', '已有Offer，停止求职', '没有Offer，暂不求职']
+let popupData = ['全职', '实习', '全职和实习']
 // popup 左上角 x 号事件
 const cancel = () => {
   show.value = false;
 };
+// interface ModifyJobWantedStatusType {
+//   status: Number | null,
+//   userId: Number,
+// }
 // popup 右上角确定事件
-const onConfirm = (value: any) => {
-  Toast('求职状态修改成功');
-  popupText.value = value;
-  show.value = false;
+const onConfirm = async (value: any) => {
+  // 掉接口
+  let status: null | Number = null;
+  if (value == '全职') {
+    status = 0
+  } else if (value == '实习') {
+    status = 1
+  } else if (value == '全职和实习') {
+    status = 2
+  }
+  // 修改求职状态接口
+  let res: any = await use.ModifyJobWantedStatus({
+    status: status,
+    userId: 10000,
+  })
+  if (res.code == 200) {
+    Toast('求职状态修改成功');
+    popupText.value = value;
+    show.value = false;
+    console.log(res)
+  }
 };
 
-let jump = (src:string)=>{
-  router.push({path:src})
+let jump = (src: string) => {
+  router.push({ path: src })
 }
 </script>
   
@@ -185,15 +208,18 @@ let jump = (src:string)=>{
   justify-content: center;
   align-items: center;
   height: 100%;
-  .show-wrap{
+
+  .show-wrap {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 2rem;
-    h1{
+
+    h1 {
       font-weight: 500;
     }
-    .ft{
+
+    .ft {
       font-size: 1.8rem;
     }
   }

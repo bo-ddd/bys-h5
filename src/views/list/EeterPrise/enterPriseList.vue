@@ -3,8 +3,9 @@ import { useRouter } from "vue-router";
 import { ref, provide, reactive } from "vue";
 import Drop from "@/components/dropMenu/index";
 import { areaList } from '@vant/area-data';
-
+import { useCompanyListStore } from "@/stores/companyList";
 let router = useRouter();
+let Company = useCompanyListStore();
 
 let jump = (url: string) => {
   router.push({ path: url })
@@ -25,25 +26,11 @@ let area = reactive({
     label:'区域',
     value:null,
 })
-let guiMo = reactive<Array<{ id:number,
-    label:string,
-    value:number,}>>([
-    {
-        id:1,
-        label:'不限',
-        value:1,
-    },
-    {
-        id:1,
-        label:'1-19人',
-        value:2,
-    },
-    {
-        id:1,
-        label:'20-99人',
-        value:3,
-    },
-])
+let position = reactive({
+    label:'互联网/IT',
+    value:null,
+})
+let guiMo = reactive([]);
 let guimo = reactive({
     label:'规模',
     value:null,
@@ -62,51 +49,69 @@ let handleAreaChange = (e:any)=>{
     let targetArr = e;
     area.label = targetArr[e.length-1].name;
     area.value = targetArr[e.length-1].code;
-    
+}
+
+let handlePositionChange = (item)=>{
+    position.label = item.label;
+    position.value = item.value;
 }
 const activeId = ref(1);
 const activeIndex = ref(0);
-const items = [
-    {
-        text: '浙江',
-        children: [
-            { text: '杭州', id: 1 },
-            { text: '温州', id: 2 },
-        ],
-    },
-    {
-        text: '江苏',
-        children: [
-            { text: '南京', id: 5 },
-            { text: '无锡', id: 6 },
-        ],
-    },
-];
+const positoinList = reactive([]);
 
-let companyType = reactive<Array<{
-    id:number,
-    label:string,
-    value:number,
-}>>([
+let companyType = reactive([
     {
         id:1,
         label:'不限',
-        value:1,
-    },
-    {
-        id:1,
-        label:'不限',
-        value:1,
-    },
-    {
-        id:1,
-        label:'不限',
-        value:1,
+        value:null,
     },
 ]);
 
+// 组件中传入的方法
 provide('checkItem', checkItem);
 provide('checkItemFn', checkFn);
+
+// 这一部分是调用的接口
+
+// 这个是获取企业规模的接口
+let getGuiMoList = async ()=>{
+    let res = await Company.getCompanySize();
+    if(res.code !== 200) return;
+    console.log('--------这个是获取企业规模的接口---------');
+    guiMo.push(...(res.data));
+    console.log('--------这个是获取企业规模的接口结束---------');
+}
+getGuiMoList();
+
+// 这个是获取企业性质
+let getCompanyNature = async ()=>{
+    let res =await Company.getCompanyNature();
+    if(res.code !== 200) return;
+    console.log('--------这个是获取企业性质的接口-----------');
+    console.log(res);
+    companyType.push(...(res.data));
+    console.log('--------这个是获取企业性质的接口结束-----------');
+}
+getCompanyNature();
+
+let getCompanyIndustry = async ()=>{
+    let res = await Company.getCompanyIndustry();
+    if(res.code !== 200) return;
+    console.log('------------这个是获取职位的接口---------------');
+    console.log(res.data);
+    let targetArr = (res.data).slice();
+    targetArr.forEach(item => {
+        item.id = item.value;
+        item.text=item.label;
+        (item.children).forEach(child => {
+            child.id = child.value;
+            child.text = child.label;
+        });
+    });
+    positoinList.push(...(targetArr));
+    console.log('------------这个是获取职位的接口结束---------------');
+}
+getCompanyIndustry();
 </script>
 <template>
     <div class="enterprise">
@@ -121,19 +126,23 @@ provide('checkItemFn', checkFn);
             </div>
         </div>
         <Drop.Wrap class="option-wrap">
-            <Drop.Item title="互联网/IT">
-                <van-tree-select v-model:active-id="activeId" v-model:main-active-index="activeIndex" :items="items" />
+            <!-- 行业的列表 -->
+            <Drop.Item :title="position.label">
+                <van-tree-select v-model:active-id="activeId" v-model:main-active-index="activeIndex" :items="positoinList" @click-item="handlePositionChange"	 />
             </Drop.Item>
+            <!-- 地址的列表 -->
             <Drop.Item :title="area.label">
                 <van-area  :area-list="areaList" :columns-num="2"  @confirm="handleAreaChange"/>
             </Drop.Item>
+            <!-- 规模的列表 -->
             <Drop.Item :title="guimo.label">
-                <div v-for="item in guiMo" :key="item.id" class="option fs-14" @click="handleGuiMoChange(item)">
+                <div v-for="item in guiMo" :key="item.label" class="option fs-14" @click="handleGuiMoChange(item)">
                     {{item.label}}
                 </div>
             </Drop.Item>
+            <!-- 企业性质的列表 -->
             <Drop.Item :title="company.label">
-                <div v-for="item in companyType" :key="item.id" class="option fs-14" @click="handleCompanyChange(item)">
+                <div v-for="item in companyType" :key="item.label" class="option fs-14" @click="handleCompanyChange(item)">
                     {{item.label}}
                 </div>
             </Drop.Item>

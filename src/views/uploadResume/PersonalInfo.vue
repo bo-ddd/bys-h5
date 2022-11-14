@@ -88,24 +88,24 @@
             </div>
           </template>
         </van-cell>
-        <van-cell class="all-width pb-20" center @click="show6 = true">
+        <van-cell class="all-width pb-20" center @click="to('/schoolList')">
           <template #title>
             <div class="fs-16 color-gray">最高学历的学校</div>
           </template>
           <template #label>
             <div class="just-between">
-              <div class="fs-16 color-bl">{{education}}</div>
+              <div class="fs-16 color-bl">{{school}}</div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
             </div>
           </template>
         </van-cell>
-        <van-cell class="all-width pb-20" center @click="show7 = true">
+        <van-cell class="all-width pb-20" center @click="to('/majorList')">
           <template #title>
             <div class="fs-16 color-gray">最高学历的专业</div>
           </template>
           <template #label>
             <div class="just-between">
-              <div class="fs-16 color-bl">{{education}}</div>
+              <div class="fs-16 color-bl">{{major}}</div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
             </div>
           </template>
@@ -186,7 +186,13 @@
 <script lang="ts" setup>
 import { parseAssetFile } from "@/assets/util";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { Toast } from "vant";
+import { storeToRefs } from "pinia";
+import { useSaveStore } from "@/stores/schoolChoice";
+
+const { selectSchool,selectMajor } = storeToRefs(useSaveStore());
+const router = useRouter();
 const show = ref(false);
 const show2 = ref(false);
 const show3 = ref(false);
@@ -201,6 +207,10 @@ const ming = ref("汉族");
 const area = ref("山西省-临汾市-洪洞县");
 const education = ref("博士");
 const actions = [{ name: "男" }, { name: "女" }];
+const school:any=ref('');
+const major:any=ref('');
+school.value=selectSchool;
+major.value=selectMajor;
 const value = ref("");
 const onClickLeft1 = () => history.back();
 const selectSex = (item: { name: string }) => {
@@ -213,10 +223,10 @@ const setDay = (value: any) => {
 const cancelDay = () => {
   show2.value = false;
 };
-const selectEducation=(value:any)=>{
-    education.value=value;
-    show5.value=false
-}
+const selectEducation = (value: any) => {
+  education.value = value;
+  show5.value = false;
+};
 const currentDate = ref(new Date(2021, 0, 17));
 const formatter = (type: any, val: any) => {
   if (type === "year") {
@@ -278,15 +288,11 @@ const cityList = [
     ],
   },
 ];
-const yearList=[
-    2000,2001,2002
-]
-const selectYear=(value:any)=>{
-    show8.value=false
-}
-const selectArea=(value:any)=>{
-
-}
+const yearList = [2000, 2001, 2002];
+const selectYear = (value: any) => {
+  show8.value = false;
+};
+const selectArea = (value: any) => {};
 const customFieldName = {
   text: "cityName",
   children: "cities",
@@ -301,15 +307,19 @@ const onConfirm = (value: any, index: any) => {
   indexs.value = index;
 };
 const onCancel2 = () => Toast("取消");
-const onCancel=()=>{
-    show2.value=false
-    show3.value=false
-    show4.value=false
-    show5.value=false
-    show6.value=false
-    show7.value=false
-    show8.value=false
-}
+const onCancel = () => {
+  show2.value = false;
+  show3.value = false;
+  show4.value = false;
+  show5.value = false;
+  show6.value = false;
+  show7.value = false;
+  show8.value = false;
+};
+const to = (path: string) => {
+  router.push(path);
+};
+
 </script>
 <style lang="scss" scoped>
 .person-box {

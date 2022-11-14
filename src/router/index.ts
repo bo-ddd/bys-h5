@@ -198,7 +198,7 @@ const router = createRouter({
     },
     {
       // 专业列表页面
-      path: "/majorlList",
+      path: "/majorList",
       name: "majorList",
       component: () => import('@/views/uploadResume/MajorList.vue')
     },

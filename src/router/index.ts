@@ -143,12 +143,12 @@ const router = createRouter({
       path: "/companyList",
       name: "companyList",
       component: () => import('@/views/list/EeterPrise/enterPriseList.vue')
-    },{
+    }, {
       // 职位招聘列表
       path: "/positionLIst",
       name: "positionLIst",
       component: () => import('@/views/position/PositionLIst.vue')
-    },{
+    }, {
       // 简历详情页面
       path: "/resumeDetails",
       name: "resumeDetails",
@@ -188,7 +188,14 @@ const router = createRouter({
       // 个人基本信息页面
       path: "/personalInfo",
       name: "personalInfo",
-      component: () => import('@/views/uploadResume/PersonalInfo.vue')
+      component: () => import('@/views/uploadResume/PersonalInfo.vue'),
+      meta: {
+        isKeepAlive: false
+      },
+      beforeEnter: (to, from) => {
+        to.meta.isKeepAlive = to.name === 'personalInfo' && from.name == 'schoolList' ? true : false
+        return true
+      },
     },
     {
       // 学校列表页面

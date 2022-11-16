@@ -7,7 +7,7 @@ export const useCompanyListStore = defineStore('feedback', () => {
     * @param params 
     * @returns 
     */
-    function getSaveList(params: any) {
+    function getSaveList(params?: any) {
         return Api.getSaveList(params);
     }
     /**
@@ -15,7 +15,7 @@ export const useCompanyListStore = defineStore('feedback', () => {
      * @param params 
      * @returns 
      */
-    function getCompanySize(params: any) {
+    function getCompanySize(params?: any) {
         return Api.getCompanySize(params);
     }
     /**
@@ -23,7 +23,7 @@ export const useCompanyListStore = defineStore('feedback', () => {
      * @param params 
      * @returns 
      */
-    function getCompanyNature(params: any) {
+    function getCompanyNature(params?: any) {
         return Api.getCompanyNature(params);
     }
     /**
@@ -31,7 +31,7 @@ export const useCompanyListStore = defineStore('feedback', () => {
      * @param params 
      * @returns 
      */
-    function getCompanyIndustry(params: any) {
+    function getCompanyIndustry(params?: any) {
         return Api.getCompanyIndustry(params)
     }
     return { getSaveList,getCompanySize,getCompanyNature,getCompanyIndustry}

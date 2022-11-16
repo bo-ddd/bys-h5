@@ -193,7 +193,7 @@ const router = createRouter({
         isKeepAlive: false
       },
       beforeEnter: (to, from) => {
-        to.meta.isKeepAlive = to.name === 'personalInfo' && from.name == 'schoolList' ? true : false
+        to.meta.isKeepAlive = to.name === 'personalInfo' && from.name == 'resumeDetails' ? true : false
         return true
       },
     },

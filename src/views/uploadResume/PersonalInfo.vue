@@ -219,14 +219,19 @@
 import areaList from "@/assets/json/city.json";
 import { parseAssetFile } from "@/assets/util";
 import { onMounted, reactive, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter,useRoute } from "vue-router";
 import { Toast } from "vant";
 import { storeToRefs } from "pinia";
 import { useSchoolStore } from "@/stores/schoolChoice";
 import { useMajorStore } from "@/stores/majorChoice";
 import { useResumeStore } from "@/stores/resume";
 const use = useResumeStore();
+
+const route = useRoute()
 onMounted(() => {
+  console.log(route);
+  
+  if(route.meta.isKeepAlive) return
   gerSexList();
   gerNationList();
   getEducationrList();

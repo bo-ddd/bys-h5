@@ -45,13 +45,13 @@ let  handleGuiMoChange = (item:any)=>{
     guimo.value = item.value;
     console.log(guimo);
 }
-let handleAreaChange = (e:any)=>{
+let handleAreaChange = (e:any[])=>{
     let targetArr = e;
     area.label = targetArr[e.length-1].name;
     area.value = targetArr[e.length-1].code;
 }
 
-let handlePositionChange = (item)=>{
+let handlePositionChange = (item:any)=>{
     position.label = item.label;
     position.value = item.value;
 }

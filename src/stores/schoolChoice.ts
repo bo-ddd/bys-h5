@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-export const useSaveStore:any = defineStore('schoolChoice', () => {
-    const selectSchool = ref('');
+export const useSchoolStore:any = defineStore('schoolChoice', () => {
+    const selectSchool = ref<string>();
     const setSchool = (value:string) => {
         selectSchool.value = value
     }

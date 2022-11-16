@@ -11,9 +11,9 @@
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
-import { useSaveStore } from "@/stores/majorChoice";
+import { useMajorStore } from "@/stores/majorChoice";
 import { storeToRefs } from "pinia";
-const { setMajor } = useSaveStore();
+const { setMajor } = useMajorStore();
 const onClickLeft = () => history.back();
 const value = ref("");
 const list: any = ref([]);

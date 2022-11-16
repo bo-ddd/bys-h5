@@ -11,9 +11,9 @@
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
-import { useSaveStore } from "@/stores/schoolChoice";
+import { useSchoolStore } from "@/stores/schoolChoice";
 import { storeToRefs } from "pinia";
-const { setSchool } = useSaveStore();
+const { setSchool } = useSchoolStore();
 const onClickLeft = () => history.back();
 const value = ref("");
 const list: any = ref([]);

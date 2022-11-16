@@ -77,7 +77,6 @@
       <div class="h-70"></div>
       <!-- </div> -->
     </div>
-
     <div class="foot-box">
       <div class="foot-left">
         <img :src="parseAssetFile('icon-share.png')" alt />

@@ -152,7 +152,7 @@ const router = createRouter({
       // 简历详情页面
       path: "/resumeDetails",
       name: "resumeDetails",
-      component: () => import('@/views/uploadResume/resumeDetails.vue')
+      component: () => import('@/views/uploadResume/resumeDetails.vue'),
     },
     {
       // 职业详情
@@ -190,18 +190,19 @@ const router = createRouter({
       name: "personalInfo",
       component: () => import('@/views/uploadResume/PersonalInfo.vue'),
       meta: {
-        isKeepAlive: false
+        isKeepAlive: true
       },
       beforeEnter: (to, from) => {
-        to.meta.isKeepAlive = to.name === 'personalInfo' && from.name == 'resumeDetails' ? true : false
-        return true
+        if (from.name === 'resumeDetails') {
+          to.meta.isKeepAlive = false;
+        }
       },
     },
     {
       // 学校列表页面
       path: "/schoolList",
       name: "schoolList",
-      component: () => import('@/views/uploadResume/SchoolList.vue')
+      component: () => import('@/views/uploadResume/SchoolList.vue'),
     },
     {
       // 专业列表页面

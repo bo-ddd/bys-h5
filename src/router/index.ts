@@ -202,6 +202,18 @@ const router = createRouter({
       name: "majorList",
       component: () => import('@/views/uploadResume/MajorList.vue')
     },
+    {
+      // 行业
+      path: "/industry",
+      name: "industry",
+      component: () => import('@/views/position/IndustryView.vue')
+    },
+    {
+      // 职位
+      path: "/job",
+      name: "job",
+      component: () => import('@/views/position/JobView.vue')
+    },
   ]
 })
 

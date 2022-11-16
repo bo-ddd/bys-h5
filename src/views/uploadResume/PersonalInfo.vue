@@ -1,7 +1,7 @@
 <template>
   <div class="person-box">
     <van-nav-bar title="基本信息" left-text left-arrow @click-left="onClickLeft1" />
-    <div class="overy-scoll">
+    <div ref="scrollRef" class="overy-scoll">
       <van-cell-group>
         <van-cell center title="单元格" label="描述信息">
           <template #title>
@@ -218,8 +218,8 @@
 <script lang="ts" setup>
 import areaList from "@/assets/json/city.json";
 import { parseAssetFile } from "@/assets/util";
-import { onMounted, reactive, ref } from "vue";
-import { useRouter,useRoute } from "vue-router";
+import { onMounted, reactive, ref,onDeactivated,onActivated,nextTick } from "vue";
+import { useRouter,useRoute,onBeforeRouteLeave } from "vue-router";
 import { Toast } from "vant";
 import { storeToRefs } from "pinia";
 import { useSchoolStore } from "@/stores/schoolChoice";
@@ -227,7 +227,26 @@ import { useMajorStore } from "@/stores/majorChoice";
 import { useResumeStore } from "@/stores/resume";
 const use = useResumeStore();
 
-const route = useRoute()
+const route = useRoute();
+const scrollRef:any = ref(null);
+const scrollTop = ref(0);
+
+onActivated(()=>{
+  nextTick(()=>{
+    console.log('上次的值'+scrollTop.value);
+    
+    scrollRef.value.scrollTop = scrollTop.value;
+    console.log('进入位置'+scrollRef.value.scrollTop);
+    
+  })
+})
+onBeforeRouteLeave((to, from, next)=>{
+  scrollTop.value = scrollRef.value.scrollTop;
+  console.log('离开时位置：'+scrollRef.value.scrollTop);
+  if(true){
+    next()
+  }
+})
 onMounted(() => {
   console.log(route);
   
@@ -236,6 +255,9 @@ onMounted(() => {
   gerNationList();
   getEducationrList();
 });
+onActivated(()=>{
+  // console.log('回啦');
+})
 // 性别
 const sexList = reactive([]);
 const sex = ref("");
@@ -435,8 +457,12 @@ const to = (path: string) => {
   background-color: #f7f8fa;
   display: grid;
   grid-template-rows: 4.6rem auto;
+  .overy-scoll{
+    height: 100%;
+    overflow-y: scroll;
+  }
   .foot-box {
-      width: 100%;
+    width: 100%;
     position: absolute;
     bottom: 0;
     .btn-box{

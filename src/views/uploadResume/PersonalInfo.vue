@@ -1,6 +1,4 @@
 <template>
-<keep-alive>
-  
   <div class="person-box">
     <van-nav-bar title="基本信息" left-text left-arrow @click-left="onClickLeft1" />
     <div ref="scrollRef" class="overy-scoll">
@@ -214,7 +212,6 @@
       <van-picker :columns="yearList" @confirm="selectYear" @cancel="onCancel" />
     </van-popup>
   </div>
-</keep-alive>
 </template>
 <script lang="ts" setup>
 import areaList from "@/assets/json/city.json";

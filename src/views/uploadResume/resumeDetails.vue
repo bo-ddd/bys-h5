@@ -1,7 +1,7 @@
 <template>
   <div class="resume-page">
     <van-nav-bar title="简历详情" left-text left-arrow @click-left="onClickLeft1" />
-    <div class="overy-scoll">
+    <div class="overy-scoll" ref="scrollRef">
       <van-cell to="/personalInfo" is-link class="cell-bottom pad-25-15">
         <template #title>
           <div class="gap-10 align-start">
@@ -57,6 +57,7 @@
 <script lang="ts" setup>
 import { useRouter, onBeforeRouteLeave, onBeforeRouteUpdate } from "vue-router";
 import { parseAssetFile } from "@/assets/util";
+import {onActivated,ref} from 'vue'
 const onClickLeft1 = () => history.back();
 const router = useRouter();
 import InfoCard from "@/components/infoCard/InfoCard.vue";
@@ -66,6 +67,34 @@ const to = function (path: any) {
   console.log(path);
 };
 const onClickLeft = () => history.back();
+const scrollRef: any = ref(null); //父级盒子
+const scrollTop = ref(0); //滚轮值
+//获取存的scroll值
+const getScrollValue = function () {
+  scrollRef.value.scrollTop = scrollTop.value;
+};
+//存scroll值
+const setScrollValue = function () {
+  scrollTop.value = scrollRef.value.scrollTop;
+};
+//清空keep状态
+const clearKeep = function () {
+  scrollTop.value = 0;
+};
+onActivated(()=>{
+  getScrollValue();
+  console.log("回来的位置" + scrollRef.value.scrollTop);
+});
+onBeforeRouteLeave((to, from, next) => {
+  if (to.name == "createResume"||to.name=="mine") {
+    clearKeep();
+    console.log("清空了");
+  } else {
+    setScrollValue();
+    console.log("保留");
+  }
+  next();
+});
 </script>
 <style lang="scss" scoped>
 .resume-page {

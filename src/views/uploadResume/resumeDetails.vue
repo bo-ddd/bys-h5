@@ -61,22 +61,6 @@ const onClickLeft1 = () => history.back();
 const router = useRouter();
 import InfoCard from "@/components/infoCard/InfoCard.vue";
 import EditCard from "@/components/editCard/editCard.vue";
-onBeforeRouteLeave((to, from, next) => {
-  //   console.log(888);
-  //   console.log(to);
-
-  if (to.name === "personalInfo") {
-    //     console.log(888);
-
-    to.meta.isKeepAlive = true;
-        // console.log(to.meta.isKeepAlive);
-  }
-
-  next();
-});
-onBeforeRouteUpdate((to, from, next) => {
-  next();
-});
 const to = function (path: any) {
   // router.push(path);
   console.log(path);
@@ -139,7 +123,7 @@ const onClickLeft = () => history.back();
   color: #000;
 }
 .mt-5 {
-  // margin-top: 0.5rem;
+  margin-top: 0.5rem;
 }
 .align-start {
   display: flex;

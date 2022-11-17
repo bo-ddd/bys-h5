@@ -110,7 +110,7 @@
           <template #label>
             <div class="just-between">
               <div class="fs-16 color-bl">
-                <span v-if="school">{{school}}</span>
+                <span v-if="school">{{school.schoolName}}</span>
                 <span class="color-gr" v-else>请填写最高学历的学校</span>
               </div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
@@ -124,7 +124,7 @@
           <template #label>
             <div class="just-between">
               <div class="fs-16 color-bl">
-                <span v-if="major">{{major}}</span>
+                <span v-if="major">{{major.professionalName}}</span>
                 <span class="color-gr" v-else>请填写最高学历的专业</span>
               </div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
@@ -145,16 +145,14 @@
             </div>
           </template>
         </van-cell>
-        <van-cell class="all-width pb-20" center >
-        </van-cell>
+        <van-cell class="all-width pb-20" center></van-cell>
       </van-cell-group>
-      <div class="h-30">
-      </div>
+      <div class="h-30"></div>
     </div>
 
     <div class="foot-box">
       <div class="btn-box">
-      <van-button type="primary" block>保存</van-button>
+        <van-button type="primary" block>保存</van-button>
       </div>
     </div>
     <!-- 性别弹框 -->
@@ -218,64 +216,66 @@
 <script lang="ts" setup>
 import areaList from "@/assets/json/city.json";
 import { parseAssetFile } from "@/assets/util";
-import { onMounted, reactive, ref,onDeactivated,onActivated,nextTick } from "vue";
-import { useRouter,useRoute,onBeforeRouteLeave,onBeforeRouteUpdate } from "vue-router";
+import {
+  onMounted,
+  reactive,
+  ref,
+  onDeactivated,
+  onActivated,
+  nextTick,
+} from "vue";
+import {
+  useRouter,
+  useRoute,
+  onBeforeRouteLeave,
+  onBeforeRouteUpdate,
+} from "vue-router";
 import { Toast } from "vant";
 import { storeToRefs } from "pinia";
 import { useSchoolStore } from "@/stores/schoolChoice";
 import { useMajorStore } from "@/stores/majorChoice";
 import { useResumeStore } from "@/stores/resume";
+import { getScrollTop } from "vant/lib/utils";
+const { selectSchool } = storeToRefs(useSchoolStore());
+const { selectMajor } = storeToRefs(useMajorStore());
 const use = useResumeStore();
 
 const route = useRoute();
-const scrollRef:any = ref(null);
-const scrollTop = ref(0);
-
-onActivated(()=>{
-  console.log('回啦');
-  
-  // nextTick(()=>{
-  //   console.log('上次的值'+scrollTop.value);
-    
-  //   scrollRef.value.scrollTop = scrollTop.value;
-  //   console.log('进入位置'+scrollRef.value.scrollTop);
-    
-  // })
-})
-onBeforeRouteUpdate((to,from,next)=>{
-//   if(from.name!='resumeDetails'){
-//     to.meta.isKeepAlive=true
-//   }else{
-//     to.meta.isKeepAlive=false
-//   }
-
-  next()
-})
-onBeforeRouteLeave((to, from, next)=>{
-  // scrollTop.value = scrollRef.value.scrollTop;
-  // console.log('离开时位置：'+scrollRef.value.scrollTop);
-  // console.log(from);
-  // if(to.name=="resumeDetails"){
-  //   to.meta.isKeepAlive=true;
-  //   console.log(to.meta.isKeepAlive);
-  // }
-  // from.meta.isKeepAlive=false;
-
-  // if(true){
-    next()
-  // }
-})
+const scrollRef: any = ref(null); //父级盒子
+const scrollTop = ref(0); //滚轮值
+//获取存的scroll值
+const getScrollValue = function () {
+  scrollRef.value.scrollTop = scrollTop.value;
+};
+//存scroll值
+const setScrollValue = function () {
+  scrollTop.value = scrollRef.value.scrollTop;
+};
+//清空keep状态
+const clearKeep = function () {
+  scrollTop.value = 0;
+};
+onActivated(() => {
+  getScrollValue();
+  getSchoolInfo();
+  console.log("回来的位置" + scrollRef.value.scrollTop);
+});
+onBeforeRouteLeave((to, from, next) => {
+  if (to.name == "resumeDetails") {
+    clearKeep();
+    console.log("清空了");
+  } else {
+    setScrollValue();
+    console.log("保留");
+  }
+  next();
+});
+//首次进入页面获取下拉列表
 onMounted(() => {
-  console.log(route);
-  
-  if(route.meta.isKeepAlive) return
   gerSexList();
   gerNationList();
   getEducationrList();
 });
-onActivated(()=>{
-  // console.log('回啦');
-})
 // 性别
 const sexList = reactive([]);
 const sex = ref("");
@@ -321,6 +321,7 @@ const formatter = (type: any, val: any) => {
   return val;
 };
 //民族
+const indexs = ref(0);
 const nation = ref("");
 const nationValue = ref("");
 const nationList = ref([]);
@@ -375,7 +376,6 @@ const selectEducation = (item: any) => {
 };
 //年份
 const year = ref("");
-const major = ref("");
 const yearList = [
   1990, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
   2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014,
@@ -386,8 +386,18 @@ const selectYear = (value: any) => {
   show8.value = false;
   year.value = value;
 };
-const { selectSchool } = storeToRefs(useSchoolStore());
-const { selectMajor } = storeToRefs(useMajorStore());
+//学校和专业
+const school: any = ref("");
+const major = ref("");
+const getSchoolInfo=()=>{
+  //获取学校
+  school.value = selectSchool.value;
+  //获取专业
+  major.value = selectMajor.value;
+}
+
+
+
 const router = useRouter();
 const show = ref(false);
 const show2 = ref(false);
@@ -397,64 +407,8 @@ const show5 = ref(false);
 const show6 = ref(false);
 const show7 = ref(false);
 const show8 = ref(false);
-// const education = ref("博士");
-// const actions = [{ name: "男" }, { name: "女" }];
-const school: any = ref("");
-
-school.value = selectSchool.value;
-// major.value = selectMajor.value;
 const value = ref("");
 const onClickLeft1 = () => history.back();
-
-const columns = [
-  "杭州",
-  "宁波",
-  "温州",
-  "绍兴",
-  "湖州",
-  "嘉兴",
-  "金华",
-  "汉族",
-];
-const cityList = [
-  {
-    cityName: "浙江",
-    cities: [
-      {
-        cityName: "杭州",
-        cities: [{ cityName: "西湖区" }, { cityName: "余杭区" }],
-      },
-      {
-        cityName: "温州",
-        cities: [{ cityName: "鹿城区" }, { cityName: "瓯海区" }],
-      },
-    ],
-  },
-  {
-    cityName: "福建",
-    cities: [
-      {
-        cityName: "福州",
-        cities: [{ cityName: "鼓楼区" }, { cityName: "台江区" }],
-      },
-      {
-        cityName: "厦门",
-        cities: [{ cityName: "思明区" }, { cityName: "海沧区" }],
-      },
-    ],
-  },
-];
-
-const indexs = ref(0);
-const indexs2 = ref(0);
-const indexs3 = ref(0);
-const onConfirm = (value: any, index: any) => {
-  Toast(`当前值: ${value}, 当前索引: ${index}`);
-  nation.value = value;
-  show3.value = false;
-  indexs.value = index;
-};
-const onCancel2 = () => Toast("取消");
 const onCancel = () => {
   show2.value = false;
   show3.value = false;
@@ -475,7 +429,7 @@ const to = (path: string) => {
   background-color: #f7f8fa;
   display: grid;
   grid-template-rows: 4.6rem auto;
-  .overy-scoll{
+  .overy-scoll {
     height: 100%;
     overflow-y: scroll;
   }
@@ -483,11 +437,11 @@ const to = (path: string) => {
     width: 100%;
     position: absolute;
     bottom: 0;
-    .btn-box{
+    .btn-box {
       width: 100%;
       box-sizing: border-box;
       background-color: white;
-      padding:0 1rem 1rem 1rem;
+      padding: 0 1rem 1rem 1rem;
     }
   }
   :deep(.van-field__label) {
@@ -540,7 +494,7 @@ const to = (path: string) => {
 .pb-25 {
   padding-bottom: 2.5rem;
 }
-.h-30{  
+.h-30 {
   width: 100%;
   height: 3.5rem;
 }

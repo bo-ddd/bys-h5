@@ -343,7 +343,7 @@ const setNation = (item: any) => {
   show3.value = false;
 };
 //生源地
-const area = ref("山西省-临汾市-洪洞县");
+const area = ref("");
 const areaRole = {
   text: "label",
   // value: "label",

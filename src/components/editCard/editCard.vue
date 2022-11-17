@@ -6,7 +6,7 @@
       </template>
 
       <template #right-icon>
-        <img class="block wh-20" :src="parseAssetFile('icon-edit.png')" alt />
+        <img class="block wh-20" :src="parseAssetFile('icon-edit.png')" @click="to(path)"/>
       </template>
     </van-cell>
     <div class="pad-15">
@@ -17,12 +17,22 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { parseAssetFile } from "@/assets/util";
 import { defineProps, toRefs } from "vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
 const props = defineProps<{
   title: string;
+  toPath?:any
 }>();
-const { title } = toRefs(props);
+const { title,toPath } = toRefs(props);
+const to = function (toPath: any) {
+  router.push({
+    path: toPath.path,
+    query: {
+      editName:toPath.name
+    }
+    });
+};
 </script>
 <style lang="scss" scoped>
 .infocard-box {

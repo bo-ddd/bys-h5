@@ -6,7 +6,7 @@
       </template>
 
       <template #right-icon>
-        <img class="block wh-20" :src="parseAssetFile('icon-edit.png')" @click="to(path)"/>
+        <img class="block wh-20" :src="parseAssetFile('icon-edit.png')" @click="to(toPath)"/>
       </template>
     </van-cell>
     <div class="pad-15">
@@ -17,6 +17,7 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { parseAssetFile } from "@/assets/util";
 import { defineProps, toRefs } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();

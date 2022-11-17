@@ -12,7 +12,7 @@
                 </template>
             </van-field>
             <span class="c-747474">使用手机验证码即可登录</span>
-            <van-button type="primary" round >主要按钮</van-button>
+            <van-button type="primary" round >登录</van-button>
         </div>
     </div>
 </template>

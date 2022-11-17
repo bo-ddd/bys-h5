@@ -6,7 +6,16 @@ import { areaList } from '@vant/area-data';
 import { useCompanyListStore } from "@/stores/companyList";
 let router = useRouter();
 let Company = useCompanyListStore();
-
+interface Form{
+    label:string;
+    value:number | string | null;
+}
+interface TypeCompany{
+    label:string,
+    value:number,
+    createTime:null | Date,
+    modifyTime:null | Date,
+}
 let jump = (url: string) => {
   router.push({ path: url })
 }
@@ -18,40 +27,40 @@ let back = () => {
 let checkFn = (name: string) => {
     checkItem.value = name;
 }
-let company = reactive({
+let company:Form = reactive({
     label:'企业性质',
     value:null,
 });
-let area = reactive({
+let area:Form = reactive({
     label:'区域',
     value:null,
 })
-let position = reactive({
+let position:Form = reactive({
     label:'互联网/IT',
     value:null,
 })
 let guiMo = reactive([]);
-let guimo = reactive({
+let guimo:Form = reactive({
     label:'规模',
     value:null,
 })
-let handleCompanyChange = (item:any)=>{
+const handleCompanyChange = (item:any)=>{
     company.label = item.label;
     company.value = item.value;
     console.log(company);
 }
-let  handleGuiMoChange = (item:any)=>{
+const  handleGuiMoChange = (item:any)=>{
     guimo.label = item.label;
     guimo.value = item.value;
     console.log(guimo);
 }
-let handleAreaChange = (e:any)=>{
+const handleAreaChange = (e:any[])=>{
     let targetArr = e;
     area.label = targetArr[e.length-1].name;
     area.value = targetArr[e.length-1].code;
 }
 
-let handlePositionChange = (item)=>{
+const handlePositionChange = (item:any)=>{
     position.label = item.label;
     position.value = item.value;
 }
@@ -59,13 +68,7 @@ const activeId = ref(1);
 const activeIndex = ref(0);
 const positoinList = reactive([]);
 
-let companyType = reactive([
-    {
-        id:1,
-        label:'不限',
-        value:null,
-    },
-]);
+let companyType:Array<TypeCompany> = reactive([]);
 
 // 组件中传入的方法
 provide('checkItem', checkItem);
@@ -74,18 +77,19 @@ provide('checkItemFn', checkFn);
 // 这一部分是调用的接口
 
 // 这个是获取企业规模的接口
-let getGuiMoList = async ()=>{
-    let res = await Company.getCompanySize();
+const getGuiMoList = async ()=>{
+    const res = await Company.getCompanySize();
     if(res.code !== 200) return;
     console.log('--------这个是获取企业规模的接口---------');
+    console.log(res);
     guiMo.push(...(res.data));
     console.log('--------这个是获取企业规模的接口结束---------');
 }
 getGuiMoList();
 
 // 这个是获取企业性质
-let getCompanyNature = async ()=>{
-    let res =await Company.getCompanyNature();
+const getCompanyNature = async ()=>{
+    const res =await Company.getCompanyNature();
     if(res.code !== 200) return;
     console.log('--------这个是获取企业性质的接口-----------');
     console.log(res);
@@ -94,12 +98,12 @@ let getCompanyNature = async ()=>{
 }
 getCompanyNature();
 
-let getCompanyIndustry = async ()=>{
-    let res = await Company.getCompanyIndustry();
+const getCompanyIndustry = async ()=>{
+    const res = await Company.getCompanyIndustry();
     if(res.code !== 200) return;
     console.log('------------这个是获取职位的接口---------------');
     console.log(res.data);
-    let targetArr = (res.data).slice();
+    let targetArr:any[] = (res.data).slice();
     targetArr.forEach(item => {
         item.id = item.value;
         item.text=item.label;

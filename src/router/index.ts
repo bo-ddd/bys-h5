@@ -173,22 +173,10 @@ const router = createRouter({
       },
     },
     {
-      // 实习经历页面
-      path: "/internshipInfo",
-      name: "internshipInfo",
-      component: () => import('@/views/uploadResume/InternshipInfo.vue')
-    },
-    {
-      // 教育经历页面
+      // 编辑描述 页面
       path: "/editDescribe",
       name: "editDescribe",
       component: () => import('@/views/uploadResume/EditDescribe.vue')
-    },
-    {
-      // 项目经历页面
-      path: "/projectInfo",
-      name: "projectInfo",
-      component: () => import('@/views/uploadResume/ProjectInfo.vue')
     },
     {
       // 个人基本信息页面

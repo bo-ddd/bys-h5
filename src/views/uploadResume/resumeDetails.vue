@@ -44,13 +44,13 @@
         </template>
       </van-cell>
 
-      <InfoCard class="mt-10" title="教育经历" :toPath="{path:'editInfo',name:'education'}"></InfoCard>
+      <!-- <InfoCard class="mt-10" title="教育经历" :toPath="{path:'editInfo',name:'education'}"></InfoCard>
       <InfoCard class="mt-10" title="实习经历" :toPath="{path:'editInfo',name:'internship'}"></InfoCard>
       <InfoCard class="mt-10" title="项目经历" :toPath="{path:'editInfo',name:'project'}"></InfoCard>
-      <EditCard class="mt-10" title="校园实践"></EditCard>
-      <EditCard class="mt-10" title="专业技能">这是一段关于校园描述的文字内容，超出换行，测试文字傂的放怀废话我发阿飞飞恩爱为峨无法为 饿啊额阿瓦方法</EditCard>
-      <EditCard class="mt-10" title="获奖情况">这是一段关于校园描述的文字内容，超出换行，测试文字傂的放怀废话我发阿飞飞恩爱为峨无法为 饿啊额阿瓦方法</EditCard>
-      <EditCard class="mt-10" title="兴趣爱好">这是一段关于校园描述的文字内容，超出换行，测试文字傂的放怀废话我发阿飞飞恩爱为峨无法为 饿啊额阿瓦方法</EditCard>
+      <EditCard class="mt-10" title="校园实践" :toPath="{path:'editInfo',name:'campus'}"></EditCard> -->
+      <!-- <EditCard class="mt-10" title="专业技能" :toPath="{path:'editInfo',name:'skill'}">这是一段关于校园描述的文字内容，超出换行，测试文字傂的放怀废话我发阿飞飞恩爱为峨无法为 饿啊额阿瓦方法</EditCard>
+      <EditCard class="mt-10" title="获奖情况" :toPath="{path:'editInfo',name:'prize'}">这是一段关于校园描述的文字内容，超出换行，测试文字傂的放怀废话我发阿飞飞恩爱为峨无法为 饿啊额阿瓦方法</EditCard>
+      <EditCard class="mt-10" title="兴趣爱好" :toPath="{path:'editInfo',name:'interest'}">这是一段关于校园描述的文字内容，超出换行，测试文字傂的放怀废话我发阿飞飞恩爱为峨无法为 饿啊额阿瓦方法</EditCard> -->
     </div>
   </div>
 </template>

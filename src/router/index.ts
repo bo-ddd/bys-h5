@@ -192,11 +192,6 @@ const router = createRouter({
       meta: {
         isKeepAlive: true
       },
-      beforeEnter: (to, from) => {
-        if (from.name === 'resumeDetails') {
-          to.meta.isKeepAlive = false;
-        }
-      },
     },
     {
       // 学校列表页面

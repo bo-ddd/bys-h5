@@ -55,16 +55,31 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { useRouter } from "vue-router";
+import { useRouter, onBeforeRouteLeave, onBeforeRouteUpdate } from "vue-router";
 import { parseAssetFile } from "@/assets/util";
 const onClickLeft1 = () => history.back();
 const router = useRouter();
-import InfoCard from '@/components/infoCard/InfoCard.vue'
-import EditCard from '@/components/editCard/editCard.vue'
+import InfoCard from "@/components/infoCard/InfoCard.vue";
+import EditCard from "@/components/editCard/editCard.vue";
+onBeforeRouteLeave((to, from, next) => {
+  //   console.log(888);
+  //   console.log(to);
+
+  if (to.name === "personalInfo") {
+    //     console.log(888);
+
+    to.meta.isKeepAlive = true;
+        // console.log(to.meta.isKeepAlive);
+  }
+
+  next();
+});
+onBeforeRouteUpdate((to, from, next) => {
+  next();
+});
 const to = function (path: any) {
   // router.push(path);
   console.log(path);
-  
 };
 const onClickLeft = () => history.back();
 </script>
@@ -78,7 +93,7 @@ const onClickLeft = () => history.back();
     right: 0;
     border-bottom: 0.4rem solid #ececec;
   }
-  .overy-scoll{
+  .overy-scoll {
     overflow-y: scroll;
   }
   .intention {
@@ -152,19 +167,19 @@ const onClickLeft = () => history.back();
 .line-1 {
   line-height: 1;
 }
-.mr-5{
-    margin-right: 0.5rem;
+.mr-5 {
+  margin-right: 0.5rem;
 }
-.plr-15{
+.plr-15 {
   padding: 0 1.5rem;
 }
-.pb-20{
+.pb-20 {
   padding-bottom: 2rem;
 }
-.pb-15{
+.pb-15 {
   padding-bottom: 1.5rem;
 }
-.mt-15{
+.mt-15 {
   margin-top: 1.5rem;
 }
 </style>

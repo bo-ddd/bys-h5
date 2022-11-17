@@ -4,6 +4,7 @@
     <keep-alive>
       <component :is="Component" v-if="route.meta.isKeepAlive" />
     </keep-alive>
+
     <component :is="Component" v-if="!route.meta.isKeepAlive" />
   </RouterView>
 </template>

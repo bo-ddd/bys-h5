@@ -219,7 +219,7 @@
 import areaList from "@/assets/json/city.json";
 import { parseAssetFile } from "@/assets/util";
 import { onMounted, reactive, ref,onDeactivated,onActivated,nextTick } from "vue";
-import { useRouter,useRoute,onBeforeRouteLeave } from "vue-router";
+import { useRouter,useRoute,onBeforeRouteLeave,onBeforeRouteUpdate } from "vue-router";
 import { Toast } from "vant";
 import { storeToRefs } from "pinia";
 import { useSchoolStore } from "@/stores/schoolChoice";
@@ -232,20 +232,38 @@ const scrollRef:any = ref(null);
 const scrollTop = ref(0);
 
 onActivated(()=>{
-  nextTick(()=>{
-    console.log('上次的值'+scrollTop.value);
+  console.log('回啦');
+  
+  // nextTick(()=>{
+  //   console.log('上次的值'+scrollTop.value);
     
-    scrollRef.value.scrollTop = scrollTop.value;
-    console.log('进入位置'+scrollRef.value.scrollTop);
+  //   scrollRef.value.scrollTop = scrollTop.value;
+  //   console.log('进入位置'+scrollRef.value.scrollTop);
     
-  })
+  // })
+})
+onBeforeRouteUpdate((to,from,next)=>{
+//   if(from.name!='resumeDetails'){
+//     to.meta.isKeepAlive=true
+//   }else{
+//     to.meta.isKeepAlive=false
+//   }
+
+  next()
 })
 onBeforeRouteLeave((to, from, next)=>{
-  scrollTop.value = scrollRef.value.scrollTop;
-  console.log('离开时位置：'+scrollRef.value.scrollTop);
-  if(true){
+  // scrollTop.value = scrollRef.value.scrollTop;
+  // console.log('离开时位置：'+scrollRef.value.scrollTop);
+  // console.log(from);
+  // if(to.name=="resumeDetails"){
+  //   to.meta.isKeepAlive=true;
+  //   console.log(to.meta.isKeepAlive);
+  // }
+  // from.meta.isKeepAlive=false;
+
+  // if(true){
     next()
-  }
+  // }
 })
 onMounted(() => {
   console.log(route);

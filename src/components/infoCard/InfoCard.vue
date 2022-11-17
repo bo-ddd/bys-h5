@@ -7,7 +7,7 @@
 
       <template #right-icon>
         <!-- <van-icon name="search"/> -->
-        <van-icon name="add-o" class="search-icon" size="2rem" />
+        <van-icon @click="to(toPath)" name="add-o" class="search-icon" size="2rem" />
       </template>
     </van-cell>
     <div class="plr-15">
@@ -34,11 +34,21 @@
 </template>
 <script lang="ts" setup>
 import { defineProps, toRefs } from "vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
 const props = defineProps<{
   title: string;
+  toPath?:any
 }>();
-const { title } = toRefs(props);
-
+const { title,toPath } = toRefs(props);
+const to = function (toPath: any) {
+  router.push({
+    path: toPath.path,
+    query: {
+      editName:toPath.name
+    }
+    });
+};
 </script>
 <style lang="scss" scoped>
 .infocard-box {

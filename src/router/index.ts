@@ -153,6 +153,9 @@ const router = createRouter({
       path: "/resumeDetails",
       name: "resumeDetails",
       component: () => import('@/views/uploadResume/resumeDetails.vue'),
+      meta: {
+        isKeepAlive: true
+      },
     },
     {
       // 职业详情
@@ -164,7 +167,10 @@ const router = createRouter({
       // 修改个人情况页面
       path: "/editInfo",
       name: "editInfo",
-      component: () => import('@/views/uploadResume/EditInfo.vue')
+      component: () => import('@/views/uploadResume/EditInfo.vue'),
+      meta: {
+        isKeepAlive: true
+      },
     },
     {
       // 实习经历页面

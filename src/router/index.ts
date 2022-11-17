@@ -168,9 +168,6 @@ const router = createRouter({
       path: "/editInfo",
       name: "editInfo",
       component: () => import('@/views/uploadResume/EditInfo.vue'),
-      meta: {
-        isKeepAlive: true
-      },
     },
     {
       // 实习经历页面

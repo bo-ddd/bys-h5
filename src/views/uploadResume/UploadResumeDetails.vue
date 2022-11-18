@@ -1,6 +1,6 @@
 <template>
   <div class="upload-page">
-    <van-nav-bar title="上传简历" left-text left-arrow @click-left="onClickLeft2" />
+    <van-nav-bar title="上传简历" left-arrow @click-left="onClickLeft2" />
     <div class="content">
       <div class="content-head">支持pdf、doc、docx格式附件，大小不超过20M</div>
       <div class="content-body">

@@ -1,6 +1,6 @@
 <template>
   <div class="list-box">
-    <van-nav-bar title="选择专业" left-text left-arrow @click-left="onClickLeft" />
+    <van-nav-bar title="选择专业" left-arrow @click-left="onClickLeft" />
     <div>
       <van-search v-model="value" placeholder="搜索专业" />
       <van-list v-model:loading="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
@@ -19,7 +19,7 @@ const onClickLeft = () => history.back();
 const value = ref("");
 const loading = ref(false);
 const finished = ref(false);
-const majorList=ref([])
+const majorList:any=ref([])
 const getMajorList = function () {
   return use.getProfessionalDrop({});
 };

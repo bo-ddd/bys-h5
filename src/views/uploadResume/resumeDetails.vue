@@ -1,11 +1,11 @@
 <template>
   <div class="resume-page">
-    <van-nav-bar title="简历详情" left-text left-arrow @click-left="onClickLeft1" />
+    <van-nav-bar title="简历详情" left-arrow @click-left="onClickLeft1" />
     <div class="overy-scoll" ref="scrollRef">
       <van-cell to="/personalInfo" is-link class="cell-bottom pad-25-15">
         <template #title>
           <div class="gap-10 align-start">
-            <img class="img-15" :src="parseAssetFile('icon-avater1.png')" alt />
+            <img class="img-15" :src="parseAssetFile('icon-avater1.png')"   />
             <div class="color-gray">
               <div class="fs-22 color-black mt-5">李萌</div>
               <div class="fs-16 mt-5">北京航空航天大学</div>
@@ -15,7 +15,7 @@
         </template>
         <!-- 使用 right-icon 插槽来自定义右侧图标 -->
         <template #right-icon>
-          <img class="img-10 mt-5" :src="parseAssetFile('icon-pen.png')" alt />
+          <img class="img-10 mt-5" :src="parseAssetFile('icon-pen.png')"   />
         </template>
       </van-cell>
       <van-cell is-link class="pad-25-15">
@@ -23,35 +23,34 @@
           <div class="intention">
             <div class="fs-20 color-black">求职意向</div>
             <div class="align-center mt-10">
-              <img class="mr-10" :src="parseAssetFile('icon-job.png')" alt /> web前端开发
+              <img class="mr-10" :src="parseAssetFile('icon-job.png')"   /> web前端开发
             </div>
             <div class="align-center mt-10">
-              <img class="mr-10" :src="parseAssetFile('icon-industry.png')" alt />不限
+              <img class="mr-10" :src="parseAssetFile('icon-industry.png')"   />不限
             </div>
             <div class="align-center mt-10">
-              <img class="mr-10" :src="parseAssetFile('icon-salary.png')" alt />3000-50000元
+              <img class="mr-10" :src="parseAssetFile('icon-salary.png')"   />3000-50000元
               <span class="plr-15">|</span>
-              <img class="mr-10" :src="parseAssetFile('icon-square.png')" alt />全职和实习
+              <img class="mr-10" :src="parseAssetFile('icon-square.png')"   />全职和实习
             </div>
             <div class="align-center mt-10">
-              <img class="mr-10" :src="parseAssetFile('icon-position.png')" alt />山西省-临汾市、北京-北京市
+              <img class="mr-10" :src="parseAssetFile('icon-position.png')"   />山西省-临汾市、北京-北京市
             </div>
           </div>
         </template>
         <!-- 使用 right-icon 插槽来自定义右侧图标 -->
         <template #right-icon>
-          <img class="img-10 mt-5" :src="parseAssetFile('icon-pen.png')" alt />
+          <img class="img-10 mt-5" :src="parseAssetFile('icon-pen.png')"   />
         </template>
       </van-cell>
 
       <InfoCard class="mt-10" title="教育经历" :toPath="{path:'editInfo',name:'education'}"></InfoCard>
       <InfoCard class="mt-10" title="实习经历" :toPath="{path:'editInfo',name:'internship'}"></InfoCard>
       <InfoCard class="mt-10" title="项目经历" :toPath="{path:'editInfo',name:'project'}"></InfoCard>
-      <EditCard class="mt-10" title="教育经历" :toPath="{path:'editDescribe',name:'campus'}"></EditCard> 
-      <!-- <EditCard class="mt-10" title="校园实践" :toPath="{path:'editInfo',name:'campus'}"></EditCard> -->
-      <!-- <EditCard class="mt-10" title="专业技能" :toPath="{path:'editInfo',name:'skill'}">这是一段关于校园描述的文字内容，超出换行，测试文字傂的放怀废话我发阿飞飞恩爱为峨无法为 饿啊额阿瓦方法</EditCard>
-      <EditCard class="mt-10" title="获奖情况" :toPath="{path:'editInfo',name:'prize'}">这是一段关于校园描述的文字内容，超出换行，测试文字傂的放怀废话我发阿飞飞恩爱为峨无法为 饿啊额阿瓦方法</EditCard>
-      <EditCard class="mt-10" title="兴趣爱好" :toPath="{path:'editInfo',name:'interest'}">这是一段关于校园描述的文字内容，超出换行，测试文字傂的放怀废话我发阿飞飞恩爱为峨无法为 饿啊额阿瓦方法</EditCard> -->
+      <EditCard class="mt-10" title="校园实践" :toPath="{path:'editDescribe',name:'campus'}"></EditCard> 
+      <EditCard class="mt-10" title="专业技能" :toPath="{path:'editDescribe',name:'skill'}">不用二维</EditCard> 
+      <EditCard class="mt-10" title="获奖情况" :toPath="{path:'editDescribe',name:'prize'}">去去去去</EditCard> 
+      <EditCard class="mt-10" title="兴趣爱好" :toPath="{path:'editDescribe',name:'interest'}">哈哈哈</EditCard> 
     </div>
   </div>
 </template>

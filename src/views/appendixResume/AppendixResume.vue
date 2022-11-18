@@ -1,8 +1,8 @@
 <template>
   <div class="append-page">
-    <van-nav-bar title="附件简历" left-text left-arrow @click-left="onClickLeft" />
+    <van-nav-bar title="附件简历" left-arrow @click-left="onClickLeft" />
     <div class="content">
-      <img class="mt-80 img" :src="parseAssetFile('file-tip.png')" alt />
+      <img class="mt-80 img" :src="parseAssetFile('file-tip.png')" />
       <div class="mt-20 text-center fs-16 fw-700">您还没有附件简历,请点击下方按钮上传</div>
       <div class="mt-10 text-center fs-14 color-gray">最多可上传3份简历</div>
       <van-button class="upload-btn" type="primary" @click="to('/uploadResumeChoice')">上传附件简历</van-button>

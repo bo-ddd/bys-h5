@@ -1,6 +1,6 @@
 <template>
   <div class="person-box">
-    <van-nav-bar title="基本信息" left-text left-arrow @click-left="onClickLeft1" />
+    <van-nav-bar title="基本信息" left-arrow @click-left="onClickLeft1" />
     <div ref="scrollRef" class="overy-scoll">
       <van-cell-group>
         <van-cell center title="单元格" label="描述信息">
@@ -11,7 +11,7 @@
             <div class="fs-14 mt-10">上传真实头像通过Hr初筛率更高</div>
           </template>
           <template #value>
-            <img class="img-10" :src="parseAssetFile('icon-avater1.png')" alt />
+            <img class="img-10" :src="parseAssetFile('icon-avater1.png')" />
           </template>
         </van-cell>
         <van-cell class="all-width pb-20" center>
@@ -247,9 +247,10 @@ const scrollTop = ref(0); //滚轮值
 const getScrollValue = function () {
   scrollRef.value.scrollTop = scrollTop.value;
 };
-//存scroll值
+//存scroll值 
 const setScrollValue = function () {
   scrollTop.value = scrollRef.value.scrollTop;
+  
 };
 //清空keep状态
 const clearKeep = function () {
@@ -388,7 +389,7 @@ const selectYear = (value: any) => {
 };
 //学校和专业
 const school: any = ref("");
-const major = ref("");
+const major:any = ref("");
 const getSchoolInfo=()=>{
   //获取学校
   school.value = selectSchool.value;

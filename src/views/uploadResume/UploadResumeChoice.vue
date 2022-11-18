@@ -1,6 +1,6 @@
  <template>
   <div class="upload-page">
-    <van-nav-bar title="上传简历" left-text left-arrow @click-left="onClickLeft" />
+    <van-nav-bar title="上传简历" left-arrow @click-left="onClickLeft" />
     <div class="content">
       <div class="fs-20 fw-700">选择一种方式上传简历/作品集</div>
       <div class="color-gray">支持pdf、doc、docx格式附件，文件大小不超过20M</div>
@@ -9,7 +9,7 @@
         <template #title class="flex-noshrink">
           <div class="align-center flex-noshrink fs-16">
             <div class="circle-border green-border flex-noshrink mr-10">
-              <img :src="parseAssetFile('icon-wechat.png')" alt />
+              <img :src="parseAssetFile('icon-wechat.png')" />
             </div>
             <div class="flex-noshrink">微信聊天文件上传</div>
           </div>
@@ -25,7 +25,7 @@
         <template #title class="flex-noshrink">
           <div class="align-center flex-noshrink fs-16">
             <div class="circle-border blue-border flex-noshrink mr-10">
-              <img :src="parseAssetFile('icon-computer.png')" alt />
+              <img :src="parseAssetFile('icon-computer.png')" />
             </div>
             <div class="flex-noshrink">电脑端上传</div>
           </div>

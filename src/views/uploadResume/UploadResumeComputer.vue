@@ -1,10 +1,10 @@
 <template>
   <div class="upload-page">
-    <van-nav-bar title="电脑端操作指引" left-text left-arrow @click-left="onClickLeft1" />
+    <van-nav-bar title="电脑端操作指引" left-arrow @click-left="onClickLeft1" />
     <div class="box">
       <div class="content">
         <div class="img-box mt-30">
-          <img :src="parseAssetFile('icon-course3.png')" alt />
+          <img :src="parseAssetFile('icon-course3.png')" />
         </div>
         <div class="mt-20">
           <van-steps direction="vertical" :active="-1">

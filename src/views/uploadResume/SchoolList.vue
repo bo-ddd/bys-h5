@@ -1,6 +1,6 @@
 <template>
   <div class="list-box">
-    <van-nav-bar title="选择学校" left-text left-arrow @click-left="onClickLeft" />
+    <van-nav-bar title="选择学校" left-arrow @click-left="onClickLeft" />
     <div>
       <van-search v-model="value" placeholder="搜索学校" />
       <van-list v-model:loading="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">

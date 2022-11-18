@@ -1,6 +1,6 @@
 <template>
   <div class="edit-page">
-    <van-nav-bar :title="title" left-text left-arrow @click-left="onClickLeft1" />
+    <van-nav-bar :title="title" left-arrow @click-left="onClickLeft1" />
     <div class="edit-body overy-scoll">
       <div v-if="routeName=='education'">
         <van-cell title="学校" is-link to="schoolList">
@@ -180,7 +180,7 @@ const onClickLeft1 = () => history.back();
 //学校
 //专业
 const school: any = ref("");
-const major = ref("");
+const major:any = ref("");
 const getSchoolInfo = () => {
   //获取学校
   school.value = selectSchool.value;

@@ -1,10 +1,10 @@
 <template>
   <div class="box">
-    <van-nav-bar title="创建简历" left-text left-arrow @click-left="onClickLeft" />
+    <van-nav-bar title="创建简历" left-arrow @click-left="onClickLeft" />
     <div class="body">
       <div class="item back-green">
         <div class="align-center">
-          <img class="mr-10" src="@/assets/images/icon-upload.png" alt />
+          <img class="mr-10" src="@/assets/images/icon-upload.png" />
           <div class>
             <div class="font-gray">已有简历</div>
             <div>直接上传</div>
@@ -22,7 +22,7 @@
       </div>
       <div class="item back-yellow">
         <div class="align-center">
-          <img class="mr-10" src="@/assets/images/icon-write.png" alt />
+          <img class="mr-10" src="@/assets/images/icon-write.png" />
           <div class>
             <div class="font-gray">已有简历</div>
             <div>直接上传</div>

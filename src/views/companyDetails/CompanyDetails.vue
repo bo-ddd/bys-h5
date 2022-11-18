@@ -1,6 +1,6 @@
 <template>
   <div class="com-page">
-    <van-nav-bar class title="公司主页" left-text left-arrow @click-left="onClickLeft1" />
+    <van-nav-bar class title="公司主页" left-arrow @click-left="onClickLeft1" />
     <div class="content">
       <div class="info-head just-between">
         <div class="title">
@@ -8,7 +8,7 @@
           <div class="desc mb-20">互联网/IT/计算机服务</div>
         </div>
         <div class="avater">
-          <img :src="parseAssetFile('icon-com_avater.png')" alt />
+          <img :src="parseAssetFile('icon-com_avater.png')" />
         </div>
       </div>
       <div class="info-body">
@@ -79,7 +79,7 @@
     </div>
     <div class="foot-box">
       <div class="foot-left">
-        <img :src="parseAssetFile('icon-share.png')" alt />
+        <img :src="parseAssetFile('icon-share.png')" />
         <div>分享</div>
       </div>
       <div class="foot-right">

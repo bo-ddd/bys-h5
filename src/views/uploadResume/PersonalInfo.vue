@@ -3,17 +3,20 @@
     <van-nav-bar title="基本信息" left-arrow @click-left="onClickLeft1" />
     <div ref="scrollRef" class="overy-scoll">
       <van-cell-group>
-        <van-cell center title="单元格" label="描述信息">
-          <template #title>
-            <div class="fs-18">头像</div>
-          </template>
-          <template #label>
-            <div class="fs-14 mt-10">上传真实头像通过Hr初筛率更高</div>
-          </template>
-          <template #value>
-            <img class="img-10" :src="parseAssetFile('icon-avater1.png')" />
-          </template>
-        </van-cell>
+        <van-uploader class="upload" :after-read="afterRead">
+          <van-cell class="upload-cell" center>
+            <template #title>
+              <div class="fs-18">头像</div>
+            </template>
+            <template #label>
+              <div class="fs-14 mt-10">上传真实头像通过Hr初筛率更高</div>
+            </template>
+            <template #value>
+              <!-- <van-uploader  ref='upload' :deletable="false" v-model="fileList" :max-count="1"/> -->
+              <img v-if="!avaterImg" class="img-10" :src="parseAssetFile('icon-avater1.png')" />
+            </template>
+          </van-cell>
+        </van-uploader>
         <van-cell class="all-width pb-20" center>
           <template #title>
             <div class="fs-16 color-gray">姓名</div>
@@ -152,7 +155,7 @@
 
     <div class="foot-box">
       <div class="btn-box">
-        <van-button type="primary" block>保存</van-button>
+        <van-button type="primary" block @click="a">保存</van-button>
       </div>
     </div>
     <!-- 性别弹框 -->
@@ -238,6 +241,20 @@ import { useResumeStore } from "@/stores/resume";
 import { getScrollTop } from "vant/lib/utils";
 const { selectSchool } = storeToRefs(useSchoolStore());
 const { selectMajor } = storeToRefs(useMajorStore());
+const upload: any = ref(null);
+console.log(upload.value);
+const afterRead = (file: any) => {
+  // 此时可以自行将文件上传至服务器
+  console.log(file);
+  // fileList.value = file;
+};
+let a = function () {
+  console.log("aa");
+  console.log(upload);
+
+  upload.value.chooseFile();
+};
+
 const use = useResumeStore();
 
 const route = useRoute();
@@ -247,10 +264,9 @@ const scrollTop = ref(0); //滚轮值
 const getScrollValue = function () {
   scrollRef.value.scrollTop = scrollTop.value;
 };
-//存scroll值 
+//存scroll值
 const setScrollValue = function () {
   scrollTop.value = scrollRef.value.scrollTop;
-  
 };
 //清空keep状态
 const clearKeep = function () {
@@ -271,12 +287,16 @@ onBeforeRouteLeave((to, from, next) => {
   }
   next();
 });
+
 //首次进入页面获取下拉列表
 onMounted(() => {
   gerSexList();
   gerNationList();
   getEducationrList();
 });
+//头像
+const avaterImg = ref("");
+const fileList = ref([]);
 // 性别
 const sexList = reactive([]);
 const sex = ref("");
@@ -389,15 +409,13 @@ const selectYear = (value: any) => {
 };
 //学校和专业
 const school: any = ref("");
-const major:any = ref("");
-const getSchoolInfo=()=>{
+const major: any = ref("");
+const getSchoolInfo = () => {
   //获取学校
   school.value = selectSchool.value;
   //获取专业
   major.value = selectMajor.value;
-}
-
-
+};
 
 const router = useRouter();
 const show = ref(false);
@@ -433,6 +451,29 @@ const to = (path: string) => {
   .overy-scoll {
     height: 100%;
     overflow-y: scroll;
+  }
+  .upload {
+    display: block;
+    :deep(.van-uploader__wrapper) {
+      display: block;
+    }
+    .upload-cell {
+      padding: 1.4rem 1.6rem;
+      :deep(.van-uploader__upload) {
+        margin: 0;
+        border-radius: 100%;
+        overflow: hidden;
+      }
+      :deep(.van-uploader__preview) {
+        margin: 0;
+        border-radius: 100%;
+        overflow: hidden;
+      }
+      :deep(.van-cell__value) {
+        line-height: 0;
+        // padding: 1rem 1.6rem;
+      }
+    }
   }
   .foot-box {
     width: 100%;

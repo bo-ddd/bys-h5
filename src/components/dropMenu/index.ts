@@ -1,4 +1,4 @@
-import Wrap from "./DropMenuWrap.vue";
+import Wrap from "./dropMenuWrap.vue";
 import Item from "./dropMenuItem.vue";
 
 export default {

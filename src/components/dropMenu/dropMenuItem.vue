@@ -15,7 +15,7 @@ import {  parseAssetFile } from "@/assets/util/index"
     })
     let checkFn = inject('checkItemFn') as (name:string)=>any;
     onMounted(()=>{
-        heigt.value = `100vh - ${((container.value) as Element).getBoundingClientRect().top}px`;
+        heigt.value = `100vh - ${((container.value as unknown) as Element).getBoundingClientRect().top}px`;
     })
     let handleShowChange = ()=>{
         if(checkItem.value == title.value){

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
 import useSaveCompasable from "./compasable/useSaveCompasable";
-let {active, count,loading,companyList,positionList,onRefresh,getSaveList } = useSaveCompasable();
+let {active, count,loading,companyList,positionList,onRefresh,getSaveList,parseStr,parseCompanyDesc } = useSaveCompasable();
 let router = useRouter();
 let back = ()=>{
     router.go(-1);
@@ -11,7 +11,7 @@ getSaveList();
 <template>
     <div class="save">
         <!-- 导航栏 -->
-        <van-nav-bar class="title" title="我的收藏"  left-arrow @click-left="back()" /> 
+        <van-nav-bar class="title" title="我的收藏"  :left-arrow="true" @click-left="back()" /> 
         <!-- 这个是选择 -->
         <van-tabs v-model:active="active" color="#75a5fd" title-active-color="#75a5fd">
             <van-tab title="职位" class="position">
@@ -28,9 +28,9 @@ getSaveList();
                     class="refresh"
                     >
                     <!-- 这个是内容每一项 -->
-                    <div class="position-item mb-5" v-for="item in positionList" :key="item.id">
+                    <div class="position-item mb-5" v-for="item in positionList" :key="item.positionId">
                         <div class="title">
-                            <p>数据研发类</p>
+                            <p>{{parseStr(item.companyIndustry)}}</p>
                             <p class="cl-red fs-16">10-30k</p>
                         </div>
                         <div class="desc">
@@ -38,7 +38,7 @@ getSaveList();
                                 <div class="msg">
                                     <p>上海市-浦东新区</p>
                                     <div class="line mg-0_5"></div>
-                                    <p>数据工程师</p>
+                                    <p>{{parseStr(item.positionIndustry)}}</p>
                                 </div>
                                 <div class="btn fs-12 cl-ccc">硕士</div>
                             </div>
@@ -47,13 +47,13 @@ getSaveList();
                             </div>
                         </div>
                         <div class="company mt-20">
-                            <img src="@/assets/images/icon-save.png" class="icon">
+                            <img :src="item.companyLogoUrl" class="icon">
                             <div class="right">
-                                <p class="fw-700 fs-14">中金所研究院</p>
+                                <p class="fw-700 fs-14">{{item.companyName}}</p>
                                 <div class="desc mt-5">
                                     <p class="fs-12">{{item.companySize}}</p>
                                     <div class="line mg-0_5"></div>
-                                    <p class="fs-12">证券/期货</p>
+                                    <p class="fs-12">{{parseCompanyDesc(item.companyIndustry)}}</p>
                                 </div>
                             </div>
                         </div>
@@ -93,7 +93,7 @@ getSaveList();
                                 <div class="left fs-12">
                                     <p class="mr-5">热招</p>
                                     <p class="cl-blue"> 数据中心 灾备岗</p>
-                                    <p>等42个职位</p>
+                                    <p>等{{item.companyPositionCount}}个职位</p>
                                 </div>
                                 <img src="@/assets/images/icon-arrow_right.png" class="icon-16">
                             </div>

@@ -6,18 +6,45 @@ import { areaList } from '@vant/area-data';
 import { useCompanyListStore } from "@/stores/companyList";
 let router = useRouter();
 let Company = useCompanyListStore();
-interface Form{
-    label:string;
-    value:number | string | null;
+interface Res<T> {
+    code?: number;
+    msg?: string;
+    data: T;
 }
-interface TypeCompany{
-    label:string,
-    value:number,
-    createTime:null | Date,
-    modifyTime:null | Date,
+interface Form {
+    label: string;
+    value: number | string | null;
+}
+interface TypeCompany {
+    label: string,
+    value: number,
+    createTime: null | Date,
+    modifyTime: null | Date,
+}
+interface GuiMo {
+    label: string,
+    value: number,
+    createTime: Date | null,
+    modifyTime: Date | null,
+}
+interface Child {
+    id: string;
+    industryTypeId: string;
+    label: string;
+    sortId: number;
+    text: string;
+    value: string;
+}
+interface Position {
+    children: Child[];
+    id: string | number;
+    label: string;
+    sortId: number;
+    text: string;
+    value: string;
 }
 let jump = (url: string) => {
-  router.push({ path: url })
+    router.push({ path: url })
 }
 
 let checkItem = ref('');
@@ -27,48 +54,48 @@ let back = () => {
 let checkFn = (name: string) => {
     checkItem.value = name;
 }
-let company:Form = reactive({
-    label:'企业性质',
-    value:null,
+let company: Form = reactive({
+    label: '企业性质',
+    value: null,
 });
-let area:Form = reactive({
-    label:'区域',
-    value:null,
+let area: Form = reactive({
+    label: '区域',
+    value: null,
 })
-let position:Form = reactive({
-    label:'互联网/IT',
-    value:null,
+let position: Form = reactive({
+    label: '互联网/IT',
+    value: null,
 })
-let guiMo = reactive([]);
-let guimo:Form = reactive({
-    label:'规模',
-    value:null,
+let guiMo: GuiMo[] = reactive([]);
+let guimo: Form = reactive({
+    label: '规模',
+    value: null,
 })
-const handleCompanyChange = (item:any)=>{
+const handleCompanyChange = (item: any) => {
     company.label = item.label;
     company.value = item.value;
     console.log(company);
 }
-const  handleGuiMoChange = (item:any)=>{
+const handleGuiMoChange = (item: any) => {
     guimo.label = item.label;
     guimo.value = item.value;
     console.log(guimo);
 }
-const handleAreaChange = (e:any[])=>{
+const handleAreaChange = (e: any[]) => {
     let targetArr = e;
-    area.label = targetArr[e.length-1].name;
-    area.value = targetArr[e.length-1].code;
+    area.label = targetArr[e.length - 1].name;
+    area.value = targetArr[e.length - 1].code;
 }
 
-const handlePositionChange = (item:any)=>{
+const handlePositionChange = (item: any) => {
     position.label = item.label;
     position.value = item.value;
 }
 const activeId = ref(1);
 const activeIndex = ref(0);
-const positoinList = reactive([]);
+const positoinList:Position[] = reactive([]);
 
-let companyType:Array<TypeCompany> = reactive([]);
+let companyType: Array<TypeCompany> = reactive([]);
 
 // 组件中传入的方法
 provide('checkItem', checkItem);
@@ -77,9 +104,9 @@ provide('checkItemFn', checkFn);
 // 这一部分是调用的接口
 
 // 这个是获取企业规模的接口
-const getGuiMoList = async ()=>{
-    const res = await Company.getCompanySize();
-    if(res.code !== 200) return;
+const getGuiMoList = async () => {
+    const res: Res<GuiMo[]> = await Company.getCompanySize();
+    if (res.code !== 200) return;
     console.log('--------这个是获取企业规模的接口---------');
     console.log(res);
     guiMo.push(...(res.data));
@@ -88,9 +115,9 @@ const getGuiMoList = async ()=>{
 getGuiMoList();
 
 // 这个是获取企业性质
-const getCompanyNature = async ()=>{
-    const res =await Company.getCompanyNature();
-    if(res.code !== 200) return;
+const getCompanyNature = async () => {
+    const res:Res<TypeCompany[]> = await Company.getCompanyNature();
+    if (res.code !== 200) return;
     console.log('--------这个是获取企业性质的接口-----------');
     console.log(res);
     companyType.push(...(res.data));
@@ -98,15 +125,16 @@ const getCompanyNature = async ()=>{
 }
 getCompanyNature();
 
-const getCompanyIndustry = async ()=>{
-    const res = await Company.getCompanyIndustry();
-    if(res.code !== 200) return;
+const getCompanyIndustry = async () => {
+    const res: Res<Position[]> = await Company.getCompanyIndustry();
+    if (res.code !== 200) return;
     console.log('------------这个是获取职位的接口---------------');
     console.log(res.data);
-    let targetArr:any[] = (res.data).slice();
+    console.log(res);
+    let targetArr: Position[] = (res.data).slice();
     targetArr.forEach(item => {
         item.id = item.value;
-        item.text=item.label;
+        item.text = item.label;
         (item.children).forEach(child => {
             child.id = child.value;
             child.text = child.label;
@@ -119,7 +147,7 @@ getCompanyIndustry();
 </script>
 <template>
     <div class="enterprise">
-        <van-nav-bar title="企业列表" left-arrow @click-left="back" />
+        <van-nav-bar title="企业列表" :left-arrow="true" @click-left="back" />
         <div class="banner">
             <img src="@/assets/images/banner-1.png">
         </div>
@@ -132,22 +160,24 @@ getCompanyIndustry();
         <Drop.Wrap class="option-wrap">
             <!-- 行业的列表 -->
             <Drop.Item :title="position.label">
-                <van-tree-select v-model:active-id="activeId" v-model:main-active-index="activeIndex" :items="positoinList" @click-item="handlePositionChange"	 />
+                <van-tree-select v-model:active-id="activeId" v-model:main-active-index="activeIndex"
+                    :items="positoinList" @click-item="handlePositionChange" />
             </Drop.Item>
             <!-- 地址的列表 -->
             <Drop.Item :title="area.label">
-                <van-area  :area-list="areaList" :columns-num="2"  @confirm="handleAreaChange"/>
+                <van-area :area-list="areaList" :columns-num="2" @confirm="handleAreaChange" />
             </Drop.Item>
             <!-- 规模的列表 -->
             <Drop.Item :title="guimo.label">
                 <div v-for="item in guiMo" :key="item.label" class="option fs-14" @click="handleGuiMoChange(item)">
-                    {{item.label}}
+                    {{ item.label }}
                 </div>
             </Drop.Item>
             <!-- 企业性质的列表 -->
             <Drop.Item :title="company.label">
-                <div v-for="item in companyType" :key="item.label" class="option fs-14" @click="handleCompanyChange(item)">
-                    {{item.label}}
+                <div v-for="item in companyType" :key="item.label" class="option fs-14"
+                    @click="handleCompanyChange(item)">
+                    {{ item.label }}
                 </div>
             </Drop.Item>
         </Drop.Wrap>
@@ -213,7 +243,8 @@ getCompanyIndustry();
     :deep(.van-nav-bar__content) {
         height: 4rem;
     }
-    :deep(.van-tree-select){
+
+    :deep(.van-tree-select) {
         z-index: 2;
         background: #fff;
     }
@@ -262,6 +293,7 @@ getCompanyIndustry();
 
     &>.list {
         background: #f6f6f6;
+
         &>.item {
             background: #fff;
             padding: 1.2rem 0 1.2rem 2rem;
@@ -287,7 +319,7 @@ getCompanyIndustry();
         }
     }
 
-    .option{
+    .option {
         padding: 2rem 1.5rem;
         background: #fff;
         border-bottom: 1px solid #f6f7f9;

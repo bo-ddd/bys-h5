@@ -3,6 +3,8 @@
         <slot></slot>
     </div>
 </template>
+<script setup lang="ts">
+</script>
 <style lang="scss" scoped>
 .drop-menu-wrap{
     display: flex;

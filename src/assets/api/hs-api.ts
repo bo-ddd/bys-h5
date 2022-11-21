@@ -33,5 +33,12 @@ export default {
      */
     getCompanyIndustry:(params:any)=>{
         return axios.post('/drop/getCompanyIndustry',params,postConfig);
+    },
+    /**
+     * @description 收藏职位
+     * @param params
+     */
+    setStarPosition:(params:any)=>{
+        return axios.post('/phone/starPosition',params,postConfig);
     }
 }

@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="info-body">
-        <van-tabs v-model:active="active">
+        <van-tabs class="tab" v-model:active="active">
           <van-tab>
             <template #title>企业信息</template>
             <div class="info-title mt-10">基本信息</div>
@@ -31,7 +31,10 @@
           </van-tab>
           <van-tab>
             <template #title>
-              <div class>在招职位</div>
+              <div class="num-fa">
+                在招职位
+                <span class="num">0</span>
+              </div>
             </template>
             <div class="info-list">
               <div class="item just-between" @click="jump('/positionDetail')">
@@ -42,7 +45,7 @@
                     <span>|</span>
                     Java工程师
                   </div>
-                  <div class="type mt-5 ">本科</div>
+                  <div class="type mt-5">本科</div>
                 </div>
                 <div class="item-right">
                   <div class="num">16-24k</div>
@@ -60,7 +63,7 @@
                     <span>|</span>
                     Java工程师
                   </div>
-                  <div class="type mt-5 ">本科</div>
+                  <div class="type mt-5">本科</div>
                 </div>
                 <div class="item-right">
                   <div class="num">16-24k</div>
@@ -99,14 +102,15 @@ const container = ref(null);
 let router = useRouter();
 
 let jump = (url: string) => {
-  router.push({ path: url })
-}
+  router.push({ path: url });
+};
 </script>
 <style lang="scss" scoped>
 :deep(.van-tabs__content) {
   padding: 2rem;
   background-color: white;
 }
+
 .com-page {
   height: 100vh;
   display: grid;
@@ -134,13 +138,12 @@ let jump = (url: string) => {
         height: 7rem;
       }
     }
-    // }
   }
 
   .info-body {
     font-size: 1.4rem;
     color: #666666;
-    :deep(.van-tabs__content){
+    :deep(.van-tabs__content) {
       min-height: calc(100vh - 31rem);
     }
     :deep(.van-tabs__wrap) {
@@ -150,8 +153,37 @@ let jump = (url: string) => {
       border-bottom: 0.2rem solid #f4f4f4;
       background-color: #ffff;
     }
-    :deep(.van-tabs__nav){
+    :deep(.van-tabs__nav) {
       background-color: #ffff;
+    }
+    :deep(.van-tab) {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: black;
+    }
+    .tab {
+      .num-fa {
+        position: relative;
+        .num {
+          position: absolute;
+          top: -0.8rem;
+          right: -1.4rem;
+          font-size: 1.2rem;
+          color: gray;
+        }
+      }
+      :deep(.van-tab--active) {
+        color: #1989fa;
+        .num{
+          color: #1989fa;
+        }
+      }
+      :deep(.van-tabs__line) {
+        background-color: #1989fa;
+      }
+      :deep(.van-tab__text--ellipsis){
+        overflow: visible;
+      }
     }
     .info-title {
       font-size: 1.8rem;
@@ -225,7 +257,7 @@ let jump = (url: string) => {
     }
   }
 }
-.mb-10{
+.mb-10 {
   margin-bottom: 1rem;
 }
 </style>

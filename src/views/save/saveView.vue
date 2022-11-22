@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
 import useSaveCompasable from "./compasable/useSaveCompasable";
-let {active, count,loading,companyList,positionList,onRefresh,getSaveList,parseStr,parseCompanyDesc } = useSaveCompasable();
+let {active, count,loading,companyList,positionList,onRefresh,getSaveList,parseStr,parseCompanyDesc,getCompanyList,onRefreshCompany,companyLoading} = useSaveCompasable();
 let router = useRouter();
 let back = ()=>{
     router.go(-1);
 }    
 getSaveList();
+getCompanyList();
 </script>
 <template>
     <div class="save">
@@ -69,13 +70,13 @@ getSaveList();
                     </div>
                 </div>
                 <van-pull-refresh
-                    v-model="loading"
+                    v-model="companyLoading"
                     success-text="刷新成功"
-                    @refresh="onRefresh"
+                    @refresh="onRefreshCompany"
                     class="refresh"
                     >
                     <!-- 这个是内容每一项 -->
-                    <div class="enterprise-item mb-5" v-for="item in companyList" :key="item.id">
+                    <div class="enterprise-item mb-5" v-for="item in companyList" :key="item.positionId">
                         <div class="left">
                             <img src="@/assets/images/icon-collection.png" class="icon">
                         </div>

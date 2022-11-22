@@ -2,13 +2,10 @@ import { useSaveStore } from "@/stores/save";
 import { reactive, ref } from "vue";
 import { Toast } from 'vant';
 export default function () {
-    interface Res{
+    interface Res<T>{
         code:number;
         msg:string;
-        data:{
-            company:Company[];
-            position:Position[];
-        }
+        data:T
     }
     interface Position {
         companyIndustry: string;
@@ -30,16 +27,29 @@ export default function () {
         companyPositionCount:number | null;
         companySize:number | string | null;
     }
-    interface UserId{
+    interface PositionPayload{
         userId:number;
+        bool?:boolean;
+        pageSize:number;
+        pageIndex:number;
     }
-    const userId:UserId= {
+    const positionPayload:PositionPayload= reactive({ 
         userId: 10000,
-    }
+        bool:false,
+        pageSize:10,
+        pageIndex:1,
+    })
+    const companyPayload:PositionPayload = reactive({
+        userId: 10000,
+        bool:true,
+        pageSize:10,
+        pageIndex:1,
+    })
     let SaveStore: any = useSaveStore();
     let active = ref();
     let count = ref(1);
     const loading = ref(false);
+    const companyLoading = ref(false);
     let companyList :Company[]= reactive([]);//公司列表
     let positionList: Position[] = reactive([]);//职位列表
     const onRefresh = async () => {
@@ -47,14 +57,29 @@ export default function () {
         loading.value = false;
         getSaveList();
     }
+    const onRefreshCompany = async () => {
+        Toast('刷新成功');
+        companyLoading.value = false;
+        getCompanyList();
+    }
+    //获取职位的列表
     const getSaveList = async () => {
-        const res:Res = await SaveStore.getSaveList(userId);
+        const res:Res<{data:any}> = await SaveStore.getSaveList(positionPayload);
         if (res.code == 200) {
+            console.log('-----------------我是收藏职位的列表-----------------');
             console.log(res);
-            companyList.push(...((res.data).company));
-            positionList.push(...((res.data).position));
-            companyList = [...new Set(...[companyList])];
+            positionList.push(...((res.data).data));
             positionList = [...new Set(...[positionList])];
+        }
+    }
+    //获取公司的列表
+    const getCompanyList = async () => {
+        const res:Res<{data:any}> = await SaveStore.getSaveList(companyPayload);
+        if(res.code == 200){
+            console.log('--------------我是收藏企业的列表---------------');
+            console.log(res);
+            companyList.push(...((res.data).data));
+            companyList = [...new Set(...[companyList])];
         }
     }
     const parseStr:(str:string)=>string=(str:string)=>{
@@ -68,5 +93,5 @@ export default function () {
     const parseCompanyDesc:(str:string)=>string=(str:string)=>{
         return str.replace(/\s*\-\s*/,'/');
     }
-    return { active, count, loading, companyList, positionList, onRefresh, getSaveList,parseStr,parseCompanyDesc}
+    return { active, count, loading, companyList, positionList, onRefresh, getSaveList,parseStr,parseCompanyDesc,getCompanyList,onRefreshCompany,companyLoading}
 }

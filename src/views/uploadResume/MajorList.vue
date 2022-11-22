@@ -2,7 +2,7 @@
   <div class="list-box">
     <van-nav-bar title="选择专业" left-arrow @click-left="onClickLeft" />
     <div>
-      <van-search v-model="value" placeholder="搜索专业" />
+      <van-search @update:model-value="search"  v-model="majorName" placeholder="搜索专业" />
       <van-list v-model:loading="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
         <van-cell v-for="item in majorList" :key="item.professionalId" :title="item.professionalName" @click="checkMajor(item)" />
       </van-list>
@@ -16,7 +16,21 @@ import { useResumeStore } from "@/stores/resume";
 const use = useResumeStore();
 const { setMajor } = useMajorStore();
 const onClickLeft = () => history.back();
-const value = ref("");
+
+//搜索专业-------------------
+const majorName = ref("");
+const search = async function (value:string) {
+
+  let res = await use.seachProfessinal({
+    str: value,
+  });
+  if (res.code == 200) {
+    console.log(res.data);
+    majorList.value = res.data;
+    
+  }
+};
+
 const loading = ref(false);
 const finished = ref(false);
 const majorList:any=ref([])
@@ -33,7 +47,10 @@ const onLoad = async() => {
   }
 };
 const checkMajor = (item: any) => {
-  setMajor(item);
+  setMajor({
+    name:item.professionalName,
+    value:item.professionalId
+  });
   history.back()
 };
 </script>

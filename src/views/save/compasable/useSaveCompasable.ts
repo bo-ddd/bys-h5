@@ -22,7 +22,7 @@ export default function () {
     }
     interface Company {
         companyAddr: string | null;
-        companyId:number | null;
+        companyId:number;
         companyName:string | null;
         companyPositionCount:number | null;
         companySize:number | string | null;

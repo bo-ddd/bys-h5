@@ -76,7 +76,7 @@ getCompanyList();
                     class="refresh"
                     >
                     <!-- 这个是内容每一项 -->
-                    <div class="enterprise-item mb-5" v-for="item in companyList" :key="item.positionId">
+                    <div class="enterprise-item mb-5" v-for="item in companyList" :key="item.companyId">
                         <div class="left">
                             <img src="@/assets/images/icon-collection.png" class="icon">
                         </div>

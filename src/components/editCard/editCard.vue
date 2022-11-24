@@ -6,7 +6,7 @@
       </template>
 
       <template #right-icon>
-        <img class="block wh-20" :src="parseAssetFile('icon-edit.png')" @click="to(toPath)"/>
+        <img class="block wh-20" :src="parseAssetFile('icon-edit.png')" @click="to(params.name)" />
       </template>
     </van-cell>
     <div class="pad-15">
@@ -19,20 +19,28 @@
 <script lang="ts" setup>
 import { parseAssetFile } from "@/assets/util";
 import { defineProps, toRefs } from "vue";
+import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
+import { useDescStore } from "@/stores/descChoice";
+const { descData } = storeToRefs(useDescStore());
+const { setDesc } = useDescStore();
 const router = useRouter();
 const props = defineProps<{
   title: string;
-  toPath?:any
+  params: {
+    text:any
+  };
 }>();
-const { title,toPath } = toRefs(props);
-const to = function (toPath: any) {
+const { title, params } = toRefs(props);
+const to = function (pathName: any) {
+  setDesc(params.value.text);
   router.push({
-    path: toPath.path,
+    path: "editDescribe",
     query: {
-      editName:toPath.name
-    }
-    });
+      editName: pathName,
+    },
+  });
+
 };
 </script>
 <style lang="scss" scoped>

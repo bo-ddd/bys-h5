@@ -156,7 +156,7 @@
 </template>
 <script lang="ts" setup>
 import { nextTick, onActivated, onMounted, ref } from "vue";
-import { useRoute,useRouter } from "vue-router";
+import { useRoute,useRouter,onBeforeRouteLeave } from "vue-router";
 import { Toast } from "vant";
 import { useResumeStore } from "@/stores/resume";
 import { storeToRefs } from "pinia";
@@ -192,6 +192,13 @@ onActivated(() => {
     getSchoolInfo();
   });
 });
+// onBeforeRouteLeave((to, from, next) => {
+//   if (to.name == "resumeDetails") {
+//     // clearKeep();
+//     console.log("清空了");
+//   }
+//   next();
+// });
 const onClickLeft1 = () => history.back();
 //学校
 //专业
@@ -287,6 +294,8 @@ const overTime = ref("");
 const overTimeValue = ref("");
 //职位描述
 const positonDesc=ref('')
+
+//上传
 const preservaInfo = () => {
   if (checkForm()) {
     console.log("sub");
@@ -297,11 +306,11 @@ const preservaInfo = () => {
 //确认添加教育
 const addEducationApi = async function () {
   let res = await use.addEducation({
-    endTime: dayOver.value, //用户教育经历结束时间 ,
+    endTime: '2022-11-11', //用户教育经历结束时间 ,
     professionalId:Number(major.value.value), //专业id ,
     schoolExp: schoolDesc.value, //用户教育经历经验 ,
     schoolId: school.value.value, //学校id ,
-    startTime: day.value, //用户教育经历开始时间 ,
+    startTime: '2022-11-10', //用户教育经历开始时间 ,
     userEducationId: educationValue.value, //用户教育经历id ,
     userId: "10000", //用户id
   });
@@ -358,6 +367,9 @@ const checkForm = () => {
   }
   return true;
 };
+//清空
+const clearKeep=()=>{
+}
 </script>
 <style lang="scss" scoped>
 .edit-page {

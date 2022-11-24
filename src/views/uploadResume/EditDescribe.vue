@@ -29,7 +29,7 @@ import { Toast } from "vant";
 import { storeToRefs } from "pinia";
 import { useDescStore } from "@/stores/descChoice";
 import { useResumeStore } from "@/stores/resume";
-import { useRoute,useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 const { descData } = storeToRefs(useDescStore());
 const { setDesc } = useDescStore();
 const route = useRoute();
@@ -98,13 +98,15 @@ const reviseDesc = async function () {
   if (res.code == 200) {
     Toast.success("更新成功");
     to("/resumeDetails");
+    setSchool({});
+    setMajor({});
   }
 };
 const onClickLeft1 = () => history.back();
-const to = (path:string) => {
+const to = (path: string) => {
   router.push({
-    path
-  })
+    path,
+  });
 };
 </script>
 <style lang="scss" scoped>

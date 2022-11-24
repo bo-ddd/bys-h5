@@ -13,7 +13,11 @@
             </template>
             <template #value>
               <!-- <van-uploader  ref='upload' :deletable="false" v-model="fileList" :max-count="1"/> -->
-              <img v-if="!avaterImg" class="img-10" :src="parseAssetFile('icon-avater1.png')" />
+              <!-- <img v-if="avaterImg" class="img-10 " :src="avaterImg" /> -->
+              <img
+                class="img-10 bord-rad-100"
+                :src="avaterImg?avaterImg:parseAssetFile('icon-avater1.png')"
+              />
             </template>
           </van-cell>
         </van-uploader>
@@ -197,7 +201,6 @@
         :columns="areaList"
         @cancel="onCancel"
         @confirm="selectArea"
-        :default-index="areaDefault"
         :columns-field-names="areaRole"
       />
     </van-popup>
@@ -246,11 +249,11 @@ const { selectMajor } = storeToRefs(useMajorStore());
 const { setMajor } = useMajorStore();
 
 //首次进入页面获取下拉列表
-onMounted(() => {
-  gerSexList();
-  gerNationList();
-  getEducationrList();
-  getInfo();
+onMounted(async () => {
+  await gerSexList();
+  await gerNationList();
+  await getEducationrList();
+  await getInfo();
 });
 onActivated(() => {
   getSchoolInfo();
@@ -301,19 +304,26 @@ const getInfo = async function () {
   userName.value = res.data.userName;
   userEmail.value = res.data.userEmail;
   userSex.value = res.data.userSex;
-  userBirthday.value = res.data.userBirthday.slice(0, 11);
-  userNational.value = nationList.value.find((item: any) => {
-    return item.value == res.data.userNational;
-  }).label;
+  sexValue.value = sexList.find(
+    (item: any) => item.name == res.data.userSex
+  ).value;
+  console.log(sexList);
+
+  userBirthday.value = res.data.userBirthday.slice(0, 10);
+  userNational.value = res.data.userNationalName;
+  nationValue.value = res.data.userNational;
   userEducation.value = res.data.userEducation;
+  educationValue.value = educationList.value.find(
+    (item: any) => item.label == res.data.userEducation
+  ).value;
   userAddr.value = res.data.userAddr;
   userSchool.value = {
-    name: res.data.userSchool,
-    value: 1,
+    name: res.data.userSchoolName,
+    value: res.data.userSchool,
   };
   userProfessional.value = {
-    name: res.data.userProfessional,
-    value: 2,
+    name: res.data.userProfessionalName,
+    value: res.data.userProfessionalId,
   };
   userYear.value = res.data.userYear;
 };
@@ -328,7 +338,6 @@ const uploadAvater = async function (file: any) {
   let formData = new FormData();
   formData.append("userId", "10000");
   formData.append("userLogo", file);
-  // console.log(formData);
   const res = await use.updateLogo(formData);
   if (res.code == 200) {
     avaterImg.value = res.data;
@@ -364,7 +373,7 @@ const userEmail = ref("");
 const avaterImg = ref("");
 const fileList = ref([]);
 //性别
-const sexList = reactive([]);
+const sexList: any = reactive([]);
 const userSex = ref("");
 const sexValue = ref("");
 const selectSex = (item: { name: string; value: any }) => {
@@ -396,6 +405,7 @@ const setDay = (value: any) => {
 };
 const formatDay = (value: any) => {
   const dayValue = value.toLocaleDateString().split("/");
+  
   if (dayValue[1].length == 1) {
     dayValue[1] = 0 + dayValue[1];
   }
@@ -479,39 +489,41 @@ const getSchoolInfo = () => {
       : userProfessional.value;
 };
 //保存信息
-const keepInfo =function () {
-  if(checkForm()){
-    updateUserInfo()
+const keepInfo = function () {
+  if (checkForm()) {
+    updateUserInfo();
   }
 };
 //修改信息
-const updateUserInfo=async ()=>{
+const updateUserInfo = async () => {
   let res = await use.modifyBaseData({
-    userId: 1,
-    userLogoUrl: "",
+    userId: 10000,
+    userLogoUrl: avaterImg.value,
     userName: userName.value,
     userEmail: userEmail.value,
-    userSex: sexValue.value,
+    userSex: Number(sexValue.value),
     userBirthday: userBirthday.value,
-    userNational: nationValue.value,
+    userNational: Number(nationValue.value),
     userAddr: userAddr.value,
-    userSchool: userSchool.value.value,
-    userEducation: educationValue.value,
-    userProfessional: userProfessional.value.value,
-    userYear: userYear.value,
+    userSchool: Number(userSchool.value.value),
+    userEducation: Number(educationValue.value),
+    userProfessional: Number(userProfessional.value.value),
+    userYear: Number(userYear.value),
   });
   console.log(res);
-  if(res.code==200){
-    Toast.success('更新成功');
-    to('/resumeDetails')
+  if (res.code == 200) {
+    Toast.success("更新成功");
+    to("/resumeDetails");
+  }else{
+    Toast.fail(res.msg);
   }
-}
+};
 //校验
 const checkForm = function () {
   if (!userName.value) {
     Toast("请输入姓名");
     return;
-  } else if (userEmail.value) {
+  } else if (!userEmail.value) {
     Toast("请输入联系邮箱");
     return;
   } else if (!userSex.value) {
@@ -663,5 +675,8 @@ const to = (path: string) => {
 .h-30 {
   width: 100%;
   height: 3.5rem;
+}
+.bord-rad-100 {
+  border-radius: 100%;
 }
 </style>

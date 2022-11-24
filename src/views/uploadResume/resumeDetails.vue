@@ -9,7 +9,7 @@
             <div class="color-gray">
               <div class="fs-22 color-black mt-5">{{userName}}</div>
               <div class="fs-16 mt-5">{{userSchool}}</div>
-              <div class="fs-16">{{userProfessional}} | {{userEducation}}</div>
+              <div class="fs-16">{{userProfessional}} <span v-if="userProfessional&&userEducation">|</span> {{userEducation}}</div>
             </div>
           </div>
         </template>

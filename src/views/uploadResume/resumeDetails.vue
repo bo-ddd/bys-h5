@@ -5,11 +5,18 @@
       <van-cell to="/personalInfo" is-link class="cell-bottom pad-25-15">
         <template #title>
           <div class="gap-10 align-start">
-            <img class="img-15 bord-rad-100" :src="userLogoUrl?userLogoUrl:parseAssetFile('icon-avater1.png')" />
+            <img
+              class="img-15 bord-rad-100"
+              :src="userLogoUrl?userLogoUrl:parseAssetFile('icon-avater1.png')"
+            />
             <div class="color-gray">
               <div class="fs-22 color-black mt-5">{{userName}}</div>
               <div class="fs-14 mt-10">{{userSchoolName}}</div>
-              <div class="fs-14">{{userProfessional}} <span v-if="userProfessional&&userEducation">|</span> {{userEducation}}</div>
+              <div class="fs-14">
+                {{userProfessional}}
+                <span v-if="userProfessional&&userEducation">|</span>
+                {{userEducation}}
+              </div>
             </div>
           </div>
         </template>
@@ -44,11 +51,34 @@
         </template>
       </van-cell>
 
-      <InfoCard class="mt-10" title="教育经历" :maxLength="3" :params="{name:'education',data:educationData}"></InfoCard>
-      <InfoCard class="mt-10" title="实习经历" :maxLength="5" :params="{name:'internship',data:internShipData}"></InfoCard>
-      <InfoCard class="mt-10" title="项目经历" :maxLength="5" :params="{name:'project',data:projectnData}"></InfoCard>
-      <EditCard class="mt-10" title="校园实践" :params="{name:'campus',text:userSchoolPractice}">{{userSchoolPractice}}</EditCard>
-      <EditCard class="mt-10" title="专业技能" :params="{name:'skill',text:userProfessionalSkill}">{{userProfessionalSkill}}</EditCard>
+      <InfoCard
+        class="mt-10"
+        title="教育经历"
+        :maxLength="3"
+        :params="{name:'education',data:educationData}"
+      ></InfoCard>
+      <InfoCard
+        class="mt-10"
+        title="实习经历"
+        :maxLength="5"
+        :params="{name:'internship',data:internShipData}"
+      ></InfoCard>
+      <InfoCard
+        class="mt-10"
+        title="项目经历"
+        :maxLength="5"
+        :params="{name:'project',data:projectnData}"
+      ></InfoCard>
+      <EditCard
+        class="mt-10"
+        title="校园实践"
+        :params="{name:'campus',text:userSchoolPractice}"
+      >{{userSchoolPractice}}</EditCard>
+      <EditCard
+        class="mt-10"
+        title="专业技能"
+        :params="{name:'skill',text:userProfessionalSkill}"
+      >{{userProfessionalSkill}}</EditCard>
       <EditCard class="mt-10" title="获奖情况" :params="{name:'prize',text:userStar}">{{userStar}}</EditCard>
       <EditCard class="mt-10" title="兴趣爱好" :params="{name:'interest',text:userHobby}">{{userHobby}}</EditCard>
     </div>
@@ -60,6 +90,7 @@ import EditCard from "@/components/editCard/editCard.vue";
 import { useRouter, onBeforeRouteLeave, onBeforeRouteUpdate } from "vue-router";
 import { parseAssetFile } from "@/assets/util";
 import { onActivated, onMounted, ref } from "vue";
+import type { Ref } from "vue";
 import { useResumeStore } from "@/stores/resume";
 const use = useResumeStore();
 const onClickLeft1 = () => history.back();
@@ -69,8 +100,7 @@ const to = function (path: any) {
   console.log(path);
 };
 const onClickLeft = () => history.back();
-onMounted(() => {
-  });
+onMounted(() => {});
 onActivated(() => {
   getExperience();
   getScrollValue();
@@ -101,18 +131,18 @@ const clearKeep = function () {
   scrollTop.value = 0;
 };
 const userName = ref("");
-const userLogoUrl=ref("");
+const userLogoUrl = ref("");
 const userSchool = ref("");
 const userSchoolName = ref("");
 const userProfessional = ref("");
 const userEducation = ref("");
-const userSchoolPractice = ref("");
+const userSchoolPractice: Ref<string> = ref("");
 const userProfessionalSkill = ref("");
 const userStar = ref("");
 const userHobby = ref("");
-const educationData:any=ref([]);
-const internShipData:any=ref([]);
-const projectnData:any=ref([]);
+const educationData: any = ref([]);
+const internShipData: any = ref([]);
+const projectnData: any = ref([]);
 //获取个人信息
 const getExperience = async () => {
   let res = await use.getOnlineResume({
@@ -120,9 +150,9 @@ const getExperience = async () => {
   });
   if (res.code == 200) {
     userName.value = res.data.userName;
-    userLogoUrl.value=res.data.userLogoUrl;
+    userLogoUrl.value = res.data.userLogoUrl;
     userSchool.value = res.data.userSchool;
-    userSchoolName.value=res.data.userSchoolName;
+    userSchoolName.value = res.data.userSchoolName;
     userProfessional.value = res.data.userProfessionalName;
     userEducation.value = res.data.userEducation;
     userSchoolPractice.value = res.data.userSchoolPractice;
@@ -133,20 +163,20 @@ const getExperience = async () => {
   let res1 = await use.getEducation({
     userId: 10000,
   });
-  let res2=await use.getInternShip({
-     userId: 10000,
-  })
-  let res3=await use.getProject({
+  let res2 = await use.getInternShip({
     userId: 10000,
-  })
-  if(res1.code==200){
-    educationData.value=res1.data;
+  });
+  let res3 = await use.getProject({
+    userId: 10000,
+  });
+  if (res1.code == 200) {
+    educationData.value = res1.data;
   }
-  if(res2.code==200){
-    internShipData.value=res2.data;
+  if (res2.code == 200) {
+    internShipData.value = res2.data;
   }
-  if(res3.code==200){
-    projectnData.value=res3.data;
+  if (res3.code == 200) {
+    projectnData.value = res3.data;
   }
 };
 </script>

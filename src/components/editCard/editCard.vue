@@ -28,11 +28,12 @@ const router = useRouter();
 const props = defineProps<{
   title: string;
   params: {
-    text:any
+    text:string,
+    name:string
   };
 }>();
 const { title, params } = toRefs(props);
-const to = function (pathName: any) {
+const to = function (pathName: string) {
   setDesc(params.value.text);
   router.push({
     path: "editDescribe",

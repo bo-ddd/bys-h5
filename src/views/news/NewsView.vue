@@ -1,7 +1,7 @@
 <template>
   <div class="news-page">
     <div class="news-box">
-      <img :src="parseAssetFile('icon-nomessage.png')" alt />
+      <img :src="parseAssetFile('icon-nomessage.png')" />
       <div class="text-title mt-20">暂无企业的邀请</div>
       <div class="text-tip mt-10">您的在线简历完善度只有45分，低于平均分82.8。在线简历完善后，就能吸引更多企业</div>
       <div class="btn-box mt-20">

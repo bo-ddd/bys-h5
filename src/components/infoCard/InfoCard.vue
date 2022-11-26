@@ -6,13 +6,13 @@
       </template>
 
       <template v-if="params.data.length<maxLength" #right-icon>
-        <van-icon @click="to(params.name)" name="add-o" class="search-icon" size="2rem" />
+        <van-icon @click="toCreated(params.name)" name="add-o" class="search-icon" size="2rem" />
       </template>
     </van-cell>
     <template v-if="params.name=='education'">
       <div v-for="item in params.data" :key="item.userEducationId">
         <div class="plr-15">
-          <van-cell class="ptb-10" is-link @click="to(params.name,item.userEducationId)">
+          <van-cell class="ptb-10" is-link @click="toInfo(params.name,item.userEducationId)">
             <template #title>
               <div class="fs-18">{{item.schoolName}}</div>
               <div class="fs-12 mt-5 color-gray">{{item.education}}-{{item.professional}}</div>
@@ -35,7 +35,7 @@
     <template v-if="params.name=='internship'">
       <div v-for="item in params.data" :key="item.userEducationId">
         <div class="plr-15">
-          <van-cell class="ptb-10" is-link @click="to(params.name,item.internShipId)">
+          <van-cell class="ptb-10" is-link @click="toInfo(params.name,item.internShipId)">
             <template #title>
               <div class="fs-18">{{item.companyName}}</div>
               <div class="fs-12 mt-5 color-gray">{{item.positionName}}</div>
@@ -57,7 +57,7 @@
     <template v-if="params.name=='project'">
       <div v-for="item in params.data" :key="item.userEducationId">
         <div class="plr-15">
-          <van-cell class="ptb-10" is-link  @click="to(params.name,item.projectId)">
+          <van-cell class="ptb-10" is-link  @click="toInfo(params.name,item.projectId)">
             <template #title>
               <div class="fs-18">{{item.projectName}}</div>
               <div class="fs-12 mt-5 color-gray">{{item.positionName}}</div>
@@ -93,7 +93,15 @@ const props = defineProps<{
 }>();
 const { title, params, maxLength } = toRefs(props);
 
-const to = function (name: any, id: number) {
+const toCreated = function (name: any) {
+  router.push({
+    path: "/editInfo",
+    query: {
+      editName: name,
+    },
+  });
+};
+const toInfo=(name: any, id: number)=>{
   router.push({
     path: "/editInfo",
     query: {
@@ -101,7 +109,8 @@ const to = function (name: any, id: number) {
       infoId: id,
     },
   });
-};
+
+}
 </script>
 <style lang="scss" scoped>
 .infocard-box {

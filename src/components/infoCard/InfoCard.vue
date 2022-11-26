@@ -6,30 +6,77 @@
       </template>
 
       <template #right-icon>
-        <!-- <van-icon name="search"/> -->
-        <van-icon @click="to(toPath)" name="add-o" class="search-icon" size="2rem" />
+        <van-icon @click="to(params.name)" name="add-o" class="search-icon" size="2rem" />
       </template>
     </van-cell>
-    <div class="plr-15">
-      <van-cell class="ptb-10" is-link>
-        <template #title>
-          <div class="fs-18">北京航空航天大学</div>
-          <div class="fs-14 color-gray">大专-海警执法</div>
-        </template>
+    <template v-if="params.name=='education'">
+      <div v-for="item in params.data" :key="item.userEducationId">
+        <div class="plr-15">
+          <van-cell class="ptb-10" is-link>
+            <template #title>
+              <div class="fs-18">{{item.schoolName}}</div>
+              <div class="fs-12 mt-5 color-gray">{{item.education}}-{{item.professional}}</div>
+            </template>
 
-        <template #right-icon>
-          <!-- <van-icon name="search"/> -->
-          <div class="align-start">
-            <div class="align-center">
-              <div class="fs-14 color-gr mr-5">2018.09-2021.06</div>
-              <van-icon name="arrow" class="search-icon" size="1.6rem" color="#979797" />
-            </div>
-          </div>
-        </template>
-      </van-cell>
-    </div>
-    <div class="plr-15 pb-15 fs-16 color-gray">发到你</div>
-    <div class="plr-15 pb-15 fs-16 color-gray">发到你</div>
+            <template #right-icon>
+              <div class="align-start">
+                <div class="align-center">
+                  <div class="fs-14 color-gr mr-5">2018.09-2021.06</div>
+                  <van-icon name="arrow" class="search-icon" size="1.6rem" color="#979797" />
+                </div>
+              </div>
+            </template>
+          </van-cell>
+        </div>
+        <div class="plr-15 pb-15 fs-14 color-gray">{{item.schoolExp}}这是一些补充内容</div>
+      </div>
+    </template>
+
+    <template v-if="params.name=='internship'">
+      <div v-for="item in params.data" :key="item.userEducationId">
+        <div class="plr-15">
+          <van-cell class="ptb-10" is-link>
+            <template #title>
+              <div class="fs-18">{{item.companyName}}</div>
+              <div class="fs-12 mt-5 color-gray">{{item.positionName}}</div>
+            </template>
+
+            <template #right-icon>
+              <div class="align-start">
+                <div class="align-center">
+                  <div class="fs-14 color-gr mr-5">2018.09-2021.06</div>
+                  <van-icon name="arrow" class="search-icon" size="1.6rem" color="#979797" />
+                </div>
+              </div>
+            </template>
+          </van-cell>
+        </div>
+        <div class="plr-15 pb-15 fs-14 color-gray">{{item.internShipDes}}这是一些补充内容</div>
+      </div>
+    </template>
+    <template v-if="params.name=='project'">
+      <div v-for="item in params.data" :key="item.userEducationId">
+        <div class="plr-15">
+          <van-cell class="ptb-10" is-link>
+            <template #title>
+              <div class="fs-18">{{item.projectName}}</div>
+              <div class="fs-12 mt-5 color-gray">{{item.positionName}}</div>
+            </template>
+
+            <template #right-icon>
+              <div class="align-start">
+                <div class="align-center">
+                  <div class="fs-14 color-gr mr-5">2018.09-2021.06</div>
+                  <van-icon name="arrow" class="search-icon" size="1.6rem" color="#979797" />
+                </div>
+              </div>
+            </template>
+          </van-cell>
+        </div>
+        <div class="plr-15 pb-15 fs-14 color-gray">{{item.projectDes}}这是一些补充内容</div>
+        <div class="plr-15 pb-15 fs-14 color-gray">{{item.projectStar}}这是一些补充内容</div>
+      </div>
+    </template>
   </div>
 </template>
 <script lang="ts" setup>
@@ -38,16 +85,20 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const props = defineProps<{
   title: string;
-  toPath?:any
+  params: {
+    name: string;
+    data: any;
+  };
 }>();
-const { title,toPath } = toRefs(props);
-const to = function (toPath: any) {
+const { title, params } = toRefs(props);
+
+const to = function (name: any) {
   router.push({
-    path: toPath.path,
+    path: "/editInfo",
     query: {
-      editName:toPath.name
-    }
-    });
+      editName: name,
+    },
+  });
 };
 </script>
 <style lang="scss" scoped>
@@ -108,5 +159,8 @@ const to = function (toPath: any) {
 }
 .color-black {
   color: #000;
+}
+.mt-5{
+  margin-top: 0.5rem;
 }
 </style>

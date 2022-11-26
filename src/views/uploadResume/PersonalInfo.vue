@@ -3,23 +3,30 @@
     <van-nav-bar title="基本信息" left-arrow @click-left="onClickLeft1" />
     <div ref="scrollRef" class="overy-scoll">
       <van-cell-group>
-        <van-cell center title="单元格" label="描述信息">
-          <template #title>
-            <div class="fs-18">头像</div>
-          </template>
-          <template #label>
-            <div class="fs-14 mt-10">上传真实头像通过Hr初筛率更高</div>
-          </template>
-          <template #value>
-            <img class="img-10" :src="parseAssetFile('icon-avater1.png')" />
-          </template>
-        </van-cell>
+        <van-uploader class="upload" :after-read="afterRead">
+          <van-cell class="upload-cell" center>
+            <template #title>
+              <div class="fs-18">头像</div>
+            </template>
+            <template #label>
+              <div class="fs-14 mt-10">上传真实头像通过Hr初筛率更高</div>
+            </template>
+            <template #value>
+              <!-- <van-uploader  ref='upload' :deletable="false" v-model="fileList" :max-count="1"/> -->
+              <!-- <img v-if="avaterImg" class="img-10 " :src="avaterImg" /> -->
+              <img
+                class="img-10 bord-rad-100"
+                :src="avaterImg?avaterImg:parseAssetFile('icon-avater1.png')"
+              />
+            </template>
+          </van-cell>
+        </van-uploader>
         <van-cell class="all-width pb-20" center>
           <template #title>
             <div class="fs-16 color-gray">姓名</div>
           </template>
           <template #label>
-            <van-field class="fs-16" clearable v-model="value" label="文本" placeholder="请填写真实姓名" />
+            <van-field class="fs-16" clearable v-model="userName" label="文本" placeholder="请填写真实姓名" />
           </template>
         </van-cell>
         <van-cell class="all-width pb-20" center>
@@ -27,7 +34,7 @@
             <div class="fs-16 color-gray">联系邮箱</div>
           </template>
           <template #label>
-            <van-field class="fs-16" clearable v-model="value" label="文本" placeholder="请输入邮箱" />
+            <van-field class="fs-16" clearable v-model="userEmail" label="文本" placeholder="请输入邮箱" />
           </template>
         </van-cell>
         <van-cell class="all-width pb-20" center @click="show = true">
@@ -37,7 +44,7 @@
           <template #label>
             <div class="just-between">
               <div class="fs-16 color-black">
-                <span v-if="sex">{{sex}}</span>
+                <span v-if="userSex">{{userSex}}</span>
                 <span class="color-gr" v-else>请填写性别</span>
               </div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
@@ -51,7 +58,7 @@
           <template #label>
             <div class="just-between">
               <div class="fs-16 color-bl">
-                <span v-if="day">{{day}}</span>
+                <span v-if="userBirthday">{{userBirthday}}</span>
                 <span class="color-gr" v-else>请填写出生日期</span>
               </div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
@@ -65,7 +72,7 @@
           <template #label>
             <div class="just-between">
               <div class="fs-16 color-bl">
-                <span v-if="nation">{{nation}}</span>
+                <span v-if="userNational">{{userNational}}</span>
                 <span class="color-gr" v-else>请填写民族</span>
               </div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
@@ -79,7 +86,7 @@
           <template #label>
             <div class="just-between">
               <div class="fs-16 color-bl">
-                <span v-if="area">{{area}}</span>
+                <span v-if="userAddr">{{userAddr}}</span>
                 <span class="color-gr" v-else>请填写生源地</span>
               </div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
@@ -96,7 +103,7 @@
           <template #label>
             <div class="just-between">
               <div class="fs-16 color-bl">
-                <span v-if="education">{{education}}</span>
+                <span v-if="userEducation">{{userEducation}}</span>
                 <span class="color-gr" v-else>请填写最高学历</span>
               </div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
@@ -110,7 +117,7 @@
           <template #label>
             <div class="just-between">
               <div class="fs-16 color-bl">
-                <span v-if="school">{{school.schoolName}}</span>
+                <span v-if="userSchool.name">{{userSchool.name}}</span>
                 <span class="color-gr" v-else>请填写最高学历的学校</span>
               </div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
@@ -124,7 +131,7 @@
           <template #label>
             <div class="just-between">
               <div class="fs-16 color-bl">
-                <span v-if="major">{{major.professionalName}}</span>
+                <span v-if="userProfessional.name">{{userProfessional.name}}</span>
                 <span class="color-gr" v-else>请填写最高学历的专业</span>
               </div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
@@ -138,7 +145,7 @@
           <template #label>
             <div class="just-between">
               <div class="fs-16 color-bl">
-                <span v-if="year">{{year}}</span>
+                <span v-if="userYear">{{userYear}}</span>
                 <span class="color-gr" v-else>选择毕业年份</span>
               </div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
@@ -152,7 +159,7 @@
 
     <div class="foot-box">
       <div class="btn-box">
-        <van-button type="primary" block>保存</van-button>
+        <van-button type="primary" block @click="keepInfo">保存</van-button>
       </div>
     </div>
     <!-- 性别弹框 -->
@@ -179,11 +186,10 @@
     <!-- 民族 -->
     <van-popup v-model:show="show3" position="bottom" :style="{ height: '50%' }">
       <van-picker
-        v-model="nation"
         :columns="nationList"
         @confirm="setNation"
         @cancel="onCancel"
-        :default-index="indexs"
+        :default-index="nationDefault"
         :columns-field-names="customFieldName"
       />
     </van-popup>
@@ -223,6 +229,7 @@ import {
   onDeactivated,
   onActivated,
   nextTick,
+  computed,
 } from "vue";
 import {
   useRouter,
@@ -237,28 +244,22 @@ import { useMajorStore } from "@/stores/majorChoice";
 import { useResumeStore } from "@/stores/resume";
 import { getScrollTop } from "vant/lib/utils";
 const { selectSchool } = storeToRefs(useSchoolStore());
+const { setSchool } = useSchoolStore();
 const { selectMajor } = storeToRefs(useMajorStore());
-const use = useResumeStore();
+const { setMajor } = useMajorStore();
 
-const route = useRoute();
-const scrollRef: any = ref(null); //父级盒子
-const scrollTop = ref(0); //滚轮值
-//获取存的scroll值
-const getScrollValue = function () {
-  scrollRef.value.scrollTop = scrollTop.value;
-};
-//存scroll值 
-const setScrollValue = function () {
-  scrollTop.value = scrollRef.value.scrollTop;
-  
-};
-//清空keep状态
-const clearKeep = function () {
-  scrollTop.value = 0;
-};
+//首次进入页面获取下拉列表
+onMounted(async () => {
+  await gerSexList();
+  await gerNationList();
+  await getEducationrList();
+  await getInfo();
+});
 onActivated(() => {
-  getScrollValue();
   getSchoolInfo();
+  getScrollValue();
+  console.log("获取");
+
   console.log("回来的位置" + scrollRef.value.scrollTop);
 });
 onBeforeRouteLeave((to, from, next) => {
@@ -271,19 +272,113 @@ onBeforeRouteLeave((to, from, next) => {
   }
   next();
 });
-//首次进入页面获取下拉列表
-onMounted(() => {
-  gerSexList();
-  gerNationList();
-  getEducationrList();
-});
-// 性别
-const sexList = reactive([]);
-const sex = ref("");
+//民族
+const nationDefault = ref(0);
+const userNational: any = ref("");
+const nationValue = ref("");
+const nationList: any = ref([]);
+const customFieldName = {
+  text: "label",
+  value: "value",
+};
+const gerNationList = async function () {
+  let res = await use.getNationalDrop({});
+  if (res.code == 200) {
+    console.log(res);
+    nationList.value = res.data;
+  }
+};
+const setNation = (item: any, index: number) => {
+  console.log(value);
+  userNational.value = item.label;
+  nationValue.value = item.value;
+  nationDefault.value = index;
+  show3.value = false;
+};
+//获取个人信息
+const getInfo = async function () {
+  console.log("获取信息");
+  let res = await use.getOnlineResume({
+    userId: 10000,
+  });
+  userName.value = res.data.userName;
+  userEmail.value = res.data.userEmail;
+  userSex.value = res.data.userSex;
+  sexValue.value = sexList.find(
+    (item: any) => item.name == res.data.userSex
+  ).value;
+  console.log(sexList);
+
+  userBirthday.value = res.data.userBirthday.slice(0, 10);
+  userNational.value = res.data.userNationalName;
+  nationValue.value = res.data.userNational;
+  userEducation.value = res.data.userEducation;
+  educationValue.value = educationList.value.find(
+    (item: any) => item.label == res.data.userEducation
+  ).value;
+  userAddr.value = res.data.userAddr;
+  userSchool.value = {
+    name: res.data.userSchoolName,
+    value: res.data.userSchool,
+  };
+  userProfessional.value = {
+    name: res.data.userProfessionalName,
+    value: res.data.userProfessionalId,
+  };
+  userYear.value = res.data.userYear;
+};
+const upload: any = ref(null);
+const afterRead = (file: any) => {
+  // 此时可以自行将文件上传至服务器
+  console.log(file);
+  console.log(file.file);
+  uploadAvater(file.file);
+};
+const uploadAvater = async function (file: any) {
+  let formData = new FormData();
+  formData.append("userId", "10000");
+  formData.append("userLogo", file);
+  const res = await use.updateLogo(formData);
+  if (res.code == 200) {
+    avaterImg.value = res.data;
+  }
+};
+const use = useResumeStore();
+const route = useRoute();
+const scrollRef: any = ref(null); //父级盒子
+const scrollTop = ref(0); //滚轮值
+//获取存的scroll值
+const getScrollValue = function () {
+  scrollRef.value.scrollTop = scrollTop.value;
+};
+//存scroll值
+const setScrollValue = function () {
+  scrollTop.value = scrollRef.value.scrollTop;
+};
+//清空keep状态
+const clearKeep = function () {
+  //清空滚轮的位置
+  scrollTop.value = 0;
+  //重新获取用户信息
+  getInfo();
+  //清空stores
+  setSchool({});
+  setMajor({});
+};
+//姓名
+const userName = ref("");
+//邮箱
+const userEmail = ref("");
+//头像
+const avaterImg = ref("");
+const fileList = ref([]);
+//性别
+const sexList: any = reactive([]);
+const userSex = ref("");
 const sexValue = ref("");
 const selectSex = (item: { name: string; value: any }) => {
-  sex.value = item.name;
   sexValue.value = item.value;
+  userSex.value = item.name;
 };
 const gerSexList = async function () {
   let res = await use.getSexDrop({});
@@ -303,10 +398,21 @@ const gerSexList = async function () {
 //生日
 const minDate = new Date(1970, 0, 1);
 const maxDate = new Date(2032, 11, 31);
-const day = ref("");
+const userBirthday = ref("");
 const setDay = (value: any) => {
-  day.value = value.toLocaleDateString().replace(/\//g, "-");
+  userBirthday.value = formatDay(value);
   show2.value = false;
+};
+const formatDay = (value: any) => {
+  const dayValue = value.toLocaleDateString().split("/");
+  
+  if (dayValue[1].length == 1) {
+    dayValue[1] = 0 + dayValue[1];
+  }
+  if (dayValue[2].length == 1) {
+    dayValue[2] = 0 + dayValue[2];
+  }
+  return dayValue.join("-");
 };
 const currentDate = ref(new Date());
 const formatter = (type: any, val: any) => {
@@ -321,43 +427,22 @@ const formatter = (type: any, val: any) => {
   }
   return val;
 };
-//民族
-const indexs = ref(0);
-const nation = ref("");
-const nationValue = ref("");
-const nationList = ref([]);
-const customFieldName = {
-  text: "label",
-  value: "value",
-};
-const gerNationList = async function () {
-  let res = await use.getNationalDrop({});
-  if (res.code == 200) {
-    console.log(res);
-    nationList.value = res.data;
-  }
-};
-const setNation = (item: any) => {
-  console.log(value);
-  nation.value = item.label;
-  nationValue.value = item.value;
-  show3.value = false;
-};
 //生源地
-const area = ref("");
+const userAddr = ref("");
+const areaDefault = ref(0);
 const areaRole = {
   text: "label",
   // value: "label",
   children: "children",
 };
-const selectArea = (value: any) => {
+const selectArea = (value: any, index: number) => {
   console.log(value);
-
-  area.value = value[0].label + "-" + value[1].label + "-" + value[2].label;
+  areaDefault.value = index;
+  userAddr.value = value[0].label + "-" + value[1].label + "-" + value[2].label;
   show4.value = false;
 };
 //学历
-const education: any = ref("");
+const userEducation: any = ref("");
 const educationValue: any = ref("");
 const educationList: any = ref([]);
 const educationRole = {
@@ -371,34 +456,103 @@ const getEducationrList = async function () {
   }
 };
 const selectEducation = (item: any) => {
-  education.value = item.label;
+  userEducation.value = item.label;
   educationValue.value = item.value;
   show5.value = false;
 };
 //年份
-const year = ref("");
+const userYear = ref("");
 const yearList = [
   1990, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
   2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014,
   2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027,
   2028, 2029, 2030,
 ];
+const aa = ref("");
 const selectYear = (value: any) => {
   show8.value = false;
-  year.value = value;
+  userYear.value = value;
+  console.log(aa);
 };
 //学校和专业
-const school: any = ref("");
-const major:any = ref("");
-const getSchoolInfo=()=>{
+const userSchool: any = ref("");
+const userProfessional: any = ref("");
+const getSchoolInfo = () => {
   //获取学校
-  school.value = selectSchool.value;
-  //获取专业
-  major.value = selectMajor.value;
-}
-
-
-
+  userSchool.value =
+    JSON.stringify(selectSchool.value) !== "{}"
+      ? selectSchool.value
+      : userSchool.value;
+  userProfessional.value =
+    JSON.stringify(selectMajor.value) !== "{}"
+      ? selectMajor.value
+      : userProfessional.value;
+};
+//保存信息
+const keepInfo = function () {
+  if (checkForm()) {
+    updateUserInfo();
+  }
+};
+//修改信息
+const updateUserInfo = async () => {
+  let res = await use.modifyBaseData({
+    userId: 10000,
+    userLogoUrl: avaterImg.value,
+    userName: userName.value,
+    userEmail: userEmail.value,
+    userSex: Number(sexValue.value),
+    userBirthday: userBirthday.value,
+    userNational: Number(nationValue.value),
+    userAddr: userAddr.value,
+    userSchool: Number(userSchool.value.value),
+    userEducation: Number(educationValue.value),
+    userProfessional: Number(userProfessional.value.value),
+    userYear: Number(userYear.value),
+  });
+  console.log(res);
+  if (res.code == 200) {
+    Toast.success("更新成功");
+    to("/resumeDetails");
+  }else{
+    Toast.fail(res.msg);
+  }
+};
+//校验
+const checkForm = function () {
+  if (!userName.value) {
+    Toast("请输入姓名");
+    return;
+  } else if (!userEmail.value) {
+    Toast("请输入联系邮箱");
+    return;
+  } else if (!userSex.value) {
+    Toast("请选择性别");
+    return;
+  } else if (!userBirthday.value) {
+    Toast("请选择出生年月");
+    return;
+  } else if (!userNational.value) {
+    Toast("请选择民族");
+    return;
+  } else if (!userAddr.value) {
+    Toast("请选择生源地");
+    return;
+  } else if (!userEducation.value) {
+    Toast("请选择最高学历");
+    return;
+  } else if (!userSchool.value) {
+    Toast("请选择学校");
+    return;
+  } else if (!userProfessional.value) {
+    Toast("请选择专业");
+    return;
+  } else if (!userYear.value) {
+    Toast("请选择毕业年份");
+    return;
+  }
+  return true;
+};
 const router = useRouter();
 const show = ref(false);
 const show2 = ref(false);
@@ -433,6 +587,29 @@ const to = (path: string) => {
   .overy-scoll {
     height: 100%;
     overflow-y: scroll;
+  }
+  .upload {
+    display: block;
+    :deep(.van-uploader__wrapper) {
+      display: block;
+    }
+    .upload-cell {
+      padding: 1.4rem 1.6rem;
+      :deep(.van-uploader__upload) {
+        margin: 0;
+        border-radius: 100%;
+        overflow: hidden;
+      }
+      :deep(.van-uploader__preview) {
+        margin: 0;
+        border-radius: 100%;
+        overflow: hidden;
+      }
+      :deep(.van-cell__value) {
+        line-height: 0;
+        // padding: 1rem 1.6rem;
+      }
+    }
   }
   .foot-box {
     width: 100%;
@@ -498,5 +675,8 @@ const to = (path: string) => {
 .h-30 {
   width: 100%;
   height: 3.5rem;
+}
+.bord-rad-100 {
+  border-radius: 100%;
 }
 </style>

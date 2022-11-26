@@ -18,32 +18,96 @@
     </div>
     <div class="foot-box">
       <div class="btn-box">
-        <van-button type="primary" block>保存</van-button>
+        <van-button type="primary" block @click="reviseDesc">保存</van-button>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { computed, onMounted, reactive, ref } from "vue";
+import { Toast } from "vant";
+import { storeToRefs } from "pinia";
+import { useDescStore } from "@/stores/descChoice";
+import { useResumeStore } from "@/stores/resume";
+import { useRoute, useRouter } from "vue-router";
+const { descData } = storeToRefs(useDescStore());
+const { setDesc } = useDescStore();
 const route = useRoute();
+const router = useRouter();
+const use = useResumeStore();
 const titleName = ref("");
-const message = ref("");
-onMounted(() => {
+const infoData: any = reactive({});
+const message = ref("dsf");
+const userHobby: any = ref(""); //用户兴趣爱好 ,
+const userProfessionalSkill: any = ref(""); //用户专业技能 ,
+const userSchoolPractice: any = ref(""); //用户校园实践 ,
+const userStar: any = ref(""); //用户获奖情况
+onMounted(async () => {
   console.log(route);
-
+  let res = await getDescInfo();
+  infoData.value = res.data;
+  let res2 = await getTitle();
+});
+const getTitle = function () {
   const routeName = route.query.editName;
+  console.log(infoData);
   if (routeName == "campus") {
     titleName.value = "校园实践";
+    message.value = infoData.value.userSchoolPractice;
+    console.log(infoData.value.userSchoolPractice);
+    userSchoolPractice.value = computed(() => {
+      return message;
+    }).value;
   } else if (routeName == "skill") {
     titleName.value = "专业技能";
+    message.value = infoData.value.userProfessionalSkill;
+    userProfessionalSkill.value = computed(() => {
+      return message;
+    }).value;
   } else if (routeName == "prize") {
     titleName.value = "获奖情况";
+    message.value = infoData.value.userStar;
+    userStar.value = computed(() => {
+      return message;
+    }).value;
   } else if (routeName == "interest") {
     titleName.value = "兴趣爱好";
+    message.value = infoData.value.userHobby;
+    userHobby.value = computed(() => {
+      return message;
+    }).value;
   }
-});
+};
+const getDescInfo = function () {
+  return use.getOnlineResume({
+    userId: 10000,
+  });
+};
+const reviseDesc = async function () {
+  console.log(userSchoolPractice);
+  console.log(userSchoolPractice.value);
+  console.log(userSchoolPractice.value.value);
+  let res = await use.modifyUserStar({
+    userHobby: userHobby.value.value,
+    userId: 10000,
+    userProfessionalSkill: userProfessionalSkill.value.value,
+    userSchool: userSchoolPractice.value.value,
+    userStar: userStar.value.value,
+  });
+  console.log(res);
+  if (res.code == 200) {
+    Toast.success("更新成功");
+    to("/resumeDetails");
+    setSchool({});
+    setMajor({});
+  }
+};
 const onClickLeft1 = () => history.back();
+const to = (path: string) => {
+  router.push({
+    path,
+  });
+};
 </script>
 <style lang="scss" scoped>
 .edit-page {

@@ -5,14 +5,14 @@
       <div v-if="routeName=='education'">
         <van-cell title="学校" is-link to="schoolList">
           <template #value>
-            <div v-if="!school">请选择</div>
-            <div v-else class="color-gray">{{school.schoolName}}</div>
+            <div v-if="!school.name">请选择</div>
+            <div v-else class="color-gray">{{school.name}}</div>
           </template>
         </van-cell>
         <van-cell title="专业" is-link to="majorList">
           <template #value>
-            <div v-if="!major">请选择</div>
-            <div v-else class="color-gray">{{major.professionalName}}</div>
+            <div v-if="!major.name">请选择</div>
+            <div v-else class="color-gray">{{major.name}}</div>
           </template>
         </van-cell>
         <van-cell title="学位" is-link @click="show=true">
@@ -35,7 +35,7 @@
         </van-cell>
         <van-field
           class="textArea"
-          v-model="message"
+          v-model="schoolDesc"
           rows="8"
           autosize
           label="在校经历"
@@ -60,6 +60,18 @@
             <div v-else class="color-gray">{{overTime}}</div>
           </template>
         </van-cell>
+        
+        <van-field
+          class="textArea"
+          v-model="positonDesc"
+          rows="8"
+          autosize
+          label="工作描述"
+          type="textarea"
+          maxlength="500"
+          placeholder="请填写工作描述"
+          show-word-limit
+        />
       </div>
       <div v-if="routeName=='project'">
         <van-field v-model="companyName" label="项目名称" placeholder="请输入项目名称" input-align="right" />
@@ -104,7 +116,7 @@
     </div>
     <div class="foot-box">
       <div class="btn-box">
-        <van-button type="primary" block>保存</van-button>
+        <van-button type="primary" block @click="preservaInfo">保存</van-button>
       </div>
     </div>
     <!-- 学历 -->
@@ -144,15 +156,20 @@
 </template>
 <script lang="ts" setup>
 import { nextTick, onActivated, onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute,useRouter,onBeforeRouteLeave } from "vue-router";
+import { Toast } from "vant";
 import { useResumeStore } from "@/stores/resume";
 import { storeToRefs } from "pinia";
 import { useSchoolStore } from "@/stores/schoolChoice";
 import { useMajorStore } from "@/stores/majorChoice";
 const { selectSchool } = storeToRefs(useSchoolStore());
 const { selectMajor } = storeToRefs(useMajorStore());
+const { setSchool } = useSchoolStore();
+const { setMajor } = useMajorStore();
 const use = useResumeStore();
 const route = useRoute();
+const router = useRouter();
+const schoolDesc = ref("");
 const message = ref("");
 const title = ref("");
 const routeName = ref(route.query.editName);
@@ -166,7 +183,6 @@ const setTitle = function () {
   }
 };
 onMounted(() => {
-  console.log("mmm");
   getEducationrList();
 });
 onActivated(() => {
@@ -176,11 +192,18 @@ onActivated(() => {
     getSchoolInfo();
   });
 });
+// onBeforeRouteLeave((to, from, next) => {
+//   if (to.name == "resumeDetails") {
+//     // clearKeep();
+//     console.log("清空了");
+//   }
+//   next();
+// });
 const onClickLeft1 = () => history.back();
 //学校
 //专业
 const school: any = ref("");
-const major:any = ref("");
+const major: any = ref("");
 const getSchoolInfo = () => {
   //获取学校
   school.value = selectSchool.value;
@@ -211,7 +234,9 @@ const educationRole = {
 const show2 = ref(false);
 const show3 = ref(false);
 const day = ref("");
+const dayValue = ref("");
 const dayOver = ref("");
+const dayOverValue = ref("");
 const currentDate = ref(new Date());
 const formatter = (type: any, val: any) => {
   if (type === "year") {
@@ -231,18 +256,22 @@ const setDayFormat = function (value: any) {
   return dayValue.join("-");
 };
 const setDay = (value: any) => {
-  if (routeName.value == "edcation") {
+  if (routeName.value == "education") {
     day.value = setDayFormat(value);
+    dayValue.value = value;
   } else if (routeName.value == "internship") {
     beginTime.value = setDayFormat(value);
+    beginTimeValue.value = value;
   }
   show2.value = false;
 };
 const setDay2 = (value: any) => {
-  if (routeName.value == "edcation") {
+  if (routeName.value == "education") {
     dayOver.value = setDayFormat(value);
+    dayOverValue.value = value;
   } else if (routeName.value == "internship") {
     overTime.value = setDayFormat(value);
+    overTimeValue.value = value;
   }
   show3.value = false;
 };
@@ -260,7 +289,87 @@ const companyName = ref("");
 const positionName = ref("");
 //时间
 const beginTime = ref("");
+const beginTimeValue = ref("");
 const overTime = ref("");
+const overTimeValue = ref("");
+//职位描述
+const positonDesc=ref('')
+
+//上传
+const preservaInfo = () => {
+  if (checkForm()) {
+    console.log("sub");
+    addEducationApi()
+  }
+};
+
+//确认添加教育
+const addEducationApi = async function () {
+  let res = await use.addEducation({
+    endTime: '2022-11-11', //用户教育经历结束时间 ,
+    professionalId:Number(major.value.value), //专业id ,
+    schoolExp: schoolDesc.value, //用户教育经历经验 ,
+    schoolId: school.value.value, //学校id ,
+    startTime: '2022-11-10', //用户教育经历开始时间 ,
+    userEducationId: educationValue.value, //用户教育经历id ,
+    userId: "10000", //用户id
+  });
+  if(res.code==200){
+    Toast.success('更新成功');
+    setSchool({})
+    setMajor({})
+    router.push({
+      path:'/resumeDetails'
+    });
+
+  }
+};
+//确认添加实习
+const addInternShipApi = async function () {
+  let res = await use.addInternShip({
+    companyName:companyName.value,//公司名称 ,
+    endTime: overTimeValue.value, //结束时间 ,
+    internShipDes:positonDesc,// 职位描述 ,
+    positionName : positionName.value, //职位名称 ,
+    startTime: beginTimeValue.value, //开始时间 ,
+    userId: "10000", //用户id
+  });
+  if(res.code==200){
+    Toast.success('更新成功');
+    router.push({
+      path:'/resumeDetails'
+    })
+    
+  }
+};
+const checkForm = () => {
+  if (!school.value) {
+    Toast("请选择学校");
+    return;
+  } else if (!major.value) {
+    Toast("请选择专业");
+    return;
+  } else if (!education.value) {
+    Toast("请选择学历");
+    return;
+  } else if (!day.value) {
+    Toast("请选择入学时间");
+    return;
+  } else if (!dayOver.value) {
+    Toast("请选择毕业时间");
+    return;
+  } else if (!schoolDesc.value) {
+    Toast("请填写在校经历");
+    return;
+  } else if (dayValue.value > dayOverValue.value) {
+    Toast("入学开始时间不能高于结束时间");
+    return;
+  }
+  return true;
+};
+//清空
+const clearKeep=()=>{
+}
 </script>
 <style lang="scss" scoped>
 .edit-page {
@@ -271,11 +380,11 @@ const overTime = ref("");
   .textArea {
     flex-direction: column;
     :deep(.van-field__control)::placeholder {
-        font-size: 1.2rem;
+      font-size: 1.2rem;
     }
-    :deep(.van-field__control){
-        font-size: 1.2rem;
-        color: gray;
+    :deep(.van-field__control) {
+      font-size: 1.2rem;
+      color: gray;
     }
   }
   .textArea::after {

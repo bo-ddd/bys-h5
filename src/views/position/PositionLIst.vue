@@ -2,10 +2,11 @@
 import Card from '@/components/card'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router';
+import { areaList } from '@vant/area-data';
 
 let router = useRouter();
 let jump = (url: string) => {
-  router.push({ path: url })
+    router.push({ path: url })
 }
 
 let cardList = [
@@ -119,43 +120,37 @@ let cardList = [
     },
 ]
 
-const options = [
-    { text: '全部商品', value: 0 },
-    { text: '新款商品', value: 1 },
-    { text: '活动商品', value: 2 },
-];
-
 const item = ref();
 const value = ref(0);
 const switch1 = ref(false);
 const switch2 = ref(false);
 
 const onConfirm = () => {
-      item.value.toggle();
-    };
+    console.log(item.value);
+
+    item.value.toggle();
+};
 </script>
 <template>
     <div class="position-list">
         <van-dropdown-menu>
-            <van-dropdown-item v-model="value" :options="options" />
+            <!-- <van-dropdown-item v-model="value" :options="options" /> -->
+            <van-dropdown-item title="职位" ref="item">
+
+            </van-dropdown-item>
+
+            <van-dropdown-item title="地区" ref="item">
+                <van-area @cancel="onConfirm()" @confirm="onConfirm" :area-list="areaList" />
+            </van-dropdown-item>
+
             <van-dropdown-item title="筛选" ref="item">
-                <van-cell center title="包邮">
-                    <template #right-icon>
-                        <van-switch v-model="switch1" size="24" active-color="#ee0a24" />
-                    </template>
-                </van-cell>
-                <van-cell center title="团购">
-                    <template #right-icon>
-                        <van-switch v-model="switch2" size="24" active-color="#ee0a24" />
-                    </template>
-                </van-cell>
-                <div style="padding: 5px 16px;">
-                    <van-button type="danger" block round @click="onConfirm">
-                        确认
-                    </van-button>
+                <div class="mt-16">
+                    <h2>工作性质</h2>
                 </div>
             </van-dropdown-item>
         </van-dropdown-menu>
+
+
         <Card.Wrap @click="jump('/positionDetail')">
             <Card.Item v-for="item in cardList" :key="item.id" :options="item"></Card.Item>
         </Card.Wrap>

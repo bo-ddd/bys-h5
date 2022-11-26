@@ -82,6 +82,13 @@ export default {
         return axios.post('/phone/addInternShip', params, postConfig)
     },
     /**
+    * 修改实习经历
+    * @returns 
+    */
+     modifyInternShip: (params: {}) => {
+        return axios.post('/phone/modifyInternShip', params, postConfig)
+    },
+    /**
     * 获取教育经历
     * @returns 
     */
@@ -94,6 +101,13 @@ export default {
     */
      addEducation: (params: {}) => {
         return axios.post('/phone/addEducation', params, postConfig)
+    },
+    /**
+    * 修改教育经历
+    * @returns 
+    */
+     modifyEducation: (params: {}) => {
+        return axios.post('/phone/modifyEducation', params, postConfig)
     },
     /**
     * 获取在线简历
@@ -117,6 +131,13 @@ export default {
         return axios.post('/phone/addProject', params, postConfig)
     },
     /**
+    * 修改项目经历
+    * @returns 
+    */
+     modifyProject: (params: {}) => {
+        return axios.post('/phone/modifyProject', params, postConfig)
+    },
+    /**
     * 修改个人信息
     * @returns 
     */
@@ -129,5 +150,26 @@ export default {
     */
      modifyUserStar: (params: {}) => {
         return axios.post('/phone/modifyUserStar', params, postConfig)
+    },
+    /**
+    * 删除教育经历
+    * @returns 
+    */
+     delEducation: (params: {}) => {
+        return axios.post('/phone/delEducation', params, postConfig)
+    },
+    /**
+    * 删除实习经历
+    * @returns 
+    */
+     delInternShip: (params: {}) => {
+        return axios.post('/phone/delInternShip', params, postConfig)
+    },
+    /**
+    * 删除项目经历
+    * @returns 
+    */
+     delProject: (params: {}) => {
+        return axios.post('/phone/delProject', params, postConfig)
     },
 }

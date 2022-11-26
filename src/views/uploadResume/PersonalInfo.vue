@@ -297,7 +297,6 @@ const setNation = (item: any, index: number) => {
 };
 //获取个人信息
 const getInfo = async function () {
-  console.log("获取信息");
   let res = await use.getOnlineResume({
     userId: 10000,
   });
@@ -308,7 +307,7 @@ const getInfo = async function () {
     (item: any) => item.name == res.data.userSex
   ).value;
   console.log(sexList);
-
+  avaterImg.value=res.data.userLogoUrl;
   userBirthday.value = res.data.userBirthday.slice(0, 10);
   userNational.value = res.data.userNationalName;
   nationValue.value = res.data.userNational;

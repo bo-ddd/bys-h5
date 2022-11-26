@@ -60,7 +60,7 @@
             <div v-else class="color-gray">{{overTime}}</div>
           </template>
         </van-cell>
-        
+
         <van-field
           class="textArea"
           v-model="positonDesc"
@@ -90,7 +90,7 @@
         </van-cell>
         <van-field
           class="textArea"
-          v-model="message"
+          v-model="projectDes"
           rows="8"
           autosize
           label="项目描述"
@@ -102,7 +102,7 @@
 
         <van-field
           class="textArea"
-          v-model="message"
+          v-model="projectStar"
           rows="8"
           autosize
           label="取得成就"
@@ -115,8 +115,12 @@
       <div class="h-55"></div>
     </div>
     <div class="foot-box">
-      <div class="btn-box">
+      <div class="btn-box" v-if="!route.query.infoId">
         <van-button type="primary" block @click="preservaInfo">保存</van-button>
+      </div>
+      <div class="btn-box flex-bet" v-else>
+        <van-button type="primary" plain block @click="deleteInfo">删除</van-button>
+        <van-button type="primary" block @click="editInfo">保存</van-button>
       </div>
     </div>
     <!-- 学历 -->
@@ -156,7 +160,8 @@
 </template>
 <script lang="ts" setup>
 import { nextTick, onActivated, onMounted, ref } from "vue";
-import { useRoute,useRouter,onBeforeRouteLeave } from "vue-router";
+import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
+import { Dialog } from "vant";
 import { Toast } from "vant";
 import { useResumeStore } from "@/stores/resume";
 import { storeToRefs } from "pinia";
@@ -167,13 +172,13 @@ const { selectMajor } = storeToRefs(useMajorStore());
 const { setSchool } = useSchoolStore();
 const { setMajor } = useMajorStore();
 const use = useResumeStore();
-const route = useRoute();
+const route: any = useRoute();
 const router = useRouter();
 const schoolDesc = ref("");
-const message = ref("");
 const title = ref("");
 const routeName = ref(route.query.editName);
 const setTitle = function () {
+  routeName.value = route.query.editName;
   if (routeName.value == "education") {
     title.value = "教育经历";
   } else if (routeName.value == "internship") {
@@ -183,23 +188,144 @@ const setTitle = function () {
   }
 };
 onMounted(() => {
+  getSchoolInfo();
+  if (route.query.infoId) {
+    getEditInfo(route.query.infoId);
+  }
   getEducationrList();
+  setTitle();
 });
-onActivated(() => {
-  nextTick(() => {
-    routeName.value = route.query.editName;
-    setTitle();
-    getSchoolInfo();
-  });
-});
-// onBeforeRouteLeave((to, from, next) => {
-//   if (to.name == "resumeDetails") {
-//     // clearKeep();
-//     console.log("清空了");
-//   }
-//   next();
-// });
-const onClickLeft1 = () => history.back();
+const onClickLeft1 = () => {
+  history.back();
+  clearKeep();
+};
+//删除经历
+const deleteInfo = () => {
+  Dialog.confirm({
+    title: "提示",
+    message: "是否确认删除？",
+  })
+    .then(async () => {
+      let res;
+      let deleteApi: ((payload: {}) => any) | any;
+      if (routeName.value == "education") {
+        deleteApi = use.delEducation;
+      } else if (routeName.value == "internship") {
+        deleteApi = use.delInternShip;
+      } else if (routeName.value == "project") {
+        deleteApi = use.delProject;
+      }
+      res = await deleteApi({
+        userId: 10000,
+        userEducationId: Number(route.query.infoId),
+      });
+      if (res.code == 200) {
+        Toast.success({
+          message: "更新成功666!",
+          duration: 500,
+        });
+        router.push("/resumeDetails");
+        clearKeep();
+      }
+    })
+    .catch(() => {});
+};
+//获取教育信息(复现)
+const getEditInfo = async (id: number) => {
+  console.log(2);
+
+  if (routeName.value == "education") {
+    let res = await use.getEducation({
+      educationId: Number(id),
+      userId: 10000,
+    });
+    if (res.code == 200) {
+      let infoData = res.data[0];
+      console.log(infoData);
+      day.value = infoData.startTime.slice(0, 10);
+      dayOver.value = infoData.endTime.slice(0, 10);
+      school.value = {
+        name: infoData.schoolName,
+        value: infoData.schoolId,
+      };
+      major.value = {
+        name: infoData.professional,
+        value: infoData.professionalId,
+      };
+      education.value = infoData.education;
+      educationValue;
+      schoolDesc.value = infoData.schoolExp;
+    }
+  } else if (routeName.value == "internship") {
+    let res = await use.getInternShip({
+      internShipId: Number(id),
+      userId: 10000,
+    });
+    if (res.code == 200) {
+      let infoData = res.data[0];
+      companyName.value = infoData.companyName;
+      beginTime.value = infoData.startTime.slice(0, 10);
+      overTime.value = infoData.endTime.slice(0, 10);
+      positonDesc.value = infoData.internShipDes;
+      positionName.value = infoData.positionName;
+    }
+  } else if (routeName.value == "project") {
+    let res = await use.getProject({
+      projectId: Number(id),
+      userId: 10000,
+    });
+    if (res.code == 200) {
+      let infoData = res.data[0];
+      companyName.value = infoData.projectDes;
+      beginTime.value = infoData.startTime.slice(0, 10);
+      overTime.value = infoData.endTime.slice(0, 10);
+      positionName.value = infoData.positionName;
+      projectDes.value = infoData.projectDes;
+      projectStar.value = infoData.projectStar;
+    }
+  }
+};
+//修改
+const editInfo = async () => {
+  let res;
+  if (routeName.value == "education") {
+    res = await use.modifyEducation({
+      educationId: education.value,
+      endTime: day.value, //用户教育经历结束时间 ,
+      professionalId: Number(major.value.value), //专业id ,
+      schoolExp: schoolDesc.value, //用户教育经历经验 ,
+      schoolId: school.value.value, //学校id ,
+      startTime: dayOver.value, //用户教育经历开始时间 ,
+      userEducationId: route.query.infoId, //用户教育经历id ,
+      userId: 10000,
+    });
+  } else if (routeName.value == "internship") {
+    res = await use.modifyInternShip({
+      companyName: companyName.value, //公司名称 ,
+      endTime: "2020-11-22", //结束时间 ,
+      internShipDes: positonDesc.value, // 职位描述 ,
+      positionName: positionName.value, //职位名称 ,
+      startTime: "2020-11-22", //开始时间 ,
+      userId: 10000, //用户id
+      internShipId: route.query.infoId, //用户教育经历id ,
+    });
+  } else if (routeName.value == "project") {
+    res = await use.modifyProject({
+      endTime: overTime.value,
+      positionName: positionName.value,
+      projectDes: projectDes.value,
+      projectName: companyName.value,
+      projectStar: projectStar.value,
+      startTime: beginTime.value,
+      userId: 10000,
+      projectId: route.query.infoId,
+    });
+  }
+
+  if (res.code == 200) {
+    clearData();
+  }
+};
 //学校
 //专业
 const school: any = ref("");
@@ -234,9 +360,7 @@ const educationRole = {
 const show2 = ref(false);
 const show3 = ref(false);
 const day = ref("");
-const dayValue = ref("");
 const dayOver = ref("");
-const dayOverValue = ref("");
 const currentDate = ref(new Date());
 const formatter = (type: any, val: any) => {
   if (type === "year") {
@@ -258,20 +382,16 @@ const setDayFormat = function (value: any) {
 const setDay = (value: any) => {
   if (routeName.value == "education") {
     day.value = setDayFormat(value);
-    dayValue.value = value;
   } else if (routeName.value == "internship") {
     beginTime.value = setDayFormat(value);
-    beginTimeValue.value = value;
   }
   show2.value = false;
 };
 const setDay2 = (value: any) => {
   if (routeName.value == "education") {
     dayOver.value = setDayFormat(value);
-    dayOverValue.value = value;
   } else if (routeName.value == "internship") {
     overTime.value = setDayFormat(value);
-    overTimeValue.value = value;
   }
   show3.value = false;
 };
@@ -289,59 +409,82 @@ const companyName = ref("");
 const positionName = ref("");
 //时间
 const beginTime = ref("");
-const beginTimeValue = ref("");
 const overTime = ref("");
-const overTimeValue = ref("");
 //职位描述
-const positonDesc=ref('')
-
+const positonDesc = ref("");
+const projectDes = ref("");
+const projectStar = ref("");
 //上传
 const preservaInfo = () => {
-  if (checkForm()) {
-    console.log("sub");
-    addEducationApi()
+  console.log(routeName.value);
+
+  if (routeName.value == "education" && checkForm()) {
+    addEducationApi();
+  } else if (routeName.value == "internship" && checkForm2()) {
+    addInternShipApi();
+  } else if (routeName.value == "project" && checkForm3()) {
+    addProjectApi();
   }
 };
 
 //确认添加教育
 const addEducationApi = async function () {
   let res = await use.addEducation({
-    endTime: '2022-11-11', //用户教育经历结束时间 ,
-    professionalId:Number(major.value.value), //专业id ,
+    endTime: day.value, //用户教育经历结束时间 ,
+    professionalId: Number(major.value.value), //专业id ,
     schoolExp: schoolDesc.value, //用户教育经历经验 ,
     schoolId: school.value.value, //学校id ,
-    startTime: '2022-11-10', //用户教育经历开始时间 ,
-    userEducationId: educationValue.value, //用户教育经历id ,
-    userId: "10000", //用户id
+    startTime: dayOver.value, //用户教育经历开始时间 ,
+    educationId: educationValue.value, //用户教育经历id ,
+    userId: 10000, //用户id
   });
-  if(res.code==200){
-    Toast.success('更新成功');
-    setSchool({})
-    setMajor({})
-    router.push({
-      path:'/resumeDetails'
-    });
-
+  if (res.code == 200) {
+    clearData();
   }
 };
 //确认添加实习
 const addInternShipApi = async function () {
   let res = await use.addInternShip({
-    companyName:companyName.value,//公司名称 ,
-    endTime: overTimeValue.value, //结束时间 ,
-    internShipDes:positonDesc,// 职位描述 ,
-    positionName : positionName.value, //职位名称 ,
-    startTime: beginTimeValue.value, //开始时间 ,
-    userId: "10000", //用户id
+    companyName: companyName.value, //公司名称 ,
+    endTime: "2020-11-22", //结束时间 ,
+    internShipDes: positonDesc.value, // 职位描述 ,
+    positionName: positionName.value, //职位名称 ,
+    startTime: "2020-11-22", //开始时间 ,
+    userId: 10000, //用户id
   });
-  if(res.code==200){
-    Toast.success('更新成功');
-    router.push({
-      path:'/resumeDetails'
-    })
-    
+  if (res.code == 200) {
+    clearData();
   }
 };
+//确认添加项目经历
+const addProjectApi = async function () {
+  let res = await use.addProject({
+    endTime: overTime.value,
+    positionName: positionName.value,
+    projectDes: projectDes.value,
+    projectName: companyName.value,
+    projectStar: projectStar.value,
+    startTime: beginTime.value,
+    userId: 10000,
+  });
+  if (res.code == 200) {
+    clearData();
+  }
+};
+
+//清空学校和专业数据
+const clearData = () => {
+  Toast.success({
+    message: "更新成功666!",
+    duration: 500,
+  });
+  setSchool({});
+  setMajor({});
+  router.push({
+    path: "/resumeDetails",
+  });
+};
+//校验
 const checkForm = () => {
   if (!school.value) {
     Toast("请选择学校");
@@ -361,15 +504,64 @@ const checkForm = () => {
   } else if (!schoolDesc.value) {
     Toast("请填写在校经历");
     return;
-  } else if (dayValue.value > dayOverValue.value) {
+  } else if (day.value > dayOver.value) {
     Toast("入学开始时间不能高于结束时间");
     return;
   }
   return true;
 };
+const checkForm2 = () => {
+  if (!companyName.value) {
+    Toast("请输入公司名称");
+    return;
+  } else if (!positionName.value) {
+    Toast("请输入担任职位");
+    return;
+  } else if (!beginTime.value) {
+    Toast("请选择开始时间");
+    return;
+  } else if (!overTime.value) {
+    Toast("请选择结束时间");
+    return;
+  } else if (!positonDesc.value) {
+    Toast("请填写工作描述");
+    return;
+  } else if (beginTime.value > overTime.value) {
+    Toast("实习开始时间不能高于结束时间");
+    return;
+  }
+  return true;
+};
+const checkForm3 = () => {
+  if (!companyName.value) {
+    Toast("请输入项目名称");
+    return;
+  } else if (!positionName.value) {
+    Toast("请输入项目职位");
+    return;
+  } else if (!beginTime.value) {
+    Toast("请选择开始时间");
+    return;
+  } else if (!overTime.value) {
+    Toast("请选择结束时间");
+    return;
+  } else if (!projectDes.value) {
+    Toast("请填写项目描述");
+    return;
+  } else if (!projectStar.value) {
+    Toast("请填写取得成就");
+    return;
+  } else if (beginTime.value > overTime.value) {
+    Toast("实习开始时间不能高于结束时间");
+    return;
+  }
+  return true;
+};
 //清空
-const clearKeep=()=>{
-}
+const clearKeep = () => {
+  setSchool({});
+  setMajor({});
+};
 </script>
 <style lang="scss" scoped>
 .edit-page {
@@ -415,5 +607,10 @@ const clearKeep=()=>{
 .h-55 {
   width: 100%;
   height: 5.5rem;
+}
+.flex-bet {
+  display: flex;
+  gap: 3rem;
+  // justify-content:;
 }
 </style>

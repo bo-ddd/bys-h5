@@ -5,14 +5,14 @@
         <div class="fs-20 color-black">{{title}}</div>
       </template>
 
-      <template #right-icon>
+      <template v-if="params.data.length<maxLength" #right-icon>
         <van-icon @click="to(params.name)" name="add-o" class="search-icon" size="2rem" />
       </template>
     </van-cell>
     <template v-if="params.name=='education'">
       <div v-for="item in params.data" :key="item.userEducationId">
         <div class="plr-15">
-          <van-cell class="ptb-10" is-link>
+          <van-cell class="ptb-10" is-link @click="to(params.name,item.userEducationId)">
             <template #title>
               <div class="fs-18">{{item.schoolName}}</div>
               <div class="fs-12 mt-5 color-gray">{{item.education}}-{{item.professional}}</div>
@@ -28,14 +28,14 @@
             </template>
           </van-cell>
         </div>
-        <div class="plr-15 pb-15 fs-14 color-gray">{{item.schoolExp}}这是一些补充内容</div>
+        <div class="plr-15 pb-15 fs-14 color-gray">{{item.schoolExp}}</div>
       </div>
     </template>
 
     <template v-if="params.name=='internship'">
       <div v-for="item in params.data" :key="item.userEducationId">
         <div class="plr-15">
-          <van-cell class="ptb-10" is-link>
+          <van-cell class="ptb-10" is-link @click="to(params.name,item.internShipId)">
             <template #title>
               <div class="fs-18">{{item.companyName}}</div>
               <div class="fs-12 mt-5 color-gray">{{item.positionName}}</div>
@@ -51,13 +51,13 @@
             </template>
           </van-cell>
         </div>
-        <div class="plr-15 pb-15 fs-14 color-gray">{{item.internShipDes}}这是一些补充内容</div>
+        <div class="plr-15 pb-15 fs-14 color-gray">{{item.internShipDes}}</div>
       </div>
     </template>
     <template v-if="params.name=='project'">
       <div v-for="item in params.data" :key="item.userEducationId">
         <div class="plr-15">
-          <van-cell class="ptb-10" is-link>
+          <van-cell class="ptb-10" is-link  @click="to(params.name,item.projectId)">
             <template #title>
               <div class="fs-18">{{item.projectName}}</div>
               <div class="fs-12 mt-5 color-gray">{{item.positionName}}</div>
@@ -73,8 +73,8 @@
             </template>
           </van-cell>
         </div>
-        <div class="plr-15 pb-15 fs-14 color-gray">{{item.projectDes}}这是一些补充内容</div>
-        <div class="plr-15 pb-15 fs-14 color-gray">{{item.projectStar}}这是一些补充内容</div>
+        <div class="plr-15 pb-15 fs-14 color-gray">{{item.projectDes}}</div>
+        <div class="plr-15 pb-15 fs-14 color-gray">{{item.projectStar}}</div>
       </div>
     </template>
   </div>
@@ -89,14 +89,16 @@ const props = defineProps<{
     name: string;
     data: any;
   };
+  maxLength: number;
 }>();
-const { title, params } = toRefs(props);
+const { title, params, maxLength } = toRefs(props);
 
-const to = function (name: any) {
+const to = function (name: any, id: number) {
   router.push({
     path: "/editInfo",
     query: {
       editName: name,
+      infoId: id,
     },
   });
 };
@@ -160,7 +162,7 @@ const to = function (name: any) {
 .color-black {
   color: #000;
 }
-.mt-5{
+.mt-5 {
   margin-top: 0.5rem;
 }
 </style>

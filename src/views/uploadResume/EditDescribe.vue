@@ -98,8 +98,6 @@ const reviseDesc = async function () {
   if (res.code == 200) {
     Toast.success("更新成功");
     to("/resumeDetails");
-    setSchool({});
-    setMajor({});
   }
 };
 const onClickLeft1 = () => history.back();

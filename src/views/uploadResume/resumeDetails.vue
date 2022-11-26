@@ -5,11 +5,11 @@
       <van-cell to="/personalInfo" is-link class="cell-bottom pad-25-15">
         <template #title>
           <div class="gap-10 align-start">
-            <img class="img-15" :src="parseAssetFile('icon-avater1.png')" />
+            <img class="img-15 bord-rad-100" :src="userLogoUrl?userLogoUrl:parseAssetFile('icon-avater1.png')" />
             <div class="color-gray">
               <div class="fs-22 color-black mt-5">{{userName}}</div>
-              <div class="fs-16 mt-5">{{userSchool}}</div>
-              <div class="fs-16">{{userProfessional}} <span v-if="userProfessional&&userEducation">|</span> {{userEducation}}</div>
+              <div class="fs-14 mt-10">{{userSchoolName}}</div>
+              <div class="fs-14">{{userProfessional}} <span v-if="userProfessional&&userEducation">|</span> {{userEducation}}</div>
             </div>
           </div>
         </template>
@@ -44,9 +44,9 @@
         </template>
       </van-cell>
 
-      <InfoCard class="mt-10" title="教育经历" :params="{name:'education',data:educationData}"></InfoCard>
-      <InfoCard class="mt-10" title="实习经历" :params="{name:'internship',data:internShipData}"></InfoCard>
-      <InfoCard class="mt-10" title="项目经历" :params="{name:'project',data:projectnData}"></InfoCard>
+      <InfoCard class="mt-10" title="教育经历" :maxLength="3" :params="{name:'education',data:educationData}"></InfoCard>
+      <InfoCard class="mt-10" title="实习经历" :maxLength="5" :params="{name:'internship',data:internShipData}"></InfoCard>
+      <InfoCard class="mt-10" title="项目经历" :maxLength="5" :params="{name:'project',data:projectnData}"></InfoCard>
       <EditCard class="mt-10" title="校园实践" :params="{name:'campus',text:userSchoolPractice}">{{userSchoolPractice}}</EditCard>
       <EditCard class="mt-10" title="专业技能" :params="{name:'skill',text:userProfessionalSkill}">{{userProfessionalSkill}}</EditCard>
       <EditCard class="mt-10" title="获奖情况" :params="{name:'prize',text:userStar}">{{userStar}}</EditCard>
@@ -101,7 +101,9 @@ const clearKeep = function () {
   scrollTop.value = 0;
 };
 const userName = ref("");
+const userLogoUrl=ref("");
 const userSchool = ref("");
+const userSchoolName = ref("");
 const userProfessional = ref("");
 const userEducation = ref("");
 const userSchoolPractice = ref("");
@@ -118,8 +120,10 @@ const getExperience = async () => {
   });
   if (res.code == 200) {
     userName.value = res.data.userName;
+    userLogoUrl.value=res.data.userLogoUrl;
     userSchool.value = res.data.userSchool;
-    userProfessional.value = res.data.userProfessional;
+    userSchoolName.value=res.data.userSchoolName;
+    userProfessional.value = res.data.userProfessionalName;
     userEducation.value = res.data.userEducation;
     userSchoolPractice.value = res.data.userSchoolPractice;
     userProfessionalSkill.value = res.data.userProfessionalSkill;
@@ -244,5 +248,8 @@ const getExperience = async () => {
 }
 .mt-15 {
   margin-top: 1.5rem;
+}
+.bord-rad-100 {
+  border-radius: 100%;
 }
 </style>

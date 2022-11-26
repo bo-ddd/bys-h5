@@ -242,7 +242,7 @@ let formatData = (data: any[], pageSize: number): any[] => {
           display: flex;
           flex-wrap: wrap;
           justify-content: space-between;
-          max-width: 39rem;
+          max-width:39rem;
           gap: 0 1.2rem;
         }
 

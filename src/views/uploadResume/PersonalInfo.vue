@@ -117,7 +117,7 @@
           <template #label>
             <div class="just-between">
               <div class="fs-16 color-bl">
-                <span v-if="userSchool.name">{{userSchool.name}}</span>
+                <span v-if="userSchool">{{userSchool.name}}</span>
                 <span class="color-gr" v-else>请填写最高学历的学校</span>
               </div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
@@ -131,7 +131,7 @@
           <template #label>
             <div class="just-between">
               <div class="fs-16 color-bl">
-                <span v-if="userProfessional.name">{{userProfessional.name}}</span>
+                <span v-if="userProfessional">{{userProfessional.name}}</span>
                 <span class="color-gr" v-else>请填写最高学历的专业</span>
               </div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
@@ -244,9 +244,9 @@ import { useMajorStore } from "@/stores/majorChoice";
 import { useResumeStore } from "@/stores/resume";
 import { getScrollTop } from "vant/lib/utils";
 const { selectSchool } = storeToRefs(useSchoolStore());
-const { setSchool } = useSchoolStore();
+const { setSchool, clearSchool } = useSchoolStore();
 const { selectMajor } = storeToRefs(useMajorStore());
-const { setMajor } = useMajorStore();
+const { setMajor, clearMajor } = useMajorStore();
 
 //首次进入页面获取下拉列表
 onMounted(async () => {
@@ -307,7 +307,7 @@ const getInfo = async function () {
     (item: any) => item.name == res.data.userSex
   ).value;
   console.log(sexList);
-  avaterImg.value=res.data.userLogoUrl;
+  avaterImg.value = res.data.userLogoUrl;
   userBirthday.value = res.data.userBirthday.slice(0, 10);
   userNational.value = res.data.userNationalName;
   nationValue.value = res.data.userNational;
@@ -361,8 +361,8 @@ const clearKeep = function () {
   //重新获取用户信息
   getInfo();
   //清空stores
-  setSchool({});
-  setMajor({});
+  clearSchool();
+  clearMajor();
 };
 //姓名
 const userName = ref("");
@@ -404,7 +404,7 @@ const setDay = (value: any) => {
 };
 const formatDay = (value: any) => {
   const dayValue = value.toLocaleDateString().split("/");
-  
+
   if (dayValue[1].length == 1) {
     dayValue[1] = 0 + dayValue[1];
   }
@@ -478,14 +478,10 @@ const userSchool: any = ref("");
 const userProfessional: any = ref("");
 const getSchoolInfo = () => {
   //获取学校
-  userSchool.value =
-    JSON.stringify(selectSchool.value) !== "{}"
-      ? selectSchool.value
-      : userSchool.value;
-  userProfessional.value =
-    JSON.stringify(selectMajor.value) !== "{}"
-      ? selectMajor.value
-      : userProfessional.value;
+  userSchool.value = selectSchool.value ? selectSchool.value : userSchool.value;
+  userProfessional.value = selectMajor.value
+    ? selectMajor.value
+    : userProfessional.value;
 };
 //保存信息
 const keepInfo = function () {
@@ -513,7 +509,7 @@ const updateUserInfo = async () => {
   if (res.code == 200) {
     Toast.success("更新成功");
     to("/resumeDetails");
-  }else{
+  } else {
     Toast.fail(res.msg);
   }
 };

@@ -169,8 +169,8 @@ import { useSchoolStore } from "@/stores/schoolChoice";
 import { useMajorStore } from "@/stores/majorChoice";
 const { selectSchool } = storeToRefs(useSchoolStore());
 const { selectMajor } = storeToRefs(useMajorStore());
-const { setSchool } = useSchoolStore();
-const { setMajor } = useMajorStore();
+const { setSchool,clearSchool } = useSchoolStore();
+const { setMajor,clearMajor } = useMajorStore();
 const use = useResumeStore();
 const route: any = useRoute();
 const router = useRouter();
@@ -188,9 +188,11 @@ const setTitle = function () {
   }
 };
 onMounted(() => {
-  getSchoolInfo();
   if (route.query.infoId) {
     getEditInfo(route.query.infoId);
+  }else{
+
+    getSchoolInfo();
   }
   getEducationrList();
   setTitle();
@@ -210,15 +212,23 @@ const deleteInfo = () => {
       let deleteApi: ((payload: {}) => any) | any;
       if (routeName.value == "education") {
         deleteApi = use.delEducation;
-      } else if (routeName.value == "internship") {
-        deleteApi = use.delInternShip;
-      } else if (routeName.value == "project") {
-        deleteApi = use.delProject;
-      }
       res = await deleteApi({
         userId: 10000,
         userEducationId: Number(route.query.infoId),
       });
+      } else if (routeName.value == "internship") {
+        deleteApi = use.delInternShip;
+      res = await deleteApi({
+        userId: 10000,
+        internShipId: Number(route.query.infoId),
+      });
+      } else if (routeName.value == "project") {
+        deleteApi = use.delProject;
+      res = await deleteApi({
+        userId: 10000,
+        projectId: Number(route.query.infoId),
+      });
+      }
       if (res.code == 200) {
         Toast.success({
           message: "更新成功666!",
@@ -244,16 +254,24 @@ const getEditInfo = async (id: number) => {
       console.log(infoData);
       day.value = infoData.startTime.slice(0, 10);
       dayOver.value = infoData.endTime.slice(0, 10);
-      school.value = {
+      school.value =selectSchool.value?selectSchool.value:{
         name: infoData.schoolName,
         value: infoData.schoolId,
       };
-      major.value = {
+      console.log('----');
+      console.log(selectSchool);
+      
+      console.log(selectSchool.value?selectSchool.value:{
+        name: infoData.schoolName,
+        value: infoData.schoolId,
+      });
+      
+      major.value = selectMajor.value?selectMajor.value:{
         name: infoData.professional,
         value: infoData.professionalId,
       };
       education.value = infoData.education;
-      educationValue;
+      educationValue.value=infoData.userEducationId;
       schoolDesc.value = infoData.schoolExp;
     }
   } else if (routeName.value == "internship") {
@@ -302,10 +320,10 @@ const editInfo = async () => {
   } else if (routeName.value == "internship") {
     res = await use.modifyInternShip({
       companyName: companyName.value, //公司名称 ,
-      endTime: "2020-11-22", //结束时间 ,
+      endTime: overTime.value, //结束时间 ,
       internShipDes: positonDesc.value, // 职位描述 ,
       positionName: positionName.value, //职位名称 ,
-      startTime: "2020-11-22", //开始时间 ,
+      startTime: beginTime.value, //开始时间 ,
       userId: 10000, //用户id
       internShipId: route.query.infoId, //用户教育经历id ,
     });
@@ -332,9 +350,11 @@ const school: any = ref("");
 const major: any = ref("");
 const getSchoolInfo = () => {
   //获取学校
-  school.value = selectSchool.value;
+  console.log(selectSchool.value);
+  
+  school.value = selectSchool.value?selectSchool.value:school.value;
   //获取专业
-  major.value = selectMajor.value;
+  major.value = selectMajor.value?selectMajor.value:major.value;
 };
 //学历
 const show = ref(false);
@@ -384,6 +404,8 @@ const setDay = (value: any) => {
     day.value = setDayFormat(value);
   } else if (routeName.value == "internship") {
     beginTime.value = setDayFormat(value);
+    console.log(beginTime.value);
+    
   }
   show2.value = false;
 };
@@ -446,10 +468,10 @@ const addEducationApi = async function () {
 const addInternShipApi = async function () {
   let res = await use.addInternShip({
     companyName: companyName.value, //公司名称 ,
-    endTime: "2020-11-22", //结束时间 ,
+    endTime: overTime.value, //结束时间 ,
     internShipDes: positonDesc.value, // 职位描述 ,
     positionName: positionName.value, //职位名称 ,
-    startTime: "2020-11-22", //开始时间 ,
+    startTime: beginTime.value, //开始时间 ,
     userId: 10000, //用户id
   });
   if (res.code == 200) {
@@ -559,8 +581,9 @@ const checkForm3 = () => {
 };
 //清空
 const clearKeep = () => {
-  setSchool({});
-  setMajor({});
+  // setSchool('');
+  clearSchool()
+  clearMajor();
 };
 </script>
 <style lang="scss" scoped>

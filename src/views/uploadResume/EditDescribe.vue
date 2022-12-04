@@ -124,8 +124,6 @@ const to = (path: string) => {
     :deep(.van-field__control)::placeholder {
       font-size: 1.2rem;
     }
-    :deep(.van-field__control) {
-    }
   }
   .foot-box {
     width: 100%;

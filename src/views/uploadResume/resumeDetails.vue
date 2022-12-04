@@ -54,7 +54,7 @@
       <InfoCard
         class="mt-10"
         title="教育经历"
-        :maxLength="3"
+        :maxLength="4"
         :params="{name:'education',data:educationData}"
       ></InfoCard>
       <InfoCard

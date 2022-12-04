@@ -25,6 +25,11 @@
             <div class="mt-20">北京市海淀区中航广场矮楼</div>
             <div class="info-title mt-20">企业简介</div>
             <div class="mt-20">
+              字节跳动成立于2012年3月，公司使命为“I
+              字节跳动成立于2012年3月，公司使命为“I
+              字节跳动成立于2012年3月，公司使命为“I
+              字节跳动成立于2012年3月，公司使命为“I
+              字节跳动成立于2012年3月，公司使命为“I
               字节跳动成立于2012年3月，公司使命为“InspireCreativity,Enrich Life（激发创造，丰富生活）”。公司业务覆盖150个国家和地区、75个语种，拥有近10万名员工。
               <br />字节跳动在全球推出了多款有影响的产品，包括今日头条、抖音、西瓜视频、飞书、TikTok、Lark、Helo等。截止2020年8月，字节跳动旗下产品全球月活跃用户数超过15亿。
             </div>
@@ -109,6 +114,7 @@ let jump = (url: string) => {
 :deep(.van-tabs__content) {
   padding: 2rem;
   background-color: white;
+
 }
 
 .com-page {
@@ -118,6 +124,8 @@ let jump = (url: string) => {
   grid-template-rows: 4.6rem auto;
 }
 .content {
+  // display: grid;
+  // grid-template-rows: 10rem auto;
   height: 100%;
   overflow-y: scroll;
   .info-head {

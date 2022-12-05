@@ -186,4 +186,11 @@ export default {
      starPosition: (params: {}) => {
         return axios.post('/phone/starPosition', params, postConfig)
     },
+    /**
+    * 取消收藏企业
+    * @returns 
+    */
+     delStarPosition: (params: {}) => {
+        return axios.post('/phone/delStarPosition', params, postConfig)
+    },
 }

@@ -48,7 +48,7 @@
                   <div class="item-right">
                     <div class="num">{{item.positionMonthMoney}}</div>
                     <div class="btn mt-20">
-                      <van-button type="primary" block>申请</van-button>
+                      <van-button type="primary" size="small">申请</van-button>
                     </div>
                   </div>
                 </div>
@@ -68,13 +68,21 @@
         <div>分享</div>
       </div>
       <div class="foot-right">
-        <van-button type="primary" block @click="starPosition">收藏</van-button>
+        <div
+          @click="delStarPosition"
+          class="border-l-gray flex-column h-50"
+          v-if="companyInfo.isStar"
+        >
+          <van-icon name="star-o" size="2.5rem" color="#666666" />
+          <span>已收藏</span>
+        </div>
+        <van-button v-else type="primary" block @click="starPosition">收藏</van-button>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { Toast } from 'vant';
+import { Toast } from "vant";
 import { onMounted, reactive, ref } from "vue";
 import { parseAssetFile } from "@/assets/util";
 import { useRouter, useRoute } from "vue-router";
@@ -88,18 +96,33 @@ let route = useRoute();
 let jump = (url: string) => {
   router.push({ path: url });
 };
-let companyInfo = reactive({});
+interface CompanyInfo {
+  companyAddr: string;
+  companyFullName: string;
+  companyId: number;
+  companyIndustry: string;
+  companyIntroducation: string;
+  companyLogoUrl: string;
+  companyName: string;
+  companyNature: string;
+  companySize: string;
+  companyUrl: string;
+  isStar: boolean;
+}
+let companyInfo = reactive({}) as CompanyInfo;
 const getComInfo = async function () {
   let companyId = Number(route.query.componyId);
   let res = await use.getCompany({
     companyId,
+    userId:10000
   });
   if (res.code == 200 && res.data) {
     Object.assign(companyInfo, res.data);
     positionLength.value = res.data.positionList.length;
   }
 };
-let positionLength = ref(0);
+let positionLength = ref(0); //企业在招职位数量
+let position = ref(true);
 onMounted(() => {
   getComInfo();
 });
@@ -108,9 +131,20 @@ const starPosition = async () => {
   let companyId = Number(route.query.componyId);
   let res = await use.starPosition({ companyId, userId: 10000 });
   if (res.code == 200) {
-    Toast.success('收藏成功');
-  }else{
-    Toast.fail('收藏失败');
+    Toast.success("收藏成功");
+    companyInfo.isStar = true;
+  } else {
+    Toast.fail("收藏失败");
+  }
+};
+const delStarPosition = async () => {
+  let companyId = Number(route.query.componyId);
+  let res = await use.delStarPosition({ companyId, userId: 10000 });
+  if (res.code == 200) {
+    Toast.success("取消收藏");
+    companyInfo.isStar = false;
+  } else {
+    Toast.fail("取消失败");
   }
 };
 </script>
@@ -134,6 +168,7 @@ const starPosition = async () => {
   .info-head {
     background-color: #edf0f9;
     padding: 2rem;
+    box-sizing: border-box;
     .title {
       h1 {
         font-size: 3rem;
@@ -154,9 +189,9 @@ const starPosition = async () => {
   .info-body {
     font-size: 1.4rem;
     color: #666666;
-    :deep(.van-tabs__content) {
-      min-height: calc(100vh - 31rem);
-    }
+    // :deep(.van-tabs__content) {
+      // min-height: calc(100vh - 31rem);
+    // }
     :deep(.van-tabs__wrap) {
       position: sticky;
       top: -0.1rem;
@@ -216,17 +251,19 @@ const starPosition = async () => {
           background-color: #f0f1f3;
         }
         .num {
-          width: 5.2rem;
+          // width: 5.2rem;
           text-align: right;
           color: #ea5539;
           font-size: 1.4rem;
           font-weight: 700;
         }
         .btn {
-          :deep(.van-button--block) {
-            width: 100%;
-            height: 100%;
-            padding: 0.6rem 0;
+          text-align: right;
+          :deep(.van-button) {
+            // width: 100%;
+            // height: 100%;
+            font-size: 1.4rem;
+            padding: 0.6rem 1rem;
             font-weight: 700;
           }
         }
@@ -245,6 +282,7 @@ const starPosition = async () => {
   position: absolute;
   box-sizing: border-box;
   background-color: #fff;
+  color: #707070;
   bottom: 0;
   padding: 1rem 1rem;
   display: grid;
@@ -260,15 +298,28 @@ const starPosition = async () => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #707070;
     img {
       width: 2.5rem;
       height: 2.5rem;
       display: block;
     }
   }
+  // .foot-right {
+  // }
 }
 .mb-10 {
   margin-bottom: 1rem;
+}
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.border-l-gray {
+  border-left: 1px solid #66666629;
+}
+.h-50 {
+  height: 5rem;
 }
 </style>

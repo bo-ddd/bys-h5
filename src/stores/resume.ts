@@ -96,5 +96,9 @@ export const useResumeStore = defineStore('resume', () => {
     const starPosition = (payload: {}) => {
         return Api.starPosition(payload) as any
     }
-    return { starPosition,getCompany, delProject, modifyProject, modifyInternShip, delInternShip, modifyEducation, delEducation, addInternShip, addEducation, addProject, modifyUserStar, modifyBaseData, getSexDrop, getEducationApi, getNationalDrop, getSchoolDrop, getProfessionalDrop, updateLogo, searchSchool, seachProfessinal, getInternShip, getEducation, getOnlineResume, getProject }
+    //取消收藏企业
+    const delStarPosition = (payload: {}) => {
+        return Api.delStarPosition(payload) as any
+    }
+    return { delStarPosition,starPosition,getCompany, delProject, modifyProject, modifyInternShip, delInternShip, modifyEducation, delEducation, addInternShip, addEducation, addProject, modifyUserStar, modifyBaseData, getSexDrop, getEducationApi, getNationalDrop, getSchoolDrop, getProfessionalDrop, updateLogo, searchSchool, seachProfessinal, getInternShip, getEducation, getOnlineResume, getProject }
 })

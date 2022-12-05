@@ -65,7 +65,7 @@
               <van-swipe-item class="ptl-20" v-for="item in companyList">
                 <div class="swipe-enterprise_box">
                   <div class="enterprise-item_box">
-                    <div v-for="chil in item.child" @click="jump('/companyDetails')">
+                    <div v-for="chil in item.child" @click="to('/companyDetails',chil.companyId)">
                       <img src="@/assets/images/icon-invitation.png">
                     </div>
                   </div>
@@ -119,7 +119,14 @@ let router = useRouter();
 let jump = (url: string) => {
   router.push({ path: url })
 }
-
+let to=(url:string,id:number)=>{
+  router.push({
+    path:url,
+    query:{
+      componyId:id
+    }
+  })
+}
 let isOpen = ref(false);
 let isOpenFn = () => {
   isOpen.value = isOpen.value == true ? false : true;

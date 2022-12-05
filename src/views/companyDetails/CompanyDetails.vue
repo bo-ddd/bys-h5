@@ -4,11 +4,11 @@
     <div class="content">
       <div class="info-head just-between">
         <div class="title">
-          <h1>易点云</h1>
-          <div class="desc mb-20">互联网/IT/计算机服务</div>
+          <h1>{{companyInfo.companyFullName}}</h1>
+          <div class="desc mb-20">{{companyInfo.companyIndustry}}</div>
         </div>
         <div class="avater">
-          <img :src="parseAssetFile('icon-com_avater.png')" />
+          <img :src="companyInfo.companyLogoUrl" />
         </div>
       </div>
       <div class="info-body">
@@ -16,66 +16,43 @@
           <van-tab>
             <template #title>企业信息</template>
             <div class="info-title mt-10">基本信息</div>
-            <div class="mt-20">企业全称：北京字节跳动网络有限公司</div>
-            <div class="mt-10">企业性质：民营/私营/个体企业</div>
-            <div class="mt-10">公司规模：1000人以上</div>
-            <div class="mt-10">所属行业：互联网/IT,在线教育</div>
-            <div class="mt-10">企业官网：job.bytedance.com</div>
+            <div class="mt-20">企业全称：{{companyInfo.companyFullName}}</div>
+            <div class="mt-10">企业性质：{{companyInfo.companyNature }}</div>
+            <div class="mt-10">公司规模：{{companyInfo.companySize }}</div>
+            <div class="mt-10">所属行业：{{companyInfo.companyIndustry }}</div>
+            <div class="mt-10">企业官网：{{companyInfo.companyUrl }}</div>
             <div class="info-title mt-20">企业地址</div>
-            <div class="mt-20">北京市海淀区中航广场矮楼</div>
+            <div class="mt-20">{{companyInfo.companyAddr }}</div>
             <div class="info-title mt-20">企业简介</div>
-            <div class="mt-20">
-              字节跳动成立于2012年3月，公司使命为“I
-              字节跳动成立于2012年3月，公司使命为“I
-              字节跳动成立于2012年3月，公司使命为“I
-              字节跳动成立于2012年3月，公司使命为“I
-              字节跳动成立于2012年3月，公司使命为“I
-              字节跳动成立于2012年3月，公司使命为“InspireCreativity,Enrich Life（激发创造，丰富生活）”。公司业务覆盖150个国家和地区、75个语种，拥有近10万名员工。
-              <br />字节跳动在全球推出了多款有影响的产品，包括今日头条、抖音、西瓜视频、飞书、TikTok、Lark、Helo等。截止2020年8月，字节跳动旗下产品全球月活跃用户数超过15亿。
-            </div>
+            <div class="mt-20">{{companyInfo.companyIntroducation }}</div>
           </van-tab>
           <van-tab>
             <template #title>
               <div class="num-fa">
                 在招职位
-                <span class="num">0</span>
+                <span class="num">{{positionLength}}</span>
               </div>
             </template>
             <div class="info-list">
-              <div class="item just-between" @click="jump('/positionDetail')">
-                <div class="item-left">
-                  <div class="title">后台开发工程师</div>
-                  <div class="info mt-5">
-                    北京市-朝阳区
-                    <span>|</span>
-                    Java工程师
+              <div v-for="item in companyInfo.positionList" :key="item.positionId ">
+                <div class="item just-between" @click="jump('/positionDetail')">
+                  <div class="item-left">
+                    <div class="title">{{item.positionName}}</div>
+                    <div class="info mt-5">
+                      北京市-朝阳区
+                      <span>|</span>
+                      Java工程师
+                    </div>
+                    <div class="type mt-5">{{item.positionEducation }}</div>
                   </div>
-                  <div class="type mt-5">本科</div>
-                </div>
-                <div class="item-right">
-                  <div class="num">16-24k</div>
-                  <div class="btn mt-20">
-                    <van-button type="primary" block>申请</van-button>
-                  </div>
-                </div>
-              </div>
-              <van-divider :style="{ borderTop: '0.1rem solid #f4f4f4',marginTop:'2.5rem' }" />
-              <div class="item just-between">
-                <div class="item-left">
-                  <div class="title">后台开发工程师</div>
-                  <div class="info mt-5">
-                    北京市-朝阳区
-                    <span>|</span>
-                    Java工程师
-                  </div>
-                  <div class="type mt-5">本科</div>
-                </div>
-                <div class="item-right">
-                  <div class="num">16-24k</div>
-                  <div class="btn mt-20">
-                    <van-button type="primary" block>申请</van-button>
+                  <div class="item-right">
+                    <div class="num">{{item.positionMonthMoney}}</div>
+                    <div class="btn mt-20">
+                      <van-button type="primary" block>申请</van-button>
+                    </div>
                   </div>
                 </div>
+                <van-divider :style="{ borderTop: '0.1rem solid #f4f4f4',marginTop:'2.5rem' }" />
               </div>
             </div>
           </van-tab>
@@ -91,30 +68,56 @@
         <div>分享</div>
       </div>
       <div class="foot-right">
-        <van-button type="primary" block>收藏</van-button>
+        <van-button type="primary" block @click="starPosition">收藏</van-button>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { ref } from "vue";
+import { Toast } from 'vant';
+import { onMounted, reactive, ref } from "vue";
 import { parseAssetFile } from "@/assets/util";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
+import { useResumeStore } from "@/stores/resume"; //接口
 let onClickLeft1 = () => history.back();
 const active = ref(0);
 const container = ref(null);
-
+const use = useResumeStore();
 let router = useRouter();
-
+let route = useRoute();
 let jump = (url: string) => {
   router.push({ path: url });
+};
+let companyInfo = reactive({});
+const getComInfo = async function () {
+  let companyId = Number(route.query.componyId);
+  let res = await use.getCompany({
+    companyId,
+  });
+  if (res.code == 200 && res.data) {
+    Object.assign(companyInfo, res.data);
+    positionLength.value = res.data.positionList.length;
+  }
+};
+let positionLength = ref(0);
+onMounted(() => {
+  getComInfo();
+});
+
+const starPosition = async () => {
+  let companyId = Number(route.query.componyId);
+  let res = await use.starPosition({ companyId, userId: 10000 });
+  if (res.code == 200) {
+    Toast.success('收藏成功');
+  }else{
+    Toast.fail('收藏失败');
+  }
 };
 </script>
 <style lang="scss" scoped>
 :deep(.van-tabs__content) {
   padding: 2rem;
   background-color: white;
-
 }
 
 .com-page {
@@ -182,14 +185,14 @@ let jump = (url: string) => {
       }
       :deep(.van-tab--active) {
         color: #1989fa;
-        .num{
+        .num {
           color: #1989fa;
         }
       }
       :deep(.van-tabs__line) {
         background-color: #1989fa;
       }
-      :deep(.van-tab__text--ellipsis){
+      :deep(.van-tab__text--ellipsis) {
         overflow: visible;
       }
     }

@@ -172,4 +172,18 @@ export default {
      delProject: (params: {}) => {
         return axios.post('/phone/delProject', params, postConfig)
     },
+    /**
+    * 获取企业信息
+    * @returns 
+    */
+     getCompany: (params: {}) => {
+        return axios.post('/phone/getCompany', params, postConfig)
+    },
+    /**
+    * 收藏企业
+    * @returns 
+    */
+     starPosition: (params: {}) => {
+        return axios.post('/phone/starPosition', params, postConfig)
+    },
 }

@@ -88,6 +88,13 @@ export const useResumeStore = defineStore('resume', () => {
     const delInternShip = (payload: {}) => {
         return Api.delInternShip(payload) as any;
     }
-
-    return { delProject,modifyProject,modifyInternShip,delInternShip,modifyEducation, delEducation, addInternShip, addEducation, addProject, modifyUserStar, modifyBaseData, getSexDrop, getEducationApi, getNationalDrop, getSchoolDrop, getProfessionalDrop, updateLogo, searchSchool, seachProfessinal, getInternShip, getEducation, getOnlineResume, getProject }
+    //删除实习经历
+    const getCompany = (payload: {}) => {
+        return Api.getCompany(payload) as any;
+    }
+    //收藏企业
+    const starPosition = (payload: {}) => {
+        return Api.starPosition(payload) as any
+    }
+    return { starPosition,getCompany, delProject, modifyProject, modifyInternShip, delInternShip, modifyEducation, delEducation, addInternShip, addEducation, addProject, modifyUserStar, modifyBaseData, getSexDrop, getEducationApi, getNationalDrop, getSchoolDrop, getProfessionalDrop, updateLogo, searchSchool, seachProfessinal, getInternShip, getEducation, getOnlineResume, getProject }
 })

@@ -1,6 +1,6 @@
 <template>
-    <div class="layout">
 
+    <div class="layout" v-if="isLoding">
         <div class="router-view">
             <RouterView></RouterView>
         </div>
@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { useRouter,useRoute } from 'vue-router';
-import { ref } from 'vue'
+import { ref,onMounted } from 'vue'
 import { parseAssetFile } from '@/assets/util';
 let active = ref("/jobfairs");
 let router = useRouter();
@@ -33,6 +33,13 @@ if(route.path == '/'){
 }else{
     active.value = route.path;
 }
+
+
+ let isLoding = ref(false);
+
+onMounted(()=>{
+    isLoding.value = true;
+})
 
 let tabbar = [
     {

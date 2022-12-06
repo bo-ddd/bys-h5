@@ -14,4 +14,7 @@ export default {
     getSelectPosition:(params:any = {})=>{
         return axios.post(`/phone/selectPosition`,params,postConfig)
     },
+    getJobIntent:(params:any = {})=>{
+        return axios.post(`/phone/getJobIntent`,params,postConfig)
+    },
 }

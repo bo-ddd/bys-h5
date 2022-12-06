@@ -42,7 +42,7 @@ const jump = (src: string) => {
   router.push({ path: src })
 }
 
-let jobIndustry = (JSON.parse(localStorage.getItem('jobIndustry')!));
+let jobIndustry = (JSON.parse(localStorage.getItem('jobIndustry')!)                    );
 console.log(jobIndustry)
 
 let cardList = ref([])

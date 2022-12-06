@@ -9,6 +9,12 @@ export const useJobStore = defineStore('job', () => {
   const getCompanyIndustryList = (payload:any = {})=>{
       return Api.getCompanyIndustry(payload);
   };
+  const getPositionList = (payload:any = {})=>{
+      return Api.getPosition(payload);
+  };
+  const getSelectPositionList = (payload:any = {})=>{
+      return Api.getSelectPosition(payload);
+  };
 
-  return { getWishMoneyList,getCompanyIndustryList }
+  return { getWishMoneyList, getCompanyIndustryList, getPositionList, getSelectPositionList, }
 })

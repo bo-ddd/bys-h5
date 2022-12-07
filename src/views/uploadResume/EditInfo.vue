@@ -5,13 +5,13 @@
       <div v-if="routeName=='education'">
         <van-cell title="学校" is-link to="schoolList">
           <template #value>
-            <div v-if="!school.name">请选择</div>
+            <div v-if="!school">请选择</div>
             <div v-else class="color-gray">{{school.name}}</div>
           </template>
         </van-cell>
         <van-cell title="专业" is-link to="majorList">
           <template #value>
-            <div v-if="!major.name">请选择</div>
+            <div v-if="!major">请选择</div>
             <div v-else class="color-gray">{{major.name}}</div>
           </template>
         </van-cell>
@@ -23,14 +23,14 @@
         </van-cell>
         <van-cell title="入学时间" is-link @click="show2=true">
           <template #value>
-            <div v-if="!day">请选择</div>
-            <div v-else class="color-gray">{{day}}</div>
+            <div v-if="!beginTime">请选择</div>
+            <div v-else class="color-gray">{{beginTime}}</div>
           </template>
         </van-cell>
         <van-cell title="毕业时间" is-link @click="show3=true">
           <template #value>
-            <div v-if="!dayOver">请选择</div>
-            <div v-else class="color-gray">{{dayOver}}</div>
+            <div v-if="!overTime">请选择</div>
+            <div v-else class="color-gray">{{overTime}}</div>
           </template>
         </van-cell>
         <van-field
@@ -169,8 +169,8 @@ import { useSchoolStore } from "@/stores/schoolChoice";
 import { useMajorStore } from "@/stores/majorChoice";
 const { selectSchool } = storeToRefs(useSchoolStore());
 const { selectMajor } = storeToRefs(useMajorStore());
-const { setSchool } = useSchoolStore();
-const { setMajor } = useMajorStore();
+const { setSchool, clearSchool } = useSchoolStore();
+const { setMajor, clearMajor } = useMajorStore();
 const use = useResumeStore();
 const route: any = useRoute();
 const router = useRouter();
@@ -187,18 +187,42 @@ const setTitle = function () {
     title.value = "项目经历";
   }
 };
+const keepFlag = ref(false);
 onMounted(() => {
-  getSchoolInfo();
-  if (route.query.infoId) {
-    getEditInfo(route.query.infoId);
-  }
   getEducationrList();
-  setTitle();
+  // keepFlag.value = true; //缓存开关
 });
 const onClickLeft1 = () => {
   history.back();
   clearKeep();
 };
+onActivated(() => {
+  console.log("keep");
+  console.log(keepFlag.value);
+
+  if (!keepFlag.value) {
+    setTitle();
+    if (route.query.infoId) {
+      getEditInfo(route.query.infoId); //获取学校，专业，优先用户信息
+    }
+
+    keepFlag.value = true;
+  } else {
+    //获取学校和专业   优先从pina
+    getSchoolInfo();
+  }
+});
+onBeforeRouteLeave((to, from, next) => {
+  console.log(to.name);
+
+  if (to.name == "createResume") {
+    keepFlag.value = false;
+    console.log("false");
+  } else {
+    console.log("没离开");
+  }
+  next();
+});
 //删除经历
 const deleteInfo = () => {
   Dialog.confirm({
@@ -210,15 +234,23 @@ const deleteInfo = () => {
       let deleteApi: ((payload: {}) => any) | any;
       if (routeName.value == "education") {
         deleteApi = use.delEducation;
+        res = await deleteApi({
+          userId: 10000,
+          userEducationId: Number(route.query.infoId),
+        });
       } else if (routeName.value == "internship") {
         deleteApi = use.delInternShip;
+        res = await deleteApi({
+          userId: 10000,
+          internShipId: Number(route.query.infoId),
+        });
       } else if (routeName.value == "project") {
         deleteApi = use.delProject;
+        res = await deleteApi({
+          userId: 10000,
+          projectId: Number(route.query.infoId),
+        });
       }
-      res = await deleteApi({
-        userId: 10000,
-        userEducationId: Number(route.query.infoId),
-      });
       if (res.code == 200) {
         Toast.success({
           message: "更新成功666!",
@@ -242,18 +274,19 @@ const getEditInfo = async (id: number) => {
     if (res.code == 200) {
       let infoData = res.data[0];
       console.log(infoData);
-      day.value = infoData.startTime.slice(0, 10);
-      dayOver.value = infoData.endTime.slice(0, 10);
+      beginTime.value = infoData.startTime.slice(0, 10);
+      overTime.value = infoData.endTime.slice(0, 10);
       school.value = {
         name: infoData.schoolName,
         value: infoData.schoolId,
       };
+
       major.value = {
         name: infoData.professional,
         value: infoData.professionalId,
       };
       education.value = infoData.education;
-      educationValue;
+      educationValue.value = infoData.userEducationId;
       schoolDesc.value = infoData.schoolExp;
     }
   } else if (routeName.value == "internship") {
@@ -291,21 +324,21 @@ const editInfo = async () => {
   if (routeName.value == "education") {
     res = await use.modifyEducation({
       educationId: education.value,
-      endTime: day.value, //用户教育经历结束时间 ,
+      endTime: overTime.value, //用户教育经历结束时间 ,
       professionalId: Number(major.value.value), //专业id ,
       schoolExp: schoolDesc.value, //用户教育经历经验 ,
       schoolId: school.value.value, //学校id ,
-      startTime: dayOver.value, //用户教育经历开始时间 ,
+      startTime: beginTime.value, //用户教育经历开始时间 ,
       userEducationId: route.query.infoId, //用户教育经历id ,
       userId: 10000,
     });
   } else if (routeName.value == "internship") {
     res = await use.modifyInternShip({
       companyName: companyName.value, //公司名称 ,
-      endTime: "2020-11-22", //结束时间 ,
+      endTime: overTime.value, //结束时间 ,
       internShipDes: positonDesc.value, // 职位描述 ,
       positionName: positionName.value, //职位名称 ,
-      startTime: "2020-11-22", //开始时间 ,
+      startTime: beginTime.value, //开始时间 ,
       userId: 10000, //用户id
       internShipId: route.query.infoId, //用户教育经历id ,
     });
@@ -332,9 +365,13 @@ const school: any = ref("");
 const major: any = ref("");
 const getSchoolInfo = () => {
   //获取学校
-  school.value = selectSchool.value;
+  console.log(selectSchool.value);
+
+  school.value = selectSchool.value ? selectSchool.value : school.value;
   //获取专业
-  major.value = selectMajor.value;
+  console.log(selectMajor.value);
+
+  major.value = selectMajor.value ? selectMajor.value : major.value;
 };
 //学历
 const show = ref(false);
@@ -375,24 +412,16 @@ const setDayFormat = function (value: any) {
   const dayValue = value.toLocaleDateString().split("/");
   dayValue.pop();
   if (dayValue[1].length == 1) {
-    dayValue[1] = 0 + dayValue[1];
+    dayValue[1] = 0 + dayValue[1]
   }
   return dayValue.join("-");
 };
 const setDay = (value: any) => {
-  if (routeName.value == "education") {
-    day.value = setDayFormat(value);
-  } else if (routeName.value == "internship") {
     beginTime.value = setDayFormat(value);
-  }
   show2.value = false;
 };
 const setDay2 = (value: any) => {
-  if (routeName.value == "education") {
-    dayOver.value = setDayFormat(value);
-  } else if (routeName.value == "internship") {
     overTime.value = setDayFormat(value);
-  }
   show3.value = false;
 };
 const minDate = new Date(1970, 0);
@@ -430,11 +459,11 @@ const preservaInfo = () => {
 //确认添加教育
 const addEducationApi = async function () {
   let res = await use.addEducation({
-    endTime: day.value, //用户教育经历结束时间 ,
+    endTime: beginTime.value, //用户教育经历结束时间 ,
     professionalId: Number(major.value.value), //专业id ,
     schoolExp: schoolDesc.value, //用户教育经历经验 ,
     schoolId: school.value.value, //学校id ,
-    startTime: dayOver.value, //用户教育经历开始时间 ,
+    startTime: overTime.value, //用户教育经历开始时间 ,
     educationId: educationValue.value, //用户教育经历id ,
     userId: 10000, //用户id
   });
@@ -446,10 +475,10 @@ const addEducationApi = async function () {
 const addInternShipApi = async function () {
   let res = await use.addInternShip({
     companyName: companyName.value, //公司名称 ,
-    endTime: "2020-11-22", //结束时间 ,
+    endTime: overTime.value, //结束时间 ,
     internShipDes: positonDesc.value, // 职位描述 ,
     positionName: positionName.value, //职位名称 ,
-    startTime: "2020-11-22", //开始时间 ,
+    startTime: beginTime.value, //开始时间 ,
     userId: 10000, //用户id
   });
   if (res.code == 200) {
@@ -475,11 +504,10 @@ const addProjectApi = async function () {
 //清空学校和专业数据
 const clearData = () => {
   Toast.success({
-    message: "更新成功666!",
+    message: "更新成功!",
     duration: 500,
   });
-  setSchool({});
-  setMajor({});
+  clearKeep();
   router.push({
     path: "/resumeDetails",
   });
@@ -559,8 +587,24 @@ const checkForm3 = () => {
 };
 //清空
 const clearKeep = () => {
-  setSchool({});
-  setMajor({});
+  // setSchool('');
+  keepFlag.value = false;
+  clearSchool();
+  clearMajor();
+  day.value = "";
+  schoolDesc.value = "";
+  school.value = "";
+  major.value = "";
+  dayOver.value = "";
+  education.value = "";
+  educationValue.value = "";
+  companyName.value = "";
+  overTime.value = "";
+  positonDesc.value = "";
+  positionName.value = "";
+  beginTime.value = "";
+  projectDes.value = "";
+  projectStar.value = "";
 };
 </script>
 <style lang="scss" scoped>

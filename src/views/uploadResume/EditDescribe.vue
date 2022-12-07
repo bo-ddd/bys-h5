@@ -37,7 +37,7 @@ const router = useRouter();
 const use = useResumeStore();
 const titleName = ref("");
 const infoData: any = reactive({});
-const message = ref("dsf");
+const message = ref("");
 const userHobby: any = ref(""); //用户兴趣爱好 ,
 const userProfessionalSkill: any = ref(""); //用户专业技能 ,
 const userSchoolPractice: any = ref(""); //用户校园实践 ,
@@ -123,8 +123,6 @@ const to = (path: string) => {
     flex-direction: column;
     :deep(.van-field__control)::placeholder {
       font-size: 1.2rem;
-    }
-    :deep(.van-field__control) {
     }
   }
   .foot-box {

@@ -109,7 +109,7 @@ interface CompanyInfo {
   companyUrl: string;
   isStar: boolean;
 }
-let companyInfo = reactive({}) as CompanyInfo;
+let companyInfo:any = reactive({}) as CompanyInfo;
 const getComInfo = async function () {
   let companyId = Number(route.query.componyId);
   let res = await use.getCompany({

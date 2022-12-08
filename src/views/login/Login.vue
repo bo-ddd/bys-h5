@@ -1,3 +1,45 @@
+<script setup lang="ts">
+import { ref } from "vue";
+import { useHomeStore } from "@/stores/home";
+import { Toast } from 'vant';
+import { useRouter } from 'vue-router';
+const router = useRouter();
+let userHome = useHomeStore();
+let phoneInput = ref();
+let smsCode = ref();
+const regPhone = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
+const pattern = regPhone;
+const submitLogin = async () => {
+    if (!regPhone.test(phoneInput.value)) return;
+    const res: any = await userHome.login({
+        phone: phoneInput.value,
+        smsCode: smsCode.value
+    })
+    if (res.code == 200) {
+        Toast({
+            message: '登录成功',
+            position: 'top',
+        });
+        jump('/');
+    } else {
+        Toast({
+            message: res.msg,
+            position: 'top',
+        });
+    }
+}
+
+const getSmsFn = async () => {
+    const res = await userHome.getSms(phoneInput.value);
+    console.log(res);
+}
+
+const jump = (url: string) => {
+    router.push({ path: url })
+}
+
+</script>
+
 <template>
     <div class="login">
         <div class="login-wrap">
@@ -5,22 +47,35 @@
                 <h1>毕业申网络招聘平台</h1>
                 <span class="c-747474">学生求职火热进行中</span>
             </div>
-            <van-field clearable label-width="2rem" left-icon="phone-o" placeholder="请输入手机号" />
-            <van-field  center clearable  left-icon="closed-eye" placeholder="请输入短信验证码">
-                <template #button>
-                    <van-button size="small" type="primary">发送验证码</van-button>
-                </template>
-            </van-field>
-            <span class="c-747474">使用手机验证码即可登录</span>
-            <van-button type="primary" round >登录</van-button>
+
+            <van-form>
+                <van-cell-group inset>
+                    <van-field clearable label-width="2rem" left-icon="phone-o" v-model="phoneInput" name="validator"
+                        placeholder="请输入手机号" :rules="[{ pattern, message: '请输入正确手机号' }]" />
+
+                    <van-field center clearable v-model="smsCode" left-icon="closed-eye" placeholder="请输入短信验证码">
+                        <template #button>
+                            <van-button size="small" type="primary" @click="getSmsFn()">发送验证码</van-button>
+                        </template>
+                    </van-field>
+
+                    <div class="c-747474 mt-10">使用手机验证码即可登录</div>
+                </van-cell-group>
+                <div style="margin: 16px;">
+                    <van-button round block type="primary" native-type="submit" @click="submitLogin()">
+                        登录
+                    </van-button>
+                </div>
+            </van-form>
         </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
-:deep(.van-cell){
-    padding:1.8rem 0;
+:deep(.van-cell) {
+    padding: 1.8rem 0;
 }
+
 .login {
     .login-wrap {
         position: absolute;
@@ -30,7 +85,7 @@
         transform: translate(-50%, -50%);
         display: flex;
         flex-direction: column;
-        gap:2.8rem 0;
+        gap: 2.4rem 0;
     }
 }
 </style>

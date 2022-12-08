@@ -8,7 +8,7 @@
           <div>
             <van-button type="primary" class="ft">微信账号快捷登录</van-button>
           </div>
-          <div class="c-747474" @click="jump('login')">手机号码验证登录</div>
+          <div class="c-747474" @click="to('/login')">手机号码验证登录</div>
         </div>
       </div>
     </van-popup>

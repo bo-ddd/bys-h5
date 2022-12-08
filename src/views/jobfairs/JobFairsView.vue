@@ -47,7 +47,7 @@
               <van-swipe-item class="ptl-20" v-for="item in positionList">
                 <div class="swipe-item_box">
                   <div @click="jump('/positionLIst')" v-for="child in item.child">
-                    <img src="@/assets/images/icon-collection.png" alt="">
+                    <img :src="child.positionUrl" alt="">
                     <p class="pt-6">{{ child.positionName }}</p>
                   </div>
                 </div>
@@ -66,9 +66,12 @@
                 <div class="swipe-enterprise_box">
                   <div class="enterprise-item_box">
                     <div v-for="chil in item.child" @click="jump('/companyDetails')">
+                      <img :src="chil.companyUrl">
+                    <div v-for="chil in item.child" @click="to('/companyDetails',chil.companyId)">
                       <img src="@/assets/images/icon-invitation.png">
                     </div>
                   </div>
+                </div>
                 </div>
               </van-swipe-item>
             </van-swipe>
@@ -95,7 +98,7 @@
                 <div class="swipe-enterprise_box">
                   <div class="enterprise-item_box">
                     <div v-for="child in item.child" @click="jump('/companyList')">
-                      <img src="@/assets/images/icon-invitation.png" alt="">
+                      <img :src="child" alt="">
                     </div>
                   </div>
                 </div>
@@ -119,7 +122,14 @@ let router = useRouter();
 let jump = (url: string) => {
   router.push({ path: url })
 }
-
+let to=(url:string,id:number)=>{
+  router.push({
+    path:url,
+    query:{
+      componyId:id
+    }
+  })
+}
 let isOpen = ref(false);
 let isOpenFn = () => {
   isOpen.value = isOpen.value == true ? false : true;
@@ -167,7 +177,7 @@ let formatData = (data: any[], pageSize: number): any[] => {
     padding-top: .6rem;
   }
 
-  .filx-column_center {
+                                  .filx-column_center {
     display: flex;
     justify-content: center;
     align-items: center;

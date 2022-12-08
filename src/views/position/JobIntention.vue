@@ -91,6 +91,11 @@ import { Toast } from 'vant';
 
 let useJob = useJobStore();
 
+const getJobIntent = async () => {
+    let res = await useJob.getJobIntentList({userId:10000});
+    console.log('res', res);
+}
+getJobIntent()
 let jobIndustry = JSON.parse(localStorage.getItem('jobIndustry')!);
 if (jobIndustry) {
     let { job: jobInfo,

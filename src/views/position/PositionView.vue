@@ -42,7 +42,8 @@ const jump = (src: string) => {
   router.push({ path: src })
 }
 
-let jobIndustry = (JSON.parse(localStorage.getItem('jobIndustry')!)                    );
+
+let jobIndustry = (JSON.parse(localStorage.getItem('jobIndustry')!));
 console.log(jobIndustry)
 
 let cardList = ref([])
@@ -70,12 +71,10 @@ let wishPositionRight: string = '';//职业右
 jobIndustry.job.job.forEach((item: any) => {
   wishPositionRight += item.children;
 });
-
 const getSelectPosition = async () => {
   let res = await useJob.getSelectPositionList({
   "userId": 100000,
   "wishMoneyLeft": 1,
-
 });
   console.log(res);
 }

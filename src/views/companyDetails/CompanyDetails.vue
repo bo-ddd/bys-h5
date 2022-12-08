@@ -46,7 +46,10 @@
                     <div class="type mt-5">{{item.positionEducation }}</div>
                   </div>
                   <div class="item-right">
-                    <div class="num">{{item.positionMonthMoney}}</div>
+                    <div class="num">
+                      <span v-if="item.positionMonthMoney">{{item.positionMonthMoney.split(',')[0].slice(0,-3)+'-'+item.positionMonthMoney.split(',')[1].slice(0,-3)}}k</span>
+                      <span v-else>{{item.positionMonth.split(',').join('-')}}元/天</span>
+                    </div>
                     <div class="btn mt-20">
                       <van-button type="primary" size="small">申请</van-button>
                     </div>
@@ -58,9 +61,7 @@
           </van-tab>
         </van-tabs>
       </div>
-      <!-- </van-sticky> -->
       <div class="h-70"></div>
-      <!-- </div> -->
     </div>
     <div class="foot-box">
       <div class="foot-left">
@@ -161,8 +162,6 @@ const delStarPosition = async () => {
   grid-template-rows: 4.6rem auto;
 }
 .content {
-  // display: grid;
-  // grid-template-rows: 10rem auto;
   height: 100%;
   overflow-y: scroll;
   .info-head {
@@ -189,9 +188,6 @@ const delStarPosition = async () => {
   .info-body {
     font-size: 1.4rem;
     color: #666666;
-    // :deep(.van-tabs__content) {
-      // min-height: calc(100vh - 31rem);
-    // }
     :deep(.van-tabs__wrap) {
       position: sticky;
       top: -0.1rem;
@@ -251,17 +247,14 @@ const delStarPosition = async () => {
           background-color: #f0f1f3;
         }
         .num {
-          // width: 5.2rem;
           text-align: right;
           color: #ea5539;
-          font-size: 1.4rem;
+          font-size: 1.6rem;
           font-weight: 700;
         }
         .btn {
           text-align: right;
           :deep(.van-button) {
-            // width: 100%;
-            // height: 100%;
             font-size: 1.4rem;
             padding: 0.6rem 1rem;
             font-weight: 700;

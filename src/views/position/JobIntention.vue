@@ -1,111 +1,166 @@
 <template>
-    <div class="wrap">
-        <header>
-            <h1 class="fs-24">管理求职意向</h1>
-        </header>
-        <main>
-            <p class="fs-14">期望职位</p>
-            <van-cell center title="WEB前端开发" :border="false" class="fs-16" is-link>
+    <div>
+        <van-nav-bar title="求职意向" left-text="返回" left-arrow @click-left="onClickLeft" />
+        <div class="wrap">
+            <header>
+                <h1 class="fs-24">管理求职意向</h1>
+            </header>
+            <main>
+                <p class="fs-14">期望职位</p>
+                <van-cell center :border="false" class="fs-16" is-link to="/job">
+                    <template #title>
+                        <span class="custom-title"><span v-for="item, index in job" :key="index">{{ item.children }}
+                                <span>{{ job.length - index - 1 == 0 ? '' : '、' }}</span> </span></span>
+                        <span v-show="job.length == 0" class="custom-title fs-16 c-a8a8a8">请选择期望职位</span>
+                    </template>
+                </van-cell>
 
-            </van-cell>
+                <p class="fs-14">期望行业</p>
+                <van-cell center :border="false" class="fs-16" @click="showindustry = true" is-link to="/industry">
+                    <template #title>
+                        <span class="custom-title"><span v-for="item, index in industry" :key="index">{{ item.children
+                        }}
+                                <span>{{ industry.length - index - 1 == 0 ? '' : '、' }}</span> </span></span>
+                        <span v-show="industry.length == 0" class="custom-title fs-16 ">不限</span>
+                    </template>
+                </van-cell>
 
-            <p class="fs-14">期望行业</p>
-            <van-cell center :border="false" class="fs-16" @click="showindustry = true" is-link to="">
-                <template #title>
-                    <span class="custom-title">{{ industry }}</span>
-                    <span v-show="industry.length == 0" class="custom-title fs-16 ">不限</span>
-                </template>
-            </van-cell>
-            <!-- <van-action-sheet v-model:show="showindustry" title="">
-                <div class="content">
-                    <van-tree-select v-model:active-id="activeIdsIndustry" v-model:main-active-index="activeIndexIndustry"
-                        :items="columnsIndustry" />
-                </div>
-            </van-action-sheet> -->
-
-            <p class="fs-14">期望薪资</p>
-            <van-cell center :border="false" class="fs-16" @click="showSalary = true" is-link>
-                <template #title>
-                    <span class="custom-title">{{ salary }}</span>
-                    <span v-show="salary.length == 0" class="custom-title fs-16 c-a8a8a8">请选择期望薪资</span>
-                </template>
-            </van-cell>
-            <van-action-sheet v-model:show="showSalary" title="">
-                <div class="content">
-                    <van-picker title="" :columns="columnsSalary" @confirm="onConfirmSalary" @cancel="onCancelSalary" />
-                </div>
-            </van-action-sheet>
-
-            <p class="fs-14">工作性质</p>
-            <van-cell center :border="false" class="fs-16" @click="showWorkNature = true" is-link>
-                <template #title>
-                    <span class="custom-title">{{ workNature }}</span>
-                    <span v-show="workNature.length == 0" class="custom-title fs-16 c-a8a8a8">请选择工作性质</span>
-                </template>
-            </van-cell>
-            <van-action-sheet v-model:show="showWorkNature" title="">
-                <div class="content">
-                    <van-picker title="" :columns="columnsWorkNature" @confirm="onConfirmWorkNature"
-                        @cancel="onCancelWorkNature" />
-                </div>
-            </van-action-sheet>
-
-            <p class="fs-14">期望工作地</p>
-            <van-cell center class="fs-16" @click="showWorkplace = true" is-link>
-                <template #title>
-                    <span class="custom-title">{{ showArea.join('、') }}</span>
-                    <span v-show="showArea.length == 0" class="custom-title fs-16 c-a8a8a8">请选择期望工作地<span
-                            class="fs-14">（最多可选择3个）</span></span>
-                </template>
-            </van-cell>
-            <van-action-sheet v-model:show="showWorkplace" title="期望工作地">
-                <div class="content content-workplace">
-                    <!-- 地区 -->
-                    <van-tree-select v-model:active-id="activeId" v-model:main-active-index="activeIndex" :items="items"
-                        max='3' @click-item="handlWorkplaceItem" @click-nav="handlWorkplaceNav" />
-                    <div class="btn wrap">
-                        <van-button type="default" @click="workplaceReset" color="#f4f6f8" class="btn-reset">重置
-                        </van-button>
-                        <van-button type="default" @click="showWorkplace = false" color="#3b80fb" class="btn-determine">
-                            确定{{ workplace.length == 0 ? '' : workplace.length }}
-                        </van-button>
+                <p class="fs-14">期望薪资</p>
+                <van-cell center :border="false" class="fs-16" @click="showSalary = true" is-link>
+                    <template #title>
+                        <span class="custom-title">{{ salary }}</span>
+                        <span v-show="salary.length == 0" class="custom-title fs-16 c-a8a8a8">请选择期望薪资</span>
+                    </template>
+                </van-cell>
+                <van-action-sheet v-model:show="showSalary" title="">
+                    <div class="content">
+                        <van-picker title="" :columns="columnsSalary" @confirm="onConfirmSalary"
+                            @cancel="onCancelSalary" />
                     </div>
-                </div>
-            </van-action-sheet>
-        </main>
+                </van-action-sheet>
+
+                <p class="fs-14">工作性质</p>
+                <van-cell center :border="false" class="fs-16" @click="showWorkNature = true" is-link>
+                    <template #title>
+                        <span class="custom-title">{{ workNature }}</span>
+                        <span v-show="workNature.length == 0" class="custom-title fs-16 c-a8a8a8">请选择工作性质</span>
+                    </template>
+                </van-cell>
+                <van-action-sheet v-model:show="showWorkNature" title="">
+                    <div class="content">
+                        <van-picker title="" :columns="columnsWorkNature" @confirm="onConfirmWorkNature"
+                            @cancel="onCancelWorkNature" />
+                    </div>
+                </van-action-sheet>
+
+                <p class="fs-14">期望工作地</p>
+                <van-cell center class="fs-16" @click="showWorkplace = true" is-link>
+                    <template #title>
+                        <span class="custom-title">{{ showArea.join('、') }}</span>
+                        <span v-show="showArea.length == 0" class="custom-title fs-16 c-a8a8a8">请选择期望工作地<span
+                                class="fs-14">（最多可选择3个）</span></span>
+                    </template>
+                </van-cell>
+                <van-action-sheet v-model:show="showWorkplace" title="期望工作地">
+                    <div class="content content-workplace">
+                        <!-- 地区 -->
+                        <van-tree-select v-model:active-id="activeId" v-model:main-active-index="activeIndex"
+                            :items="items" max='3' @click-item="handlWorkplaceItem" @click-nav="handlWorkplaceNav" />
+                        <div class="btn wrap">
+                            <van-button type="default" @click="workplaceReset" color="#f4f6f8" class="btn-reset">重置
+                            </van-button>
+                            <van-button type="default" @click="showWorkplace = false" color="#3b80fb"
+                                class="btn-determine">
+                                确定{{ workplace.length == 0 ? '' : workplace.length }}
+                            </van-button>
+                        </div>
+                    </div>
+                </van-action-sheet>
+            </main>
+            <van-button type="primary" class="btn mt-150" @click="submit()">保存</van-button>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { reactive, ref, toRefs } from 'vue';
 import type { Ref } from "vue";
 import { areaList } from '@vant/area-data';//地区
 import { useJobStore } from "@/stores/job"//接口
+import { Toast } from 'vant';
 
-let useJob = useJobStore()
+let useJob = useJobStore();
 
+const getJobIntent = async () => {
+    let res = await useJob.getJobIntentList({userId:10000});
+    console.log('res', res);
+}
+getJobIntent()
+let jobIndustry = JSON.parse(localStorage.getItem('jobIndustry')!);
+if (jobIndustry) {
+    let { job: jobInfo,
+        industry,
+        salary,
+        workNature,
+        showArea } = toRefs(jobIndustry)
+}
+
+// 返回
+const onClickLeft = () => history.back();
+// 期望职位
+let columnsJob: any[] = reactive([]);
+let columnJob: any[] = reactive([]);
+const activeIdsJob: Ref<any[]> = ref([]);
+const activeIndexJob = ref(0);
+let showJob = ref(false);
+let job: any = ref([]);
+let jobInfo = JSON.parse(localStorage.getItem('jobInfo')!);
+interface Key {
+    [propsName: string]: any
+}
+let key: keyof Key;
+if (jobInfo) {
+    for (key in jobInfo) {
+        jobInfo[key] = JSON.parse(jobInfo[key])
+    }
+    console.log(jobInfo)
+    if (jobInfo.job) {
+        job.value = jobInfo.job;
+    }
+    if (jobInfo.activeId) {
+        activeIdsJob.value = jobInfo.activeId;
+    }
+    if (jobInfo.columnsJob) {
+        columnJob = jobInfo.columnsJob;
+    }
+}
 // 期望行业
 let columnsIndustry: any[] = reactive([]);
-let activeIdsIndustry =  ref([]);
-const activeIndexIndustry = ref(0);
+let columnIndustry: any[] = reactive([]);
+const activeIdsIndustry: Ref<any[]> = ref([]);
 let showindustry = ref(false);
-let industry: Ref<string> = ref('');
-let getCompanyIndustry = async () => {
-    let res = await useJob.getCompanyIndustryList({});
-    let data = JSON.stringify(res.data);
-    data = data.replace(/(\"sortId\"\:[1-9]+\,)/g,'');
-    data = data.replace(/label/g, 'text');
-    data = data.replace(/industryTypeId/g, 'id');
-    data = data.replace(/(\"value\"\:\"[1-9]\"+\,)/g,' ');
-    columnsIndustry = JSON.parse(data);
-    console.log(columnsIndustry);
+let industry: any = ref([]);
+let industryInfo = JSON.parse(localStorage.getItem('industryInfo')!);
+if (industryInfo) {
+    for (key in industryInfo) {
+        industryInfo[key] = JSON.parse(industryInfo[key])
+    }
+    if (industryInfo.industry) {
+        industry.value = industryInfo.industry;
+    }
+    if (industryInfo.activeId) {
+        activeIdsIndustry.value = industryInfo.activeId;
+    }
+    if (industryInfo.columnsIndustry) {
+        columnIndustry = industryInfo.columnsIndustry;
+    }
+
 }
-getCompanyIndustry()
 // 期望薪资
 let columnsSalary: any[] = reactive([]);
 let showSalary = ref(false);
 let salary: Ref<string> = ref('');
-let getWishMoney = async () => {
+const getWishMoney = async () => {
     let res = await useJob.getWishMoneyList({});
     res.data.wishMoenyLeftList.forEach((item: any, index: number) => {
         let right = res.data.wishMoenyRightList.slice(index + 1, res.data.wishMoenyRightList.length)
@@ -170,7 +225,6 @@ for (const provinceKey in provinceList) {
 }
 
 let navCity = ref(items[activeIndex.value]);
-console.log(navCity)
 // 选择地区的事件
 interface Workplace {
     text: string,
@@ -208,7 +262,36 @@ let workplaceReset = () => {
     showArea.value.length = 0;
 }
 
-
+// 保存
+const submit = (): void => {
+    console.log('job', jobInfo.job.length)
+    if (!jobInfo.job.length) {
+        Toast('请输入期望职位');
+    }
+    else if (salary.value.length == 0) {
+        Toast('请输入期望薪资');
+    }
+    else if (workNature.value.length == 0) {
+        Toast('请选择工作性质');
+    }
+    else if (showArea.value.length == 0) {
+        Toast('请选择期望工作地');
+    }
+    else {
+        Toast({
+            message: '更新成功！',
+            icon: 'success',
+        });
+        localStorage.setItem('jobIndustry', JSON.stringify({
+            job: jobInfo,
+            industry: industryInfo,
+            salary: salary.value,
+            workNature: workNature.value,
+            area: showArea.value
+        }));
+        history.back();
+    }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -246,6 +329,14 @@ let workplaceReset = () => {
     border-radius: 1rem;
 }
 
+:deep(.van-nav-bar .van-icon) {
+    color: #000000 !important;
+}
+
+:deep(.van-nav-bar__text) {
+    color: #000000 !important;
+}
+
 .wrap {
     padding: 0 2rem;
 
@@ -271,6 +362,11 @@ let workplaceReset = () => {
                 color: #000000 !important;
             }
         }
+    }
+
+    &>.btn {
+        width: 100%;
+
     }
 }
 </style>

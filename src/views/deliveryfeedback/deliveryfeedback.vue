@@ -21,23 +21,6 @@
                      <div class="d0-ft">17:41</div>
                   </div>
               </div>
-
-              <div class="cord-box">
-                  <div class="header">
-                     <div class=""><h3>Java开发工程师</h3></div>
-                     <div class="red-ft">8-15k</div>
-                  </div>
-                  <div class="count">
-                     <div class="count-gs">
-                        <div><img src="@/assets/images/icon-file.png" alt=""></div>
-                        <div> 
-                           中科百谷
-                         <br>北京-北京市
-                        </div>
-                       </div>
-                     <div class="d0-ft">17:41</div>
-                  </div>
-              </div>
             </div>
             </van-tab>
         </van-tabs>

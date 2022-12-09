@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <div>
-            <van-nav-bar title="标题" left-text="返回" left-arrow @click-left="onClickLeft" />
+            <van-nav-bar  left-text="返回" left-arrow @click-left="onClickLeft" />
             <div class="proposal">
                 <div class="proposal-header">
                     {{route.query.title}}

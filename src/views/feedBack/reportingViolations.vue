@@ -1,6 +1,6 @@
 <template>
     <div>
-        <van-nav-bar title="标题" left-text="返回" left-arrow @click-left="onClickLeft" />
+        <van-nav-bar  left-text="返回" left-arrow @click-left="onClickLeft" />
        <FeedBackList>
            <template #title>
                请选择投诉原因

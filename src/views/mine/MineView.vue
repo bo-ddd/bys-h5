@@ -3,9 +3,13 @@
     <!-- 头部 -->
     <header class="wrap header c-ffffff" @click="showCount = true">
       <div class="container just-between ">
-        <div class="title">
-          <p class="fs-22 fw-600">请创建简历</p>
-          <span class="fs-12">点击头像可编辑</span>
+        <div class="title" v-if="token">
+          <p class="fs-22 fw-600"><span>请创建简历</span></p>
+          <span class="fs-12"><span>点击头像可编辑</span></span>
+        </div>
+        <div class="title" v-else="!token">
+          <p class="fs-22 fw-600"><span>未登录/注册</span></p>
+          <span class="fs-12"><span>点击头像可进行登录/注册</span></span>
         </div>
         <div class="upload flex-ja-center">
           <img class="icon-camera" src="@/assets/images/icon-camera.png" alt="">
@@ -74,6 +78,7 @@ import { ref } from 'vue';
 import { Toast } from 'vant';
 import { useRouter } from 'vue-router';
 import { useMineStore } from '@/stores/mineStores';
+const token = sessionStorage.getItem("token");
 const use = useMineStore();
 const router = useRouter();
 const showCount = ref(false);

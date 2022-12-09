@@ -309,7 +309,7 @@ const getEditInfo = async (id: number) => {
     });
     if (res.code == 200) {
       let infoData = res.data[0];
-      companyName.value = infoData.projectDes;
+      companyName.value = infoData.projectName;
       beginTime.value = infoData.startTime.slice(0, 10);
       overTime.value = infoData.endTime.slice(0, 10);
       positionName.value = infoData.positionName;

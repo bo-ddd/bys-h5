@@ -67,9 +67,6 @@
                   <div class="enterprise-item_box">
                     <div v-for="chil in item.child" @click="jump('/companyDetails')">
                       <img :src="chil.companyUrl">
-                    <div v-for="chil in item.child" @click="to('/companyDetails',chil.companyId)">
-                      <img src="@/assets/images/icon-invitation.png">
-                    </div>
                   </div>
                 </div>
                 </div>

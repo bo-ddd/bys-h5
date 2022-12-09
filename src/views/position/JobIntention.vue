@@ -83,19 +83,16 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, toRefs } from 'vue';
 import type { Ref } from "vue";
+import type { JobInfo } from "./types/jobInfo"
+import { reactive, ref, toRefs } from 'vue';
 import { areaList } from '@vant/area-data';//地区
 import { useJobStore } from "@/stores/job"//接口
 import { Toast } from 'vant';
 
 let useJob = useJobStore();
 
-const getJobIntent = async () => {
-    let res = await useJob.getJobIntentList({userId:10000});
-    console.log('res', res);
-}
-getJobIntent()
+
 let jobIndustry = JSON.parse(localStorage.getItem('jobIndustry')!);
 if (jobIndustry) {
     let { job: jobInfo,
@@ -119,21 +116,21 @@ interface Key {
     [propsName: string]: any
 }
 let key: keyof Key;
-if (jobInfo) {
-    for (key in jobInfo) {
-        jobInfo[key] = JSON.parse(jobInfo[key])
-    }
-    console.log(jobInfo)
-    if (jobInfo.job) {
-        job.value = jobInfo.job;
-    }
-    if (jobInfo.activeId) {
-        activeIdsJob.value = jobInfo.activeId;
-    }
-    if (jobInfo.columnsJob) {
-        columnJob = jobInfo.columnsJob;
-    }
-}
+// if (jobInfo) {
+//     for (key in jobInfo) {
+//         jobInfo[key] = JSON.parse(jobInfo[key])
+//     }
+//     console.log(jobInfo)
+//     if (jobInfo.job) {
+//         job.value = jobInfo.job;
+//     }
+//     if (jobInfo.activeId) {
+//         activeIdsJob.value = jobInfo.activeId;
+//     }
+//     if (jobInfo.columnsJob) {
+//         columnJob = jobInfo.columnsJob;
+//     }
+// }
 // 期望行业
 let columnsIndustry: any[] = reactive([]);
 let columnIndustry: any[] = reactive([]);
@@ -141,21 +138,21 @@ const activeIdsIndustry: Ref<any[]> = ref([]);
 let showindustry = ref(false);
 let industry: any = ref([]);
 let industryInfo = JSON.parse(localStorage.getItem('industryInfo')!);
-if (industryInfo) {
-    for (key in industryInfo) {
-        industryInfo[key] = JSON.parse(industryInfo[key])
-    }
-    if (industryInfo.industry) {
-        industry.value = industryInfo.industry;
-    }
-    if (industryInfo.activeId) {
-        activeIdsIndustry.value = industryInfo.activeId;
-    }
-    if (industryInfo.columnsIndustry) {
-        columnIndustry = industryInfo.columnsIndustry;
-    }
-
-}
+// if (industryInfo) {
+//     for (key in industryInfo) {
+//         industryInfo[key] = JSON.parse(industryInfo[key])
+//     }
+//     if (industryInfo.industry) {
+//         industry.value = industryInfo.industry;
+//     }
+//     if (industryInfo.activeId) {
+//         activeIdsIndustry.value = industryInfo.activeId;
+//     }
+//     if (industryInfo.columnsIndustry) {
+//         columnIndustry = industryInfo.columnsIndustry;
+//     }
+// }
+console.log(industryInfo)
 // 期望薪资
 let columnsSalary: any[] = reactive([]);
 let showSalary = ref(false);
@@ -174,7 +171,6 @@ const getWishMoney = async () => {
 getWishMoney();
 const onConfirmSalary = (value: any) => {//确认
     showSalary.value = false;
-    console.log(value)
     salary.value = ((value[0].text) / 1000) + '-' + ((value[1].text) / 1000) + 'k'
 };
 const onCancelSalary = () => {//取消
@@ -253,7 +249,6 @@ let handlWorkplaceItem = function (item: any): void {
 // 左侧
 let handlWorkplaceNav = function (index: number): void {
     navCity.value = items[index];
-    console.log(items[index])
 }
 // 重置地区
 let workplaceReset = () => {
@@ -264,7 +259,6 @@ let workplaceReset = () => {
 
 // 保存
 const submit = (): void => {
-    console.log('job', jobInfo.job.length)
     if (!jobInfo.job.length) {
         Toast('请输入期望职位');
     }
@@ -292,6 +286,66 @@ const submit = (): void => {
         history.back();
     }
 }
+
+const getJobIntent = async () => {
+    let res: any = await useJob.getJobIntentList({ userId: 10000 });
+    console.log('res', res);
+    if (res.code == 200) {
+        //地区
+        showArea.value.push(res.data.wishAddr);
+        console.log(showArea.value);
+        // 工作性质
+        workNature.value = res.data.wishNatureName;
+        // 职位
+
+        // jobInfo.activeId
+        res.data.wishPosition.forEach((item: JobInfo) => {
+            jobInfo.activeId.push(Number(item.positionIdDown));
+            jobInfo.activeId = [...new Set(jobInfo.activeId)];
+            jobInfo.columnsJob.push({ text: item.positionNameDown, id: Number(item.positionIdDown) });
+            jobInfo.job.push({ parent: item.positionNameOn, children: item.positionNameDown });
+            jobInfo.job.
+
+            // window.localStorage.setItem('jobInfo', JSON.stringify({
+            //     job: JSON.stringify(jobInfo.job),
+            //     activeId: JSON.stringify(jobInfo.activeId),
+            //     columnsJob: JSON.stringify(jobInfo.columnsJob),
+            // }));
+            // window.localStorage.setItem('industryInfo', JSON.stringify({
+            //     industry: JSON.stringify(industryInfo.industry),
+            //     activeId: JSON.stringify(industryInfo.activeId),
+            //     columnsIndustry: JSON.stringify(industryInfo.columnsIndustry),
+            // }));
+        })
+        res.data.wishIndustry.forEach((item: JobInfo) => {
+            industryInfo.activeId.push(Number(item.positionIdDown));
+            industryInfo.activeId = [...new Set(industryInfo.activeId)];
+            industryInfo.columnsIndustry.push({ text: item.positionNameDown, id: Number(item.positionIdDown) });
+            industryInfo.industry.push({ parent: item.positionNameOn, children: item.positionNameDown });
+        });
+        localStorage.setItem('jobInfo', JSON.stringify(jobInfo));
+        localStorage.setItem('industryInfo', JSON.stringify(industryInfo));
+        console.log(jobInfo);
+        console.log(res.data.wishPosition);
+    }
+
+}
+getJobIntent()
+
+// let data = {
+//     wisAddr: [
+//         '北京市-北京市', '河北省-唐山市'
+//          地点是前端的数据，所以就返回具体的地址，
+//     ],
+//     wishIndustry: [
+//         { id: 1, text: '互联网', children: ['电子商务'] },
+//         { id: 4, text: '电子通信', children: ['半导体'] },
+//         要这样的格式，返回不了的话，也可以直接返回对应的id，我自己处理，期望职位也是这样的格式
+//     ],
+//     wishMoney: '1000,2000',期望薪资必须返回的是两个整数
+//     wishNature: '1|2|3' || '全职|兼职|全职和兼职',
+//     可以直接是文字,也可以是123 然后说一下各自代表是哪个状态,
+// }
 </script>
 
 <style lang="scss" scoped>

@@ -16,4 +16,11 @@ export default {
     setSite: (params: {}) => {
         return axios.post('/phone/modifySite', params, postConfig)
     },
+    /**
+    * 查询用户面试
+    * @returns 
+    */
+    getUserInterview: (params: {}) => {
+        return axios.post('/phone/selectUserInterview', params, postConfig)
+    },
 }

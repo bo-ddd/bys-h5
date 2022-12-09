@@ -116,21 +116,21 @@ interface Key {
     [propsName: string]: any
 }
 let key: keyof Key;
-// if (jobInfo) {
-//     for (key in jobInfo) {
-//         jobInfo[key] = JSON.parse(jobInfo[key])
-//     }
-//     console.log(jobInfo)
-//     if (jobInfo.job) {
-//         job.value = jobInfo.job;
-//     }
-//     if (jobInfo.activeId) {
-//         activeIdsJob.value = jobInfo.activeId;
-//     }
-//     if (jobInfo.columnsJob) {
-//         columnJob = jobInfo.columnsJob;
-//     }
-// }
+if (jobInfo) {
+    for (key in jobInfo) {
+        jobInfo[key] = jobInfo[key]
+    }
+    console.log(jobInfo)
+    if (jobInfo.job) {
+        job.value = jobInfo.job;
+    }
+    if (jobInfo.activeId) {
+        activeIdsJob.value = jobInfo.activeId;
+    }
+    if (jobInfo.columnsJob) {
+        columnJob = jobInfo.columnsJob;
+    }
+}
 // 期望行业
 let columnsIndustry: any[] = reactive([]);
 let columnIndustry: any[] = reactive([]);
@@ -138,20 +138,20 @@ const activeIdsIndustry: Ref<any[]> = ref([]);
 let showindustry = ref(false);
 let industry: any = ref([]);
 let industryInfo = JSON.parse(localStorage.getItem('industryInfo')!);
-// if (industryInfo) {
-//     for (key in industryInfo) {
-//         industryInfo[key] = JSON.parse(industryInfo[key])
-//     }
-//     if (industryInfo.industry) {
-//         industry.value = industryInfo.industry;
-//     }
-//     if (industryInfo.activeId) {
-//         activeIdsIndustry.value = industryInfo.activeId;
-//     }
-//     if (industryInfo.columnsIndustry) {
-//         columnIndustry = industryInfo.columnsIndustry;
-//     }
-// }
+if (industryInfo) {
+    for (key in industryInfo) {
+        industryInfo[key] = industryInfo[key]
+    }
+    if (industryInfo.industry) {
+        industry.value = industryInfo.industry;
+    }
+    if (industryInfo.activeId) {
+        activeIdsIndustry.value = industryInfo.activeId;
+    }
+    if (industryInfo.columnsIndustry) {
+        columnIndustry = industryInfo.columnsIndustry;
+    }
+}
 console.log(industryInfo)
 // 期望薪资
 let columnsSalary: any[] = reactive([]);
@@ -171,8 +171,12 @@ const getWishMoney = async () => {
 getWishMoney();
 const onConfirmSalary = (value: any) => {//确认
     showSalary.value = false;
-    salary.value = ((value[0].text) / 1000) + '-' + ((value[1].text) / 1000) + 'k'
+    salary.value = handleMoney(value);
+    console.log(value)
 };
+const handleMoney = function (value: any): string {
+    return ((value[0].text) / 1000) + '-' + ((value[1].text) / 1000) + 'k'
+}
 const onCancelSalary = () => {//取消
     showSalary.value = false
 };
@@ -291,9 +295,20 @@ const getJobIntent = async () => {
     let res: any = await useJob.getJobIntentList({ userId: 10000 });
     console.log('res', res);
     if (res.code == 200) {
+        // 清空原来的 避免重复
+        jobInfo.activeId.length = 0;
+        jobInfo.columnsJob.length = 0;
+        jobInfo.job.length = 0;
+        industryInfo.activeId.length = 0;
+        industryInfo.columnsIndustry.length = 0;
+        industryInfo.industry.length = 0;
         //地区
         showArea.value.push(res.data.wishAddr);
-        console.log(showArea.value);
+        // 薪资
+        salary.value = res.data.wishMoney.replace(/000/g,'').split(',').join('-')+'k'
+        console.log(salary.value)
+
+
         // 工作性质
         workNature.value = res.data.wishNatureName;
         // 职位
@@ -304,33 +319,43 @@ const getJobIntent = async () => {
             jobInfo.activeId = [...new Set(jobInfo.activeId)];
             jobInfo.columnsJob.push({ text: item.positionNameDown, id: Number(item.positionIdDown) });
             jobInfo.job.push({ parent: item.positionNameOn, children: item.positionNameDown });
-            jobInfo.job.
-
-            // window.localStorage.setItem('jobInfo', JSON.stringify({
-            //     job: JSON.stringify(jobInfo.job),
-            //     activeId: JSON.stringify(jobInfo.activeId),
-            //     columnsJob: JSON.stringify(jobInfo.columnsJob),
-            // }));
-            // window.localStorage.setItem('industryInfo', JSON.stringify({
-            //     industry: JSON.stringify(industryInfo.industry),
-            //     activeId: JSON.stringify(industryInfo.activeId),
-            //     columnsIndustry: JSON.stringify(industryInfo.columnsIndustry),
-            // }));
         })
+        jobInfo.job = qc(jobInfo.job);
+        jobInfo.columnsJob = qc(jobInfo.columnsJob);
+        console.log('job', jobInfo.job)
         res.data.wishIndustry.forEach((item: JobInfo) => {
-            industryInfo.activeId.push(Number(item.positionIdDown));
+            console.log(item)
+            industryInfo.activeId.push(Number(item.industryIdDown));
             industryInfo.activeId = [...new Set(industryInfo.activeId)];
-            industryInfo.columnsIndustry.push({ text: item.positionNameDown, id: Number(item.positionIdDown) });
-            industryInfo.industry.push({ parent: item.positionNameOn, children: item.positionNameDown });
+            industryInfo.columnsIndustry.push({ text: item.industryNameDown, id: Number(item.industryIdDown) });
+            industryInfo.industry.push({ parent: item.industryNameOn, children: item.industryNameDown });
         });
+        // industryInfo.industry = qc(industryInfo.industry);
+        // industryInfo.columnsIndustry = qc(industryInfo.columnsIndustry);
+        console.log('industry', industryInfo.industry);
+
+
         localStorage.setItem('jobInfo', JSON.stringify(jobInfo));
         localStorage.setItem('industryInfo', JSON.stringify(industryInfo));
         console.log(jobInfo);
         console.log(res.data.wishPosition);
+
     }
 
 }
 getJobIntent()
+
+const qc = function (arr: any) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        for (let j = 0; j < arr.length; j++) {
+            if (arr[i].children === arr[j].children) {
+                arr.splice(j, 1);
+                j--;
+            }
+        }
+    }
+    return arr
+}
 
 // let data = {
 //     wisAddr: [

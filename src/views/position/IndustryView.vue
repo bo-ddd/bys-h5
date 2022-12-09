@@ -60,9 +60,9 @@ interface Key {
 }
 let key: keyof Key;
 if (industryInfo) {
-    for (key in industryInfo) {
-        industryInfo[key] = JSON.parse(industryInfo[key])
-    }
+    // for (key in industryInfo) {
+    //     industryInfo[key] = (industryInfo[key])
+    // }
     activeId.value = industryInfo.activeId;
     showIndustry.value =industryInfo.industry
     columnsIndustry =industryInfo.columnsIndustry
@@ -116,9 +116,9 @@ let deliet:(index:number)=>void = (index:number) : void => {
 // 点击确定返回上一级
 const goBack = () => {
     window.localStorage.setItem('industryInfo', JSON.stringify({
-        industry: JSON.stringify(showIndustry.value),
-        activeId: JSON.stringify(activeId.value),
-        columnsIndustry: JSON.stringify(columnsIndustry),
+        industry:(showIndustry.value),
+        activeId:(activeId.value),
+        columnsIndustry:(columnsIndustry),
     }));
     history.back();
 };

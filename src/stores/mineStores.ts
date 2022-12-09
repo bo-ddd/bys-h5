@@ -7,7 +7,7 @@ export const useMineStore = defineStore('mine', () => {
    * @describe status:Number 求职状态
    * @describe userId:Number 用户id
    */
-    let ModifyJobWantedStatus = (payload: {}) => {
+    const ModifyJobWantedStatus = (payload: {}) => {
         return Api.ModifyJobWantedStatus(payload);
     }
     /**
@@ -15,9 +15,20 @@ export const useMineStore = defineStore('mine', () => {
    * @describe site : string 站点
    * @describe userId : Number 用户id
    */
-    let setSite = (payload: {}) => {
+    const setSite = (payload: {}) => {
         return Api.setSite(payload);
     }
+    /**
+   * 查询用户面试
+   * @describe userId : Number 用户id
+   */
+    const getUserInterviewApi = (payload: {}) => {
+        return Api.getUserInterview(payload);
+    }
 
-    return { ModifyJobWantedStatus, setSite }
+    return {
+        ModifyJobWantedStatus,
+        setSite,
+        getUserInterviewApi
+    }
 })

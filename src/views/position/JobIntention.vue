@@ -83,19 +83,16 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, toRefs } from 'vue';
 import type { Ref } from "vue";
+import type { JobInfo } from "./types/jobInfo"
+import { reactive, ref, toRefs } from 'vue';
 import { areaList } from '@vant/area-data';//地区
 import { useJobStore } from "@/stores/job"//接口
 import { Toast } from 'vant';
 
 let useJob = useJobStore();
 
-const getJobIntent = async () => {
-    let res = await useJob.getJobIntentList({userId:10000});
-    console.log('res', res);
-}
-getJobIntent()
+
 let jobIndustry = JSON.parse(localStorage.getItem('jobIndustry')!);
 if (jobIndustry) {
     let { job: jobInfo,
@@ -121,7 +118,7 @@ interface Key {
 let key: keyof Key;
 if (jobInfo) {
     for (key in jobInfo) {
-        jobInfo[key] = JSON.parse(jobInfo[key])
+        jobInfo[key] = jobInfo[key]
     }
     console.log(jobInfo)
     if (jobInfo.job) {
@@ -143,7 +140,7 @@ let industry: any = ref([]);
 let industryInfo = JSON.parse(localStorage.getItem('industryInfo')!);
 if (industryInfo) {
     for (key in industryInfo) {
-        industryInfo[key] = JSON.parse(industryInfo[key])
+        industryInfo[key] = industryInfo[key]
     }
     if (industryInfo.industry) {
         industry.value = industryInfo.industry;
@@ -154,8 +151,8 @@ if (industryInfo) {
     if (industryInfo.columnsIndustry) {
         columnIndustry = industryInfo.columnsIndustry;
     }
-
 }
+console.log(industryInfo)
 // 期望薪资
 let columnsSalary: any[] = reactive([]);
 let showSalary = ref(false);
@@ -174,9 +171,12 @@ const getWishMoney = async () => {
 getWishMoney();
 const onConfirmSalary = (value: any) => {//确认
     showSalary.value = false;
+    salary.value = handleMoney(value);
     console.log(value)
-    salary.value = ((value[0].text) / 1000) + '-' + ((value[1].text) / 1000) + 'k'
 };
+const handleMoney = function (value: any): string {
+    return ((value[0].text) / 1000) + '-' + ((value[1].text) / 1000) + 'k'
+}
 const onCancelSalary = () => {//取消
     showSalary.value = false
 };
@@ -253,7 +253,6 @@ let handlWorkplaceItem = function (item: any): void {
 // 左侧
 let handlWorkplaceNav = function (index: number): void {
     navCity.value = items[index];
-    console.log(items[index])
 }
 // 重置地区
 let workplaceReset = () => {
@@ -264,7 +263,6 @@ let workplaceReset = () => {
 
 // 保存
 const submit = (): void => {
-    console.log('job', jobInfo.job.length)
     if (!jobInfo.job.length) {
         Toast('请输入期望职位');
     }
@@ -292,6 +290,87 @@ const submit = (): void => {
         history.back();
     }
 }
+
+const getJobIntent = async () => {
+    let res: any = await useJob.getJobIntentList({ userId: 10000 });
+    console.log('res', res);
+    if (res.code == 200) {
+        // 清空原来的 避免重复
+        jobInfo.activeId.length = 0;
+        jobInfo.columnsJob.length = 0;
+        jobInfo.job.length = 0;
+        industryInfo.activeId.length = 0;
+        industryInfo.columnsIndustry.length = 0;
+        industryInfo.industry.length = 0;
+        //地区
+        showArea.value.push(res.data.wishAddr);
+        // 薪资
+        salary.value = res.data.wishMoney.replace(/000/g,'').split(',').join('-')+'k'
+        console.log(salary.value)
+
+
+        // 工作性质
+        workNature.value = res.data.wishNatureName;
+        // 职位
+
+        // jobInfo.activeId
+        res.data.wishPosition.forEach((item: JobInfo) => {
+            jobInfo.activeId.push(Number(item.positionIdDown));
+            jobInfo.activeId = [...new Set(jobInfo.activeId)];
+            jobInfo.columnsJob.push({ text: item.positionNameDown, id: Number(item.positionIdDown) });
+            jobInfo.job.push({ parent: item.positionNameOn, children: item.positionNameDown });
+        })
+        jobInfo.job = qc(jobInfo.job);
+        jobInfo.columnsJob = qc(jobInfo.columnsJob);
+        console.log('job', jobInfo.job)
+        res.data.wishIndustry.forEach((item: JobInfo) => {
+            console.log(item)
+            industryInfo.activeId.push(Number(item.industryIdDown));
+            industryInfo.activeId = [...new Set(industryInfo.activeId)];
+            industryInfo.columnsIndustry.push({ text: item.industryNameDown, id: Number(item.industryIdDown) });
+            industryInfo.industry.push({ parent: item.industryNameOn, children: item.industryNameDown });
+        });
+        // industryInfo.industry = qc(industryInfo.industry);
+        // industryInfo.columnsIndustry = qc(industryInfo.columnsIndustry);
+        console.log('industry', industryInfo.industry);
+
+
+        localStorage.setItem('jobInfo', JSON.stringify(jobInfo));
+        localStorage.setItem('industryInfo', JSON.stringify(industryInfo));
+        console.log(jobInfo);
+        console.log(res.data.wishPosition);
+
+    }
+
+}
+getJobIntent()
+
+const qc = function (arr: any) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        for (let j = 0; j < arr.length; j++) {
+            if (arr[i].children === arr[j].children) {
+                arr.splice(j, 1);
+                j--;
+            }
+        }
+    }
+    return arr
+}
+
+// let data = {
+//     wisAddr: [
+//         '北京市-北京市', '河北省-唐山市'
+//          地点是前端的数据，所以就返回具体的地址，
+//     ],
+//     wishIndustry: [
+//         { id: 1, text: '互联网', children: ['电子商务'] },
+//         { id: 4, text: '电子通信', children: ['半导体'] },
+//         要这样的格式，返回不了的话，也可以直接返回对应的id，我自己处理，期望职位也是这样的格式
+//     ],
+//     wishMoney: '1000,2000',期望薪资必须返回的是两个整数
+//     wishNature: '1|2|3' || '全职|兼职|全职和兼职',
+//     可以直接是文字,也可以是123 然后说一下各自代表是哪个状态,
+// }
 </script>
 
 <style lang="scss" scoped>

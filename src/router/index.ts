@@ -211,6 +211,12 @@ const router = createRouter({
       name: "job",
       component: () => import('@/views/position/JobView.vue')
     },
+    {
+      // 面试详情页面
+      path: "/interview_details",
+      name: "interview_details",
+      component: () => import('@/views/interviewDetails/interview_details.vue')
+    },
   ]
 })
 

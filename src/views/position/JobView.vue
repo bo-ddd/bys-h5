@@ -59,9 +59,9 @@ interface Key {
 }
 let key: keyof Key;
 if (jobInfo) {
-    for (key in jobInfo) {
-        jobInfo[key] = JSON.parse(jobInfo[key])
-    }
+    // for (key in jobInfo) {
+    //     jobInfo[key] = (jobInfo[key])
+    // }
     console.log(jobInfo)
     activeId.value = Array.from(jobInfo.activeId);
     showJob.value =jobInfo.job
@@ -109,9 +109,9 @@ let handlJobNav = function (index: number): void {
 // 点击确定返回上一级
 const goBack = () => {
     window.localStorage.setItem('jobInfo', JSON.stringify({
-        job: JSON.stringify(showJob.value),
-        activeId: JSON.stringify(activeId.value),
-        columnsJob: JSON.stringify(columnsJob),
+        job: showJob.value,
+        activeId: activeId.value,
+        columnsJob: columnsJob,
     }));
     history.back();
 };

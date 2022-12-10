@@ -16,6 +16,7 @@ const submitLogin = async () => {
         smsCode: smsCode.value
     })
     if (res.code == 200) {
+        sessionStorage.setItem('token','token');
         Toast({
             message: '登录成功',
             position: 'top',

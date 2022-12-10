@@ -27,8 +27,6 @@
       <div class="text-tip mt-20">登录后可查看</div>
       <div class="text-title mt-20">企业向我发出的邀请</div>
       <div class="text-title">学校就业老师向我推荐的招聘信息</div>
-      <!-- <div class="text-tip mt-10">您的在线简历完善度只有45分，低于平均分82.8。在线简历完善后，就能吸引更多企业</div>
-      -->
       <div class="btn-box mt-30">
         <van-button type="primary" block @click="to('/login')">登录</van-button>
       </div> 

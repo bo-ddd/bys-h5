@@ -15,24 +15,26 @@
     <!-- 如果有面试 就展示一下模板 -->
     <div v-if="isok" class="inter">
         <div v-for="item in interviewData" :key="item.companyId">
-            <div class="date_time flex">
-                {{ item.interviewTime }}
-            </div>
-
-            <div class="just-between">
-                <div class="title">
-                    <h2>{{ item.companyName }}</h2>
-                    <span>线下面试</span>
+            <div @click="toInterview_details(item)">
+                <div class="date_time flex">
+                    {{ item.interviewTime }}
                 </div>
 
-                <div class="icon-head_portrait">
-                    <img :src="item.companyLogoUrl" alt="">
-                </div>
-            </div>
+                <div class="just-between">
+                    <div class="title">
+                        <h2>{{ item.companyName }}</h2>
+                        <span>线下面试</span>
+                    </div>
 
-            <div class="brief_introduction align-center">
-                <div>{{ item.positionName }}</div>
-                <div class="ml-5">{{ item.positionMoney }}</div>
+                    <div class="icon-head_portrait">
+                        <img :src="item.companyLogoUrl" alt="">
+                    </div>
+                </div>
+
+                <div class="brief_introduction align-center">
+                    <div>{{ item.positionName }}</div>
+                    <div class="ml-5">{{ item.positionMoney }}</div>
+                </div>
             </div>
         </div>
     </div>
@@ -75,9 +77,14 @@ const router = useRouter();
 let isok = ref(true);
 let interviewData = reactive([]) as interviewDataType[]
 
+getUserInterview();
+
+
+
+
 
 // 获取用户面试
-const getUserInterview = async function () {
+async function getUserInterview() {
     const res: Res | any = await axios.getUserInterviewApi({
         userId: 10000,
     });
@@ -91,11 +98,17 @@ const getUserInterview = async function () {
     }
 };
 // 返回上一级
-const onClickLeft = () => {
+function onClickLeft() {
     router.go(-1)
 };
-
-getUserInterview();
+// 点击跳转改面试的详情页面
+function toInterview_details(params: any): void {
+    console.log(params);
+    router.push({
+        name: 'interview_details',
+        query: params,
+    })
+}
 </script>
 
 <style scoped lang="scss">

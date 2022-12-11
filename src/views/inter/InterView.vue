@@ -15,7 +15,7 @@
     <!-- 如果有面试 就展示一下模板 -->
     <div v-if="isok" class="inter">
         <div v-for="item in interviewData" :key="item.companyId">
-            <div @click="toInterview_details(item)">
+            <div @click="toInterview_details(item.companyId)">
                 <div class="date_time flex">
                     {{ item.interviewTime }}
                 </div>
@@ -45,7 +45,6 @@ import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { useMineStore } from '@/stores/mineStores';
 import { reactive } from 'vue';
-
 
 
 
@@ -91,8 +90,7 @@ async function getUserInterview() {
     if (res.data) {
         isok.value = true;
         Object.assign(interviewData, res.data);
-        console.log(interviewData);
-        console.log(Array(interviewData).length);
+        console.log('log  interviewData', interviewData);
     } else {
         isok.value = false;
     }
@@ -102,11 +100,10 @@ function onClickLeft() {
     router.go(-1)
 };
 // 点击跳转改面试的详情页面
-function toInterview_details(params: any): void {
-    console.log(params);
+function toInterview_details(companyId: number): void {
     router.push({
         name: 'interview_details',
-        query: params,
+        query: { companyId }
     })
 }
 </script>

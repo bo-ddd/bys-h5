@@ -23,21 +23,21 @@
         <van-button type="primary" block @click="to('/login')">登录</van-button>
       </div>
     </div>
-    <!-- <div v-if="newsList" class="news-box">
+    <div v-if="newsList.length==0" class="news-box">
       <img :src="parseAssetFile('icon-nomessage.png')" />
       <div class="text-title mt-20">暂无企业的邀请</div>
       <div class="text-tip mt-10">您的在线简历完善度只有45分，低于平均分82.8。在线简历完善后，就能吸引更多企业</div>
       <div class="btn-box mt-20">
         <van-button type="primary" block @click="to('/createResume')">完善简历</van-button>
       </div>
-    </div> -->
+    </div>
     <div v-else class="news-box2">
       <van-cell-group>
         <van-cell class="align-center">
           <template #title>
             <div class="new-item">
               <div class="new-date">11-21 11:46</div>
-              <div class="new-title">中科百谷 {{newsList.length}}</div>
+              <div class="new-title">中科百谷</div>
               <div class="new-desc mt-10">Java开发工程师 | 8-15K</div>
             </div>
           </template>
@@ -65,7 +65,7 @@ const to = function (path: any) {
 let newsList=ref([])
 const getNewsList=()=>{
   let res =selectInvitation({});
-    // newsList.value=;
+    newsList.value=[1,2];
   if(res.code==200){
     console.log(newsList.value);
     

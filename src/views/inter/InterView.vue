@@ -90,7 +90,6 @@ async function getUserInterview() {
     if (res.data) {
         isok.value = true;
         Object.assign(interviewData, res.data);
-        console.log('log  interviewData', interviewData);
     } else {
         isok.value = false;
     }

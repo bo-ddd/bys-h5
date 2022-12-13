@@ -280,6 +280,24 @@ const submit = (): void => {
             message: '更新成功！',
             icon: 'success',
         });
+
+        // 修改
+        const setModifyJobIntent = async (params: JobInfo) => {
+            let res = await useJob.setModifyJobIntentInfo(params);
+            console.log(res);
+        }
+        setModifyJobIntent({
+            userId: 10000,
+            wishAddr: '',
+            wishIndustryLeft: '',
+            wishIndustryRight: '',
+            wishMoneyLeft: '',
+            wishMoneyRight: '',
+            wishNature: '',
+            wishPositionLeft: '',
+            wishPositionRight: '',
+        });
+        
         localStorage.setItem('jobIndustry', JSON.stringify({
             job: jobInfo,
             industry: industryInfo,
@@ -287,6 +305,7 @@ const submit = (): void => {
             workNature: workNature.value,
             area: showArea.value
         }));
+        // 返回
         history.back();
     }
 }
@@ -305,7 +324,7 @@ const getJobIntent = async () => {
         //地区
         showArea.value.push(res.data.wishAddr);
         // 薪资
-        salary.value = res.data.wishMoney.replace(/000/g,'').split(',').join('-')+'k'
+        salary.value = res.data.wishMoney.replace(/000/g, '').split(',').join('-') + 'k'
         console.log(salary.value)
 
 
@@ -320,8 +339,6 @@ const getJobIntent = async () => {
             jobInfo.columnsJob.push({ text: item.positionNameDown, id: Number(item.positionIdDown) });
             jobInfo.job.push({ parent: item.positionNameOn, children: item.positionNameDown });
         })
-        jobInfo.job = qc(jobInfo.job);
-        jobInfo.columnsJob = qc(jobInfo.columnsJob);
         console.log('job', jobInfo.job)
         res.data.wishIndustry.forEach((item: JobInfo) => {
             console.log(item)
@@ -330,32 +347,16 @@ const getJobIntent = async () => {
             industryInfo.columnsIndustry.push({ text: item.industryNameDown, id: Number(item.industryIdDown) });
             industryInfo.industry.push({ parent: item.industryNameOn, children: item.industryNameDown });
         });
-        // industryInfo.industry = qc(industryInfo.industry);
-        // industryInfo.columnsIndustry = qc(industryInfo.columnsIndustry);
         console.log('industry', industryInfo.industry);
-
-
         localStorage.setItem('jobInfo', JSON.stringify(jobInfo));
         localStorage.setItem('industryInfo', JSON.stringify(industryInfo));
         console.log(jobInfo);
         console.log(res.data.wishPosition);
-
     }
 
 }
 getJobIntent()
 
-const qc = function (arr: any) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        for (let j = 0; j < arr.length; j++) {
-            if (arr[i].children === arr[j].children) {
-                arr.splice(j, 1);
-                j--;
-            }
-        }
-    }
-    return arr
-}
 
 // let data = {
 //     wisAddr: [

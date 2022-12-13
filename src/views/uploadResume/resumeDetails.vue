@@ -104,15 +104,12 @@ onMounted(() => {});
 onActivated(() => {
   getExperience();
   getScrollValue();
-  console.log("回来的位置" + scrollRef.value.scrollTop);
 });
 onBeforeRouteLeave((to, from, next) => {
   if (to.name == "createResume" || to.name == "mine") {
     clearKeep();
-    console.log("清空了");
   } else {
     setScrollValue();
-    console.log("保留");
   }
   next();
 });

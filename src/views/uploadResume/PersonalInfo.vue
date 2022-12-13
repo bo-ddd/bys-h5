@@ -258,17 +258,12 @@ onMounted(async () => {
 onActivated(() => {
   getSchoolInfo();
   getScrollValue();
-  console.log("获取");
-
-  console.log("回来的位置" + scrollRef.value.scrollTop);
 });
 onBeforeRouteLeave((to, from, next) => {
   if (to.name == "resumeDetails") {
     clearKeep();
-    console.log("清空了");
   } else {
     setScrollValue();
-    console.log("保留");
   }
   next();
 });
@@ -437,7 +432,6 @@ const areaRole = {
   children: "children",
 };
 const selectArea = (value: any, index: number) => {
-  console.log(value);
   areaDefault.value = index;
   userAddr.value = value[0].label + "-" + value[1].label + "-" + value[2].label;
   show4.value = false;

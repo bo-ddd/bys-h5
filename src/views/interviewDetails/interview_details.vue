@@ -1,18 +1,19 @@
 <template>
     <div class="interview_details">
-        <div class="header">
+        <div class="interview_details">
             <div>
-                <div class="header_box align-center">
+                <div class="interview_details_box align-center">
                     <div class="companyLogo ml-23">
-                        <img src="@/assets/images/icon-avater1.png" alt="">
+                        <img :src="interviewData.companyLogoUrl" alt="">
                     </div>
-                    <div class="just-between header_box-center">
+                    <div class="just-between interview_details_box-center" @click="log">
                         <div>
                             <div>
-                                <div class="fs-14">中科百谷</div>
-                                <h2>软件测试工程师</h2>
+                                <div class="fs-14">{{ interviewData.companyName }}</div>
+                                <h2>{{ interviewData.positionName }}</h2>
                             </div>
-                            <div class="fs-1">北京-北京市-昌平区 | 8-12k</div>
+                            <div class="fs-1">{{ interviewData.interviewAddr }} | {{ interviewData.positionMoney }}
+                            </div>
                         </div>
                         <div class="icon_arrow">
                             <van-icon name="arrow" />
@@ -20,8 +21,41 @@
                     </div>
                 </div>
             </div>
-            <div class="container">
-
+            <div class="container wrap">
+                <h4>面试信息</h4>
+                <ul class="container_ul mt-24">
+                    <li>
+                        <label class="mr-5">联系人</label>
+                        <span>
+                            {{ interviewData.interviewPhone }}
+                            <van-icon class="c2471fb" name="phone-o" />
+                        </span>
+                    </li>
+                    <li>
+                        <label class="mr-5">面试时间</label>
+                        <span>
+                            {{ interviewData.interviewTime }}
+                        </span>
+                    </li>
+                    <li>
+                        <label class="mr-5">面试形式</label>
+                        <span>
+                            线下面试
+                        </span>
+                    </li>
+                    <li>
+                        <label class="mr-5">面试地址</label>
+                        <span>
+                            {{ interviewData.interviewAddr }}
+                        </span>
+                    </li>
+                    <li>
+                        <label class="mr-5">备注信息</label>
+                        <span>
+                            无
+                        </span>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -57,7 +91,7 @@ interface interviewDataType {
 
 const axios = useMineStore();
 const route = useRoute();
-let interviewData = reactive([]) as interviewDataType[]
+let interviewData = reactive({}) as interviewDataType;
 getUserInterview();
 // 我的面试页面传过来的id
 let companyId = ref(Number(route.query.companyId))
@@ -78,6 +112,10 @@ async function getUserInterview() {
         console.log(interviewData);
     }
 };
+
+function log() {
+    console.log(111)
+}
 </script>
 
 <style scoped lang="scss">
@@ -93,13 +131,25 @@ async function getUserInterview() {
     font-size: 1rem;
 }
 
+.mt-24 {
+    margin-top: 2.4rem;
+}
+
+.mr-5 {
+    margin-right: .5rem;
+}
+
+.c2471fb {
+    color: #2471fb;
+}
+
 .interview_details {
-    .header {
+    .interview_details {
         width: 100vw;
         height: 100vh;
         background-color: #5893fc;
 
-        .header_box {
+        .interview_details_box {
             height: 11.7rem;
             ;
 
@@ -110,7 +160,7 @@ async function getUserInterview() {
                 border: .1rem solid #ccc;
             }
 
-            .header_box-center {
+            .interview_details_box-center {
                 color: #fff;
                 width: 100%;
                 padding-left: .7rem;
@@ -128,10 +178,35 @@ async function getUserInterview() {
     }
 
     .container {
+        box-sizing: border-box;
         width: 100%;
         height: calc(100vh - 11.7rem);
         border-radius: 2rem 2rem 0 0;
         background-color: #fff;
+        padding-top: 3.2rem;
+
+        h4 {
+            font-size: 1.6rem;
+            color: #444444;
+        }
+
+        .container_ul {
+            li {
+                padding: 1rem 0;
+                font-size: 1.4rem;
+
+                label {
+                    display: inline-block;
+                    width: 5.6rem;
+                    text-align-last: justify;
+                    color: #535353;
+                }
+
+                span {
+                    color: #535353;
+                }
+            }
+        }
     }
 }
 </style>

@@ -197,15 +197,11 @@ const onClickLeft1 = () => {
   clearKeep();
 };
 onActivated(() => {
-  console.log("keep");
-  console.log(keepFlag.value);
-
   if (!keepFlag.value) {
     setTitle();
     if (route.query.infoId) {
       getEditInfo(route.query.infoId); //获取学校，专业，优先用户信息
     }
-
     keepFlag.value = true;
   } else {
     //获取学校和专业   优先从pina
@@ -213,14 +209,9 @@ onActivated(() => {
   }
 });
 onBeforeRouteLeave((to, from, next) => {
-  console.log(to.name);
-
   if (to.name == "createResume") {
     keepFlag.value = false;
-    console.log("false");
-  } else {
-    console.log("没离开");
-  }
+  } 
   next();
 });
 //删除经历
@@ -264,8 +255,6 @@ const deleteInfo = () => {
 };
 //获取教育信息(复现)
 const getEditInfo = async (id: number) => {
-  console.log(2);
-
   if (routeName.value == "education") {
     let res = await use.getEducation({
       educationId: Number(id),
@@ -273,7 +262,6 @@ const getEditInfo = async (id: number) => {
     });
     if (res.code == 200) {
       let infoData = res.data[0];
-      console.log(infoData);
       beginTime.value = infoData.startTime.slice(0, 10);
       overTime.value = infoData.endTime.slice(0, 10);
       school.value = {
@@ -365,12 +353,8 @@ const school: any = ref("");
 const major: any = ref("");
 const getSchoolInfo = () => {
   //获取学校
-  console.log(selectSchool.value);
-
   school.value = selectSchool.value ? selectSchool.value : school.value;
   //获取专业
-  console.log(selectMajor.value);
-
   major.value = selectMajor.value ? selectMajor.value : major.value;
 };
 //学历
@@ -445,8 +429,6 @@ const projectDes = ref("");
 const projectStar = ref("");
 //上传
 const preservaInfo = () => {
-  console.log(routeName.value);
-
   if (routeName.value == "education" && checkForm()) {
     addEducationApi();
   } else if (routeName.value == "internship" && checkForm2()) {

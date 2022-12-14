@@ -193,4 +193,11 @@ export default {
      delStarPosition: (params: {}) => {
         return axios.post('/phone/delStarPosition', params, postConfig)
     },
+    /**
+    * 消息页面 企业邀请列表
+    * @returns 
+    */
+     selectInvitation: (params: {}) => {
+        return axios.post('/phone/selectInvitation', params, postConfig)
+    },
 }

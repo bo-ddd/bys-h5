@@ -54,7 +54,6 @@ const getTitle = function () {
   if (routeName == "campus") {
     titleName.value = "校园实践";
     message.value = infoData.value.userSchoolPractice;
-    console.log(infoData.value.userSchoolPractice);
     userSchoolPractice.value = computed(() => {
       return message;
     }).value;
@@ -84,9 +83,6 @@ const getDescInfo = function () {
   });
 };
 const reviseDesc = async function () {
-  console.log(userSchoolPractice);
-  console.log(userSchoolPractice.value);
-  console.log(userSchoolPractice.value.value);
   let res = await use.modifyUserStar({
     userHobby: userHobby.value.value,
     userId: 10000,
@@ -94,7 +90,6 @@ const reviseDesc = async function () {
     userSchool: userSchoolPractice.value.value,
     userStar: userStar.value.value,
   });
-  console.log(res);
   if (res.code == 200) {
     Toast.success("更新成功");
     to("/resumeDetails");

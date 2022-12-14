@@ -117,6 +117,8 @@ const getComInfo = async function () {
     companyId,
     userId:10000
   });
+  console.log(res);
+  
   if (res.code == 200 && res.data) {
     Object.assign(companyInfo, res.data);
     positionLength.value = res.data.positionList.length;

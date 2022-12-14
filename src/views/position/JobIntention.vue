@@ -169,10 +169,11 @@ const getWishMoney = async () => {
     })
 }
 getWishMoney();
+
 const onConfirmSalary = (value: any) => {//确认
     showSalary.value = false;
     salary.value = handleMoney(value);
-    console.log(value)
+    console.log(value);
 };
 const handleMoney = function (value: any): string {
     return ((value[0].text) / 1000) + '-' + ((value[1].text) / 1000) + 'k'
@@ -194,7 +195,7 @@ const onCancelWorkNature = () => {//取消
 };
 
 // 期望工作地---------------------------------------------
-let activeId = ref([]);
+let activeId = ref([]) as any;
 let activeIndex = ref(0);
 let showWorkplace = ref(false);
 let items: any = [];
@@ -223,8 +224,10 @@ for (const provinceKey in provinceList) {
         children: childrenArr
     })
 }
+console.log(items);
 
 let navCity = ref(items[activeIndex.value]);
+console.log(navCity.value)
 // 选择地区的事件
 interface Workplace {
     text: string,
@@ -286,18 +289,25 @@ const submit = (): void => {
             let res = await useJob.setModifyJobIntentInfo(params);
             console.log(res);
         }
+        let wishIndustryLeft :any= [];
+        let wishIndustryRight :any= [];
+        industryInfo.industry.forEach((item: JobInfo) => {
+            wishIndustryLeft.push(item.parent);
+            wishIndustryRight.push(item.childre);
+        });
+        
         setModifyJobIntent({
             userId: 10000,
-            wishAddr: '',
-            wishIndustryLeft: '',
-            wishIndustryRight: '',
+            wishAddr: showArea.value,
+            wishIndustryLeft: [...new Set(wishIndustryLeft)],
+            wishIndustryRight: [...new Set(wishIndustryRight)],
             wishMoneyLeft: '',
             wishMoneyRight: '',
             wishNature: '',
             wishPositionLeft: '',
             wishPositionRight: '',
         });
-        
+
         localStorage.setItem('jobIndustry', JSON.stringify({
             job: jobInfo,
             industry: industryInfo,
@@ -323,9 +333,27 @@ const getJobIntent = async () => {
         industryInfo.industry.length = 0;
         //地区
         showArea.value.push(res.data.wishAddr);
+
+        items.forEach((items: JobInfo, index: number) => {
+            res.data.wishAddr.forEach((item: JobInfo) => {
+                if (item.split('-')[0] == items.text) {
+                    console.log('items', items, index);
+                    items.children.forEach((itemChildren: JobInfo, indexChildren: number) => {
+                        if (item.split('-')[1] == itemChildren.text) {
+                            // activeId.value.push(length-indexChildren+1)
+                            console.log(indexChildren);
+                            let length: number = index * (items.children.length) - (indexChildren + 1);
+                            activeId.value.push(length == -1 ? 1 : length);
+                        }
+                    })
+                }
+            });
+        });
+        activeId.value = [...new Set(activeId.value)];
+        console.log(activeId.value);
         // 薪资
-        salary.value = res.data.wishMoney.replace(/000/g, '').split(',').join('-') + 'k'
-        console.log(salary.value)
+        salary.value = res.data.wishMoney.replace(/000/g, '').split(',').join('-') + 'k';
+        console.log(salary.value);
 
 
         // 工作性质
@@ -333,18 +361,23 @@ const getJobIntent = async () => {
         // 职位
 
         // jobInfo.activeId
+        let jobId = 0;
         res.data.wishPosition.forEach((item: JobInfo) => {
-            jobInfo.activeId.push(Number(item.positionIdDown));
+            jobId += Number(item.positionIdDown) * Number(item.positionIdOn);
+            jobInfo.activeId.push(jobId);
             jobInfo.activeId = [...new Set(jobInfo.activeId)];
-            jobInfo.columnsJob.push({ text: item.positionNameDown, id: Number(item.positionIdDown) });
+            jobInfo.columnsJob.push({ text: item.positionNameDown, id: jobId });
             jobInfo.job.push({ parent: item.positionNameOn, children: item.positionNameDown });
         })
-        console.log('job', jobInfo.job)
+        console.log('job', jobInfo.job);
+        let industryId = 0;
         res.data.wishIndustry.forEach((item: JobInfo) => {
-            console.log(item)
-            industryInfo.activeId.push(Number(item.industryIdDown));
+            console.log(item);
+            industryId += Number(item.industryIdDown) * Number(item.industryIdOn)
+            industryInfo.activeId.push(industryId);
+            console.log(industryInfo.activeId)
             industryInfo.activeId = [...new Set(industryInfo.activeId)];
-            industryInfo.columnsIndustry.push({ text: item.industryNameDown, id: Number(item.industryIdDown) });
+            industryInfo.columnsIndustry.push({ text: item.industryNameDown, id: industryId });
             industryInfo.industry.push({ parent: item.industryNameOn, children: item.industryNameDown });
         });
         console.log('industry', industryInfo.industry);
@@ -356,22 +389,6 @@ const getJobIntent = async () => {
 
 }
 getJobIntent()
-
-
-// let data = {
-//     wisAddr: [
-//         '北京市-北京市', '河北省-唐山市'
-//          地点是前端的数据，所以就返回具体的地址，
-//     ],
-//     wishIndustry: [
-//         { id: 1, text: '互联网', children: ['电子商务'] },
-//         { id: 4, text: '电子通信', children: ['半导体'] },
-//         要这样的格式，返回不了的话，也可以直接返回对应的id，我自己处理，期望职位也是这样的格式
-//     ],
-//     wishMoney: '1000,2000',期望薪资必须返回的是两个整数
-//     wishNature: '1|2|3' || '全职|兼职|全职和兼职',
-//     可以直接是文字,也可以是123 然后说一下各自代表是哪个状态,
-// }
 </script>
 
 <style lang="scss" scoped>

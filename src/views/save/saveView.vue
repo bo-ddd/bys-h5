@@ -78,22 +78,22 @@ getCompanyList();
                     <!-- 这个是内容每一项 -->
                     <div class="enterprise-item mb-5" v-for="item in companyList" :key="item.companyId">
                         <div class="left">
-                            <img src="@/assets/images/icon-collection.png" class="icon">
+                            <img :src="item.companyLogoUrl" class="icon">
                         </div>
                         <div class="right ml-5">
                             <div class="top">
                                 <p class="fs-14 fw-700">{{item.companyName}}</p>
                                 <div class="desc fs-12">
-                                    <p>上海市</p>
+                                    <p>{{item.companyAddr}}</p>
                                     <div class="line mg-0_5"></div>
-                                    <p>1000人以上</p>
+                                    <p>{{item.companySize}}人以上</p>
                                     <div class="line mg-0_5"></div>
                                 </div>
                             </div>
                             <div class="btm">
                                 <div class="left fs-12">
                                     <p class="mr-5">热招</p>
-                                    <p class="cl-blue"> 数据中心 灾备岗</p>
+                                    <p class="cl-blue"> {{item.positionNameList.join(" ")}}</p>
                                     <p>等{{item.companyPositionCount}}个职位</p>
                                 </div>
                                 <img src="@/assets/images/icon-arrow_right.png" class="icon-16">

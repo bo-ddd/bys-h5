@@ -26,6 +26,8 @@ export default function () {
         companyName:string | null;
         companyPositionCount:number | null;
         companySize:number | string | null;
+        positionNameList:Array<any>,
+        companyLogoUrl:string,
     }
     interface PositionPayload{
         userId:number;

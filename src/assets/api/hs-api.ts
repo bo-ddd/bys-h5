@@ -40,5 +40,13 @@ export default {
      */
     setStarPosition:(params:any)=>{
         return axios.post('/phone/starPosition',params,postConfig);
+    },
+    /**
+     * @description 这个是获取职位详情
+     * @param params 
+     * @returns 
+     */
+    getPositionDetail:(params:any)=>{
+        return axios.post('/phone/getPosition',params,postConfig);
     }
 }

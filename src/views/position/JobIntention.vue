@@ -224,6 +224,7 @@ for (const provinceKey in provinceList) {
         children: childrenArr
     })
 }
+console.log('--------------获取items地址----------------');
 console.log(items);
 
 let navCity = ref(items[activeIndex.value]);
@@ -233,15 +234,25 @@ console.log('nav', navCity.value)
 let workplace: any[] = reactive([]);
 // 右侧
 let handlWorkplaceItem = function (item: any): void {
-    let index = workplace.indexOf(item);
-    showArea.value.forEach((areaItem: any, index: number) => {
-        if (areaItem.split('-')[1] == item.text) {
-            workplace.splice(index, 1);
-            console.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                log(workplace.splice(index, 1));
-            showArea.value.splice(index, 1);
-            console.log(showArea.value.splice(index, 1));
+    console.log('点击选中地区')
+    console.log(workplace);
+    // let index = workplace.indexOf(item);
+    let index = -1;
+    for(let i = 0; i < workplace.length; i++){
+        if(item.text == workplace[i].text){
+            index = i;
         }
-    })
+    }
+    console.log(index);
+    console.log(item);
+    // showArea.value.forEach((areaItem: any, index: number) => {
+    //     if (areaItem.split('-')[1] == item.text) {
+    //         workplace.splice(index, 1);
+    //         console.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                log(workplace.splice(index, 1));
+    //         showArea.value.splice(index, 1);
+    //         console.log(showArea.value.splice(index, 1));
+    //     }
+    // })
     console.log('----------------------')
     console.log([...new Set(showArea.value)]);
     console.log('wo',workplace)
@@ -250,9 +261,11 @@ let handlWorkplaceItem = function (item: any): void {
     if (index !== -1) {
         workplace.splice(index, 1);
         showArea.value.splice(index, 1);
+        activeId.value.splice(index,1);
     }
     if (workplace.length < 3 && index == -1) {
         workplace.push(item);
+        activeId.value.push(item.id);
         if (navCity) {
             let children = (navCity.value).children;
             if (children) {
@@ -343,23 +356,22 @@ const getJobIntent = async () => {
         industryInfo.industry.length = 0;
         //地区
         showArea.value = showArea.value.concat(res.data.wishAddr);
-        workplace = res.data.wishAddr;
         console.log('workplace',workplace)
         console.log('showArea', showArea.value)
-        items.forEach((items: JobInfo, index: number) => {
-            res.data.wishAddr.forEach((item: JobInfo) => {
-                if (item.split('-')[0] == items.text) {
-                    console.log('items', items, index);
-                    items.children.forEach((itemChildren: JobInfo, indexChildren: number) => {
-                        if (item.split('-')[1] == itemChildren.text) {
-                            // activeId.value.push(length-indexChildren+1)
-                            console.log(indexChildren);
-                            let length: number = index * (items.children.length) - (indexChildren + 1);
-                            activeId.value.push(length == -1 ? 1 : length);
-                        }
-                    })
-                }
-            });
+        res.data.wishAddr.forEach((item: JobInfo) => {
+            let positionArr = item.split("-");
+            let cityLeft = positionArr[0];
+            let cityRight= positionArr[1];
+            let res = items.find((city:any)=>{
+                return city.text == cityLeft;
+            }).children.find((child:any)=>{
+                return child.text == cityRight;
+            })
+            workplace.push({
+                text:res.text,
+                id:res.id,
+            })
+            activeId.value.push(res.id);
         });
         activeId.value = [...new Set(activeId.value)];
         console.log(activeId.value);

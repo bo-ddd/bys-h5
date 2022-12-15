@@ -18,7 +18,7 @@
       <p class="fs-16 fw-700"><span v-for="item, index in jobIndustry.job.job" :key="index">{{ item.children }}<span>{{
           jobIndustry.job.job.length - index - 1 == 0 ? '' : '、'
       }}</span></span></p>
-      <p class="fs-14 c-747474"><span v-for="item, index in jobIndustry.area" :key="index">{{ item }}</span></p>
+      <p class="fs-14 c-747474"><span v-for="item, index in area" :key="index">{{ item }}</span></p>
       <p class="fs-14 c-747474"><span v-for="item, index in jobIndustry.salary" :key="index">{{ item }}</span> <img
           class="icon-fillin" @click="jump('/jobIntention')" src="@/assets/images/icon-fillin.png"></p>
     </header>
@@ -31,26 +31,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import Card from '@/components/card'
 import { useRouter } from 'vue-router';
 import { useJobStore } from "@/stores/job"//接口
 const router = useRouter();
 const useJob = useJobStore();
 
+
 const jump = (src: string) => {
   router.push({ path: src })
 }
 
 
+
 let jobIndustry = (JSON.parse(localStorage.getItem('jobIndustry')!));
 console.log(jobIndustry)
 
-let cardList = ref([])
-let area: string = '';//地区
-jobIndustry.area.forEach((item: any) => {
-  area += item;
-});
 let wishIndustryLeft: string = '';//行业左
 jobIndustry.industry.industry.forEach((item: any) => {
   wishIndustryLeft += item.parent;
@@ -59,10 +56,10 @@ let wishIndustryRight: string = '';//行业右
 jobIndustry.industry.industry.forEach((item: any) => {
   wishIndustryRight += item.children;
 });
-let wishMoneyLeft : string = '';//薪资左
-wishMoneyLeft = jobIndustry.salary.replace('k','').slice('-')[0]+'000';
-let wishMoneyRight : string = '';//薪资右
-wishMoneyRight = jobIndustry.salary.replace('k','').slice('-')[2]+'000';
+let wishMoneyLeft: string = '';//薪资左
+wishMoneyLeft = jobIndustry.salary.replace('k', '').slice('-')[0] + '000';
+let wishMoneyRight: string = '';//薪资右
+wishMoneyRight = jobIndustry.salary.replace('k', '').slice('-')[2] + '000';
 let wishPositionLeft: string = '';//职业左
 jobIndustry.job.job.forEach((item: any) => {
   wishPositionLeft += item.parent;
@@ -71,14 +68,28 @@ let wishPositionRight: string = '';//职业右
 jobIndustry.job.job.forEach((item: any) => {
   wishPositionRight += item.children;
 });
+let area: any = ref();//地区
+
+const getJobIntent = async () => {
+  let res: any = await useJob.getJobIntentList({ userId: 10000 });
+  console.log('res', res);
+  if (res.code == 200) {
+    area.value = (res.data.wishAddr);
+    console.log(area.value);
+  }
+}
+getJobIntent()
+
 const getSelectPosition = async () => {
   let res = await useJob.getSelectPositionList({
-  "userId": 100000,
-  "wishMoneyLeft": 1,
-});
+    "userId": 100000,
+    "wishMoneyLeft": 1,
+  });
   console.log(res);
 }
 getSelectPosition();
+
+
 
 // let cardList = [
 //   {

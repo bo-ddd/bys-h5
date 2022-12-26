@@ -76,7 +76,6 @@ const getNewsList = async () => {
   });
   console.log(res);
   if (res.code == 200) {
-    // newsList.value = res.data;
     console.log(newsList.value);
   }
 };

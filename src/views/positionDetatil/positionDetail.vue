@@ -4,20 +4,20 @@
         <div class="container">
             <div class="position">
                 <div class="title">
-                    <h1 class="fs-24">传感器研发工程师</h1>
-                    <p class="fs-12 cl-red fw-700">12-25k</p>
+                   <h1 class="fs-24">{{positionDetail?.positionName}}</h1>
+                    <p class="fs-12 cl-red fw-700">{{parseMoney(positionDetail?.positionMonthMoney as string)}}k</p>
                 </div>
                 <div class="company-detial fs-12">
                     <p>上海市-青浦区</p>
                     <div class="line mg-0_5"></div>
-                    <p>机电工程师</p>
+                    <p>{{positionDetail?.positionName}}</p>
                 </div>
-                <div class="education">硕士</div>
+                <div class="education">{{positionDetail?.positionEducation}}</div>
             </div>
             <div class="position-desc">
                 <h2 class="fs-20">职位描述</h2>
                 <div class="desc fs-14 cl-grey">
-                    岗位职责:
+                    <!-- 岗位职责:
                     <br>
                     1、负责航空/汽车压力传感器、转速传感器、温度传感器、振动传感器、开发;
                     <br>
@@ -39,14 +39,15 @@
                     <br>
                     4、英语能力CET-4以上;
                     <br>
-                    5、优秀者可适当放宽;
+                    5、优秀者可适当放宽; -->
+                    {{positionDetail?.positionDes}}
                 </div>
             </div>
             <div class="work-address">
                 <h2 class="fs-20">工作地址</h2>
                 <div class="work">
                     <img src="@/assets/images/icon-lou.png" class="icon-16">
-                    <div class="fs-14">上海市青浦区华纺路99弄(张江工业园青浦分园)99号6幢3楼</div>
+                    <div class="fs-14">{{positionDetail?.positionAddr}}</div>
                 </div>
             </div>
             <div class="company-profile" @click="jump('/companyDetails')">
@@ -54,11 +55,11 @@
                 <div class="msg mt-20">
                     <img src="@/assets/images/company.png" class="icon-40">
                     <div class="company  ml-15">
-                        <p>慧石(上海)测控科技</p>
+                        <p>{{positionDetail?.companyName}}</p>
                         <div class="desc">
-                            <p>100-499人</p>
-                            <div class="line"></div>
-                            <p>机械/制造,仪器仪表/工业自动化</p>
+                            <p>{{positionDetail?.companySize}}</p>
+                            <div class="line mg-0_5"></div>
+                            <p>{{positionDetail?.companyIndustry}}</p>
                         </div>
                     </div>
                     <img src="@/assets/images/icon-arrow_right.png" class="icon-16">
@@ -83,12 +84,50 @@
 
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
+import { ref,type Ref} from "vue";
+import { usePositionDetailStore } from "@/stores/positonDetail";
+const positionDetailStore = usePositionDetailStore();
 let router = useRouter();
 let back = ()=>{
     router.go(-1);
 }  
 let jump = (url: string) => {
   router.push({ path: url })
+}
+interface PositionDetail{
+    companyId: number;
+    companyIndustry: string;
+    companyName: string;
+    companySize: string;
+    positionAddr: string;
+    positionDay: any;
+    positionDayMoeny: any;
+    positionDes: string;
+    positionEducation:string;
+    positionId: string;
+    positionMonth: any;
+    positionMonthMoney: string;
+    positionName: string;
+    positionPositive: any;
+}
+let positionDetail:Ref<PositionDetail | null | undefined> = ref();
+async function getPositionDetail(){
+    let res = await positionDetailStore.getPositionDetail({
+        positionId:10001,
+    });
+    positionDetail.value = res.data;
+}
+getPositionDetail();
+const parseMoney = (str:string):string=>{
+    try {
+        let moneyArray = str.split(",");
+        let targetArray=moneyArray.map((item)=>{
+            return item.substring(0,item.length-3);
+        })
+        return targetArray.join("-");
+    } catch (error) {
+        return "";
+    }
 }
 </script>
 <style lang="scss" scoped>
@@ -106,6 +145,8 @@ let jump = (url: string) => {
     }
     &>.container{
         padding: 0 2rem;
+        height: calc(100vh - 11rem);
+        overflow-y: scroll;
         &>.position{
             padding: 2rem 0;
             border-bottom: 1px solid #eff1f3;
@@ -143,7 +184,7 @@ let jump = (url: string) => {
             }
         }
         &>.company-profile{
-            padding: 2rem 0 8rem 0;
+            padding: 2rem 0 0 0;
             &>.msg{
                 display: grid;
                 grid-template-columns: 4rem auto 2rem;
@@ -158,10 +199,8 @@ let jump = (url: string) => {
         }
     }
     &>.bottom{
-        bottom: 0;
-        width: 100vw;
+        height: 7rem;
         box-sizing: border-box;
-        position: fixed;
         padding: 1rem 1.5rem;
         background: #fff;
         display: flex;

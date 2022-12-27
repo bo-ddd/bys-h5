@@ -1,6 +1,6 @@
 <template>
   <div class="position">
-    <header class=" wrap just-between" v-show="!jobIndustry">
+    <header class=" wrap just-between" v-show="!isShow">
       <div class="container flex">
         <div class="icon">
           <img class="icon-invitation" src="@/assets/images/icon-invitation.png" alt="">
@@ -14,13 +14,11 @@
         <van-button class="btn-plain" size="mini" color="#3b80fb" plain @click="jump('/jobIntention')">去填写</van-button>
       </div>
     </header>
-    <header class=" wrap just-between" v-show="jobIndustry">
-      <p class="fs-16 fw-700"><span v-for="item, index in jobIndustry.job.job" :key="index">{{ item.children }}<span>{{
-          jobIndustry.job.job.length - index - 1 == 0 ? '' : '、'
-      }}</span></span></p>
-      <p class="fs-14 c-747474"><span v-for="item, index in jobIndustry.area" :key="index">{{ item }}</span></p>
-      <p class="fs-14 c-747474"><span v-for="item, index in jobIndustry.salary" :key="index">{{ item }}</span> <img
-          class="icon-fillin" @click="jump('/jobIntention')" src="@/assets/images/icon-fillin.png"></p>
+    <header class=" wrap just-between" v-show="isShow">
+      <p class="fs-16 fw-700 job">{{ wishPositionRight.replace(/、$/, '') }}</p>
+      <p class="fs-14 c-747474"><span v-for="item, index in area" :key="index">{{ item }}</span></p>
+      <p class="fs-14 c-747474"><span>{{ salary }}</span> <img class="icon-fillin" @click="jump('/jobIntention')"
+          src="@/assets/images/icon-fillin.png"></p>
     </header>
     <main class="container">
       <!-- <Card.Wrap>
@@ -31,54 +29,51 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import Card from '@/components/card'
 import { useRouter } from 'vue-router';
 import { useJobStore } from "@/stores/job"//接口
 const router = useRouter();
 const useJob = useJobStore();
 
+
 const jump = (src: string) => {
   router.push({ path: src })
 }
+let isShow = ref(false)
+let area: any = ref();//地区
+let wishPositionRight = ref('');//职业右
+let salary = ref('');//薪资
+const getJobIntent = async () => {
+  let res: any = await useJob.getJobIntentList({ userId: 10000 });
+  console.log('res', res);
+  if (res.code == 200) {
+    if (res.data.wishAddr.length) {
+      isShow.value = true
+    }
+    // 地区
+    area.value = (res.data.wishAddr);
+    console.log(area.value);
+    // 职位
+    res.data.wishPosition.forEach((item: any) => {
+      wishPositionRight.value += item.positionNameDown + '、'
+    });
+    // 薪资
+    salary.value = res.data.wishMoney.replace(/000/g, 'k').replace(/,/, '-').replace(/k/, '')
+  }
+}
+getJobIntent()
 
-
-let jobIndustry = (JSON.parse(localStorage.getItem('jobIndustry')!));
-console.log(jobIndustry)
-
-let cardList = ref([])
-let area: string = '';//地区
-jobIndustry.area.forEach((item: any) => {
-  area += item;
-});
-let wishIndustryLeft: string = '';//行业左
-jobIndustry.industry.industry.forEach((item: any) => {
-  wishIndustryLeft += item.parent;
-});
-let wishIndustryRight: string = '';//行业右
-jobIndustry.industry.industry.forEach((item: any) => {
-  wishIndustryRight += item.children;
-});
-let wishMoneyLeft : string = '';//薪资左
-wishMoneyLeft = jobIndustry.salary.replace('k','').slice('-')[0]+'000';
-let wishMoneyRight : string = '';//薪资右
-wishMoneyRight = jobIndustry.salary.replace('k','').slice('-')[2]+'000';
-let wishPositionLeft: string = '';//职业左
-jobIndustry.job.job.forEach((item: any) => {
-  wishPositionLeft += item.parent;
-});
-let wishPositionRight: string = '';//职业右
-jobIndustry.job.job.forEach((item: any) => {
-  wishPositionRight += item.children;
-});
 const getSelectPosition = async () => {
   let res = await useJob.getSelectPositionList({
-  "userId": 100000,
-  "wishMoneyLeft": 1,
-});
+    "userId": 100000,
+    "wishMoneyLeft": 1,
+  });
   console.log(res);
 }
 getSelectPosition();
+
+
 
 // let cardList = [
 //   {
@@ -198,6 +193,14 @@ getSelectPosition();
 
   header {
     height: 7.2rem;
+
+    .job {
+      font-weight: 700;
+      width: 10rem;
+      overflow: hidden; //超出的文本隐藏
+      text-overflow: ellipsis; //溢出用省略号显示
+      white-space: nowrap; // 默认不换行；
+    }
 
     .container {
       padding: 1.6rem 0;

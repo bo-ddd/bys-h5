@@ -35,6 +35,7 @@ let items: any[] = reactive([]);
 let getCompanyIndustry = async () => {
     let res = await useJob.getCompanyIndustryList({});
     let data = res.data;
+    console.log(data)
     data.forEach((item: any) => {
         let children: any[] = [];
         item.children.forEach((item: any) => {
@@ -50,7 +51,7 @@ let getCompanyIndustry = async () => {
         });
     })
 }
-
+console.log('items',items)
 let activeId = ref([]);
 let showIndustry: any = ref([]);
 let columnsIndustry: any[] = reactive([]);

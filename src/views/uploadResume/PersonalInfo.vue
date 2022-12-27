@@ -3,24 +3,7 @@
     <van-nav-bar title="基本信息" left-arrow @click-left="onClickLeft1" />
     <div ref="scrollRef" class="overy-scoll">
       <van-cell-group>
-        <van-uploader class="upload" :after-read="afterRead">
-          <van-cell class="upload-cell" center>
-            <template #title>
-              <div class="fs-18">头像</div>
-            </template>
-            <template #label>
-              <div class="fs-14 mt-10">上传真实头像通过Hr初筛率更高</div>
-            </template>
-            <template #value>
-              <!-- <van-uploader  ref='upload' :deletable="false" v-model="fileList" :max-count="1"/> -->
-              <!-- <img v-if="avaterImg" class="img-10 " :src="avaterImg" /> -->
-              <img
-                class="img-10 bord-rad-100"
-                :src="avaterImg?avaterImg:parseAssetFile('icon-avater1.png')"
-              />
-            </template>
-          </van-cell>
-        </van-uploader>
+        <!-- <UploadAvatar :avaterImg="avaterImg" @success="setAvater"></UploadAvatar> -->
         <van-cell class="all-width pb-20" center>
           <template #title>
             <div class="fs-16 color-gray">姓名</div>
@@ -35,20 +18,6 @@
           </template>
           <template #label>
             <van-field class="fs-16" clearable v-model="userEmail" label="文本" placeholder="请输入邮箱" />
-          </template>
-        </van-cell>
-        <van-cell class="all-width pb-20" center @click="show = true">
-          <template #title>
-            <div class="fs-16 color-gray">性别</div>
-          </template>
-          <template #label>
-            <div class="just-between">
-              <div class="fs-16 color-black">
-                <span v-if="userSex">{{userSex}}</span>
-                <span class="color-gr" v-else>请填写性别</span>
-              </div>
-              <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
-            </div>
           </template>
         </van-cell>
         <van-cell class="all-width pb-20" center @click="show2 = true">
@@ -79,6 +48,8 @@
             </div>
           </template>
         </van-cell>
+        
+        <SelectCom :select="userSex" :dataList="sexList" placeholder="请填写性别" @onSelect="setSex"></SelectCom>
         <van-cell class="all-width pb-20" center @click="show4 = true">
           <template #title>
             <div class="fs-16 color-gray">生源地</div>
@@ -163,14 +134,6 @@
       </div>
     </div>
     <!-- 性别弹框 -->
-    <van-action-sheet
-      v-model:show="show"
-      :actions="sexList"
-      cancel-text="取消"
-      close-on-click-action
-      @cancel="onCancel"
-      @select="selectSex"
-    />
     <!-- 生日 -->
     <van-popup v-model:show="show2" position="bottom" :style="{ height: '50%' }">
       <van-datetime-picker
@@ -243,17 +206,19 @@ import { useSchoolStore } from "@/stores/schoolChoice";
 import { useMajorStore } from "@/stores/majorChoice";
 import { useResumeStore } from "@/stores/resume";
 import { getScrollTop } from "vant/lib/utils";
+import UploadAvatar from '@/components/upload/UploadAvatar.vue'
+import SelectCom from '@/components/select/SelectCom.vue'
 const { selectSchool } = storeToRefs(useSchoolStore());
 const { setSchool, clearSchool } = useSchoolStore();
 const { selectMajor } = storeToRefs(useMajorStore());
 const { setMajor, clearMajor } = useMajorStore();
 
 //首次进入页面获取下拉列表
-onMounted(async () => {
+onMounted(async() => {
+  await getInfo();
   await gerSexList();
   await gerNationList();
   await getEducationrList();
-  await getInfo();
 });
 onActivated(() => {
   getSchoolInfo();
@@ -298,18 +263,13 @@ const getInfo = async function () {
   userName.value = res.data.userName;
   userEmail.value = res.data.userEmail;
   userSex.value = res.data.userSex;
-  sexValue.value = sexList.find(
-    (item: any) => item.name == res.data.userSex
-  ).value;
-  console.log(sexList);
+  sexValue.value = res.data.userSexId;
   avaterImg.value = res.data.userLogoUrl;
   userBirthday.value = res.data.userBirthday.slice(0, 10);
   userNational.value = res.data.userNationalName;
   nationValue.value = res.data.userNational;
   userEducation.value = res.data.userEducation;
-  educationValue.value = educationList.value.find(
-    (item: any) => item.label == res.data.userEducation
-  ).value;
+  educationValue.value =res.data.userEducationId;
   userAddr.value = res.data.userAddr;
   userSchool.value = {
     name: res.data.userSchoolName,
@@ -322,23 +282,8 @@ const getInfo = async function () {
   userYear.value = res.data.userYear;
 };
 const upload: any = ref(null);
-const afterRead = (file: any) => {
-  // 此时可以自行将文件上传至服务器
-  console.log(file);
-  console.log(file.file);
-  uploadAvater(file.file);
-};
-const uploadAvater = async function (file: any) {
-  let formData = new FormData();
-  formData.append("userId", "10000");
-  formData.append("userLogo", file);
-  console.log(formData);
-  
-  const res = await use.updateLogo(formData);
-  if (res.code == 200) {
-    avaterImg.value = res.data;
-  }
-};
+
+
 const use = useResumeStore();
 const route = useRoute();
 const scrollRef: any = ref(null); //父级盒子
@@ -368,11 +313,14 @@ const userEmail = ref("");
 //头像
 const avaterImg = ref("");
 const fileList = ref([]);
+const setAvater=(img:string)=>{
+  avaterImg.value=img;
+}
 //性别
 const sexList: any = reactive([]);
 const userSex = ref("");
 const sexValue = ref("");
-const selectSex = (item: { name: string; value: any }) => {
+const setSex = (item: { name: string; value: any }) => {
   sexValue.value = item.value;
   userSex.value = item.name;
 };
@@ -579,29 +527,6 @@ const to = (path: string) => {
     height: 100%;
     overflow-y: scroll;
   }
-  .upload {
-    display: block;
-    :deep(.van-uploader__wrapper) {
-      display: block;
-    }
-    .upload-cell {
-      padding: 1.4rem 1.6rem;
-      :deep(.van-uploader__upload) {
-        margin: 0;
-        border-radius: 100%;
-        overflow: hidden;
-      }
-      :deep(.van-uploader__preview) {
-        margin: 0;
-        border-radius: 100%;
-        overflow: hidden;
-      }
-      :deep(.van-cell__value) {
-        line-height: 0;
-        // padding: 1rem 1.6rem;
-      }
-    }
-  }
   .foot-box {
     width: 100%;
     position: absolute;
@@ -650,10 +575,6 @@ const to = (path: string) => {
 .color-bl {
   color: #242424;
 }
-.img-10 {
-  width: 8rem;
-  height: 8rem;
-}
 .fs-18 {
   font-size: 1.8rem;
 }
@@ -666,8 +587,5 @@ const to = (path: string) => {
 .h-30 {
   width: 100%;
   height: 3.5rem;
-}
-.bord-rad-100 {
-  border-radius: 100%;
 }
 </style>

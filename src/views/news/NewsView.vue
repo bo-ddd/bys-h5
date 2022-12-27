@@ -20,7 +20,7 @@
       <div class="text-title mt-20">企业向我发出的邀请</div>
       <div class="text-title">学校就业老师向我推荐的招聘信息</div>
       <div class="btn-box mt-30">
-        <van-button type="primary" @click="to('/login')">登录</van-button>
+        <van-button class="btn1" type="primary" @click="to('/login')">登录</van-button>
       </div>
     </div>
     <div v-if="loginStatus&&newsList.length==0" class="news-box">
@@ -28,7 +28,7 @@
       <div class="text-title mt-20">暂无企业的邀请</div>
       <div class="text-tip mt-10">您的在线简历完善度只有45分，低于平均分82.8。在线简历完善后，就能吸引更多企业</div>
       <div class="btn-box mt-20">
-        <van-button type="primary" @click="to('/createResume')">完善简历</van-button>
+        <van-button class="btn2" type="primary" @click="to('/createResume')">完善简历</van-button>
       </div>
     </div>
     <div v-if="loginStatus&&newsList.length!=0" class="news-box2">
@@ -76,7 +76,6 @@ const getNewsList = async () => {
   });
   console.log(res);
   if (res.code == 200) {
-    newsList.value = res.data;
     console.log(newsList.value);
   }
 };
@@ -92,10 +91,6 @@ onMounted(() => {
   display: grid;
   grid-template-rows: 4.6rem auto;
   height: 100%;
-  // .van-button {
-  //   height: auto;
-  //   padding: 1rem 2rem;
-  // }
   .news-box2 {
     overflow: scroll;
     :deep(.van-cell__title) {
@@ -131,17 +126,20 @@ onMounted(() => {
     .btn-box {
       box-sizing: border-box;
       width: 100%;
-      // padding: 0 8rem;
       display: flex;
       justify-content: center;
       .van-button {
-        padding: 1rem 10rem;
         border-radius: 0.5rem;
+      }
+      .btn1{
+        padding: 1rem 9rem;
+      }
+      .btn2{
+        padding: 1rem 5rem;
       }
     }
   }
   .new-item {
-    // padding: 1rem;
     .flex {
       gap: 1rem;
     }
@@ -156,11 +154,9 @@ onMounted(() => {
       color: #5f5f5f;
     }
     .com-img {
-      // img{
       width: 4.5rem;
       height: 4.5rem;
       display: block;
-      // }
     }
   }
 }

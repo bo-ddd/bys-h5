@@ -50,6 +50,7 @@ let getPosition = async () => {
         });
     })
 }
+console.log(items)
 let activeId = ref([]);
 let showJob: any = ref([]);
 let columnsJob: any[] = reactive([]);

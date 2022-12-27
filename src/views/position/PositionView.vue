@@ -40,6 +40,18 @@ const useJob = useJobStore();
 const jump = (src: string) => {
   router.push({ path: src })
 }
+
+// localStorage.setItem('jobInfo', JSON.stringify({
+//     activeId: [],
+//     columnsJob: [],
+//     job: []
+// }))
+// localStorage.setItem('industryInfo', JSON.stringify({
+//     activeId:[],
+//         columnsIndustry:[],
+//         industry:[]
+// }))
+
 let isShow = ref(false)
 let area: any = ref();//地区
 let wishPositionRight = ref('');//职业右

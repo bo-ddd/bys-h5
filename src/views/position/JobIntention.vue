@@ -19,7 +19,7 @@
                 <van-cell center :border="false" class="fs-16" @click="showindustry = true" is-link to="/industry">
                     <template #title>
                         <span class="custom-title"><span v-for="item, index in industry" :key="index">{{ item.children
-                        }}
+}}
                                 <span>{{ industry.length - index - 1 == 0 ? '' : '、' }}</span> </span></span>
                         <span v-show="industry.length == 0" class="custom-title fs-16 ">不限</span>
                     </template>
@@ -84,23 +84,41 @@
 
 <script setup lang="ts">
 import type { Ref } from "vue";
+import { useRouter } from "vue-router";
 import type { JobInfo } from "./types/jobInfo"
 import { reactive, ref, toRefs } from 'vue';
 import { areaList } from '@vant/area-data';//地区
 import { useJobStore } from "@/stores/job"//接口
 import { Toast } from 'vant';
 
-let useJob = useJobStore();
+const router = useRouter();
+const useJob = useJobStore();
+
+let wishIndustryLeft: string = '';
+let wishIndustryRight: string = '';
+let wishPositionLeft: string = '';
+let wishPositionRight: string = '';
+let wishMoneyLeft: string = '';
+let wishMoneyRight: string = '';
+let wishNature: string = '';
+
+// localStorage.setItem('jobIndustry',JSON.stringify({
+//     area:'',
+//     industry:{
+//         activeId:[],
+//         columnsIndustry:[],
+//         industry:[]
+//     },
+//     job:{
+//         activeId:[],
+//         columnsJob:[],
+//         job:[]
+//     },
+//     salary:'',
+//     workNature:''
+// }))
 
 
-let jobIndustry = JSON.parse(localStorage.getItem('jobIndustry')!);
-if (jobIndustry) {
-    let { job: jobInfo,
-        industry,
-        salary,
-        workNature,
-        showArea } = toRefs(jobIndustry)
-}
 
 // 返回
 const onClickLeft = () => history.back();
@@ -173,6 +191,8 @@ getWishMoney();
 const onConfirmSalary = (value: any) => {//确认
     showSalary.value = false;
     salary.value = handleMoney(value);
+    wishMoneyLeft = value[0].text;
+    wishMoneyRight = value[1].text;
     console.log(value);
 };
 const handleMoney = function (value: any): string {
@@ -238,8 +258,8 @@ let handlWorkplaceItem = function (item: any): void {
     console.log(workplace);
     // let index = workplace.indexOf(item);
     let index = -1;
-    for(let i = 0; i < workplace.length; i++){
-        if(item.text == workplace[i].text){
+    for (let i = 0; i < workplace.length; i++) {
+        if (item.text == workplace[i].text) {
             index = i;
         }
     }
@@ -255,13 +275,13 @@ let handlWorkplaceItem = function (item: any): void {
     // })
     console.log('----------------------')
     console.log([...new Set(showArea.value)]);
-    console.log('wo',workplace)
-    console.log('item',item);
-    console.log('index',index);
+    console.log('wo', workplace)
+    console.log('item', item);
+    console.log('index', index);
     if (index !== -1) {
         workplace.splice(index, 1);
         showArea.value.splice(index, 1);
-        activeId.value.splice(index,1);
+        activeId.value.splice(index, 1);
     }
     if (workplace.length < 3 && index == -1) {
         workplace.push(item);
@@ -312,17 +332,17 @@ const submit = (): void => {
             let res = await useJob.setModifyJobIntentInfo(params);
             console.log(res);
         }
-
+        console.log(localStorage.getItem('modifyIndustryInfo'),)
         setModifyJobIntent({
             userId: 10000,
             wishAddr: [...new Set(showArea.value)].join(','),
-            wishIndustryLeft: wishIndustryLeft.replace(/,$/, ''),
-            wishIndustryRight: wishIndustryRight.replace(/,$/, ''),
+            wishIndustryLeft: JSON.parse(localStorage.getItem('modifyIndustryInfo')!).wishIndustryLeft.replace(/,$/, ''),
+            wishIndustryRight: JSON.parse(localStorage.getItem('modifyIndustryInfo')!).wishIndustryRight.replace(/,$/, ''),
             wishMoneyLeft: wishMoneyLeft,
             wishMoneyRight: wishMoneyRight,
             wishNature: wishNature,
-            wishPositionLeft: wishPositionLeft.replace(/,$/, ''),
-            wishPositionRight: wishPositionRight.replace(/,$/, ''),
+            wishPositionLeft: JSON.parse(localStorage.getItem('modifyJobInfo')!).wishPositionLeft.replace(/,$/, ''),
+            wishPositionRight: JSON.parse(localStorage.getItem('modifyJobInfo')!).wishPositionRight.replace(/,$/, ''),
         });
 
         localStorage.setItem('jobIndustry', JSON.stringify({
@@ -333,43 +353,40 @@ const submit = (): void => {
             area: showArea.value
         }));
         // 返回
-        history.back();
+        router.push({ path: "/position" });
     }
 }
-let wishIndustryLeft: string = '';
-let wishIndustryRight: string = '';
-let wishPositionLeft: string = '';
-let wishPositionRight: string = '';
-let wishMoneyLeft: string = '';
-let wishMoneyRight: string = '';
-let wishNature: string = '';
+
+// 获取求职意向
 const getJobIntent = async () => {
     let res: any = await useJob.getJobIntentList({ userId: 10000 });
-    console.log('res', res);
     if (res.code == 200) {
+        console.log('res-------', res);
         // 清空原来的 避免重复
-        jobInfo.activeId.length = 0;
-        jobInfo.columnsJob.length = 0;
-        jobInfo.job.length = 0;
-        industryInfo.activeId.length = 0;
-        industryInfo.columnsIndustry.length = 0;
-        industryInfo.industry.length = 0;
+        if (jobInfo) {
+            jobInfo.activeId.length = 0;
+            jobInfo.columnsJob.length = 0;
+            jobInfo.job.length = 0;
+            industryInfo.activeId.length = 0;
+            industryInfo.columnsIndustry.length = 0;
+            industryInfo.industry.length = 0;
+        }
         //地区
         showArea.value = showArea.value.concat(res.data.wishAddr);
-        console.log('workplace',workplace)
+        console.log('workplace', workplace)
         console.log('showArea', showArea.value)
         res.data.wishAddr.forEach((item: JobInfo) => {
             let positionArr = item.split("-");
             let cityLeft = positionArr[0];
-            let cityRight= positionArr[1];
-            let res = items.find((city:any)=>{
+            let cityRight = positionArr[1];
+            let res = items.find((city: any) => {
                 return city.text == cityLeft;
-            }).children.find((child:any)=>{
+            }).children.find((child: any) => {
                 return child.text == cityRight;
             })
             workplace.push({
-                text:res.text,
-                id:res.id,
+                text: res.text,
+                id: res.id,
             })
             activeId.value.push(res.id);
         });
@@ -393,38 +410,41 @@ const getJobIntent = async () => {
         let jobId = 0;
         res.data.wishPosition.forEach((item: JobInfo) => {
             // 修改求职意向 期望职位
-            wishPositionLeft += item.positionIdOn + ',';
-            wishPositionRight += item.positionIdDown + ',';
-
-            jobId += Number(item.positionIdDown) * Number(item.positionIdOn);
+            // wishPositionLeft += item.positionIdOn + ',';
+            // wishPositionRight += item.positionIdDown + ',';
+            console.log('-------------------------')
+            console.log(item)
+            if (item != null) {
+            jobId = Number(item.positionIdDown) * Number(item.positionIdOn);
             jobInfo.activeId.push(jobId);
             jobInfo.activeId = [...new Set(jobInfo.activeId)];
             jobInfo.columnsJob.push({ text: item.positionNameDown, id: jobId });
             jobInfo.job.push({ parent: item.positionNameOn, children: item.positionNameDown });
+            console.log('jobId',jobId)
+            }
         })
-        console.log('job', jobInfo.job);
+        console.log('jobInfo',jobInfo);
+        localStorage.setItem('jobInfo', JSON.stringify(jobInfo));
         let industryId = 0;
         res.data.wishIndustry.forEach((item: JobInfo) => {
-            console.log(item);
-            // 修改求职意向 期望行业
-            wishIndustryLeft += item.industryIdOn + ',';
-            wishIndustryRight += item.industryIdDown + ',';
-
-            industryId += Number(item.industryIdDown) * Number(item.industryIdOn)
-            industryInfo.activeId.push(industryId);
-            console.log(industryInfo.activeId)
-            industryInfo.activeId = [...new Set(industryInfo.activeId)];
-            industryInfo.columnsIndustry.push({ text: item.industryNameDown, id: industryId });
-            industryInfo.industry.push({ parent: item.industryNameOn, children: item.industryNameDown });
+            // // 修改求职意向 期望行业
+            // wishIndustryLeft += item.industryIdOn + ',';
+            // wishIndustryRight += item.industryIdDown + ',';
+            if (item != null) {
+                console.log(wishIndustryLeft)
+                industryId += Number(item.industryIdDown) * Number(item.industryIdOn)
+                industryInfo.activeId.push(industryId);
+                console.log(industryInfo.activeId)
+                industryInfo.activeId = [...new Set(industryInfo.activeId)];
+                industryInfo.columnsIndustry.push({ text: item.industryNameDown, id: industryId });
+                industryInfo.industry.push({ parent: item.industryNameOn, children: item.industryNameDown });
+            }
         });
-        console.log('industry', industryInfo.industry);
-        localStorage.setItem('jobInfo', JSON.stringify(jobInfo));
         localStorage.setItem('industryInfo', JSON.stringify(industryInfo));
-        console.log(jobInfo);
-        console.log(res.data.wishPosition);
     }
 }
 getJobIntent()
+
 </script>
 
 <style lang="scss" scoped>

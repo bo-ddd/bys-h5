@@ -30,7 +30,7 @@
             <div class="company-profile" @click="jump('/companyDetails')">
                 <h2 class="fs-20">企业简介</h2>
                 <div class="msg mt-20">
-                    <img src="@/assets/images/company.png" class="icon-40">
+                    <img :src="positionDetail?.companyLogoUrl" class="icon-40">
                     <div class="company  ml-15">
                         <p>{{positionDetail?.companyName}}</p>
                         <div class="desc">
@@ -50,7 +50,7 @@
                     <p class="fs-14">分享</p>
                 </div>
                 <div class="option">
-                    <img src="@/assets/images/icon-star_active.png" class="icon-20">
+                    <img @click="setStarPosition" :src="positionDetail?.isStar ?  parseAssetFile('icon-star_active.png') :  parseAssetFile('icon-star.png')" class="icon-20">
                     <p class="fs-14">收藏</p>
                 </div>
             </div>
@@ -63,6 +63,9 @@
 import { useRouter,useRoute } from "vue-router";
 import { ref,type Ref} from "vue";
 import { usePositionDetailStore } from "@/stores/positonDetail";
+import { parseAssetFile } from "@/assets/util";
+import { Toast } from 'vant';
+
 const positionDetailStore = usePositionDetailStore();
 let router = useRouter();
 let route = useRoute();
@@ -93,15 +96,41 @@ interface PositionDetail{
     positionMonthMoney: string;
     positionName: string;
     positionPositive: any;
+    companyLogoUrl:string;
+    isStar:boolean;
+}
+interface Res<T>{
+    code:number,
+    msg:string,
+    data:T,
 }
 let positionDetail:Ref<PositionDetail | null | undefined> = ref();
+// 获取职位详情的接口
 async function getPositionDetail(){
-    let res = await positionDetailStore.getPositionDetail({
+    let res:Res<any>= await positionDetailStore.getPositionDetail({
         positionId:positionId.value,
     });
-    positionDetail.value = res.data;
+    console.log(res);
+    if(res.code == 200){
+        positionDetail.value = res.data;
+    }
 }
 getPositionDetail();
+// 收藏职位的接口
+async function setStarPosition(){
+    let res:Res<any>= await positionDetailStore.setStarPosition({
+        positionId:positionId.value,
+    });
+    if(res.code == 200){
+        console.log(res);
+        getPositionDetail();
+        if(positionDetail.value?.isStar){
+            Toast.success('取消收藏');
+        }else{
+            Toast.success('收藏成功');
+        }
+    }
+}
 // 转换钱的方法
 const parseMoney = (str:string):string=>{
     try {

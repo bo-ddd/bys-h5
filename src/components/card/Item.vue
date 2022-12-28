@@ -20,22 +20,24 @@
                 </div>
             </div>
         </div>
-        <div class="operation" @click.stop="">
+        <div class="operation">
             <p class=" mt-14 c-fb5530 fs-14 fw-600 money">{{ !options.positionMoney ? '' :
         options.positionMoney.replace(/,/g, '-').replace(/0/g, '') + 'k'
 }}</p>
-            <van-button class="mt-20 btn fw-600" size="mini" type="primary" @click.stop="isShow = true">申请</van-button>
-            <van-action-sheet v-model:show="isShow" title="确认投递简历">
+<p v-if="options.isDelivery" class="mt-30 fs-12 c-a8a8a8">已申请</p>
+            <van-button v-if="!options.isDelivery" class="mt-20 btn fw-600" size="mini" type="primary" @click.stop="isShow = true">申请</van-button>
+            <van-action-sheet  @click.stop="" v-model:show="isShow" title="确认投递简历">
                 <div class="content">
                     <div class="flex">
                         <van-icon name="checked" size="2.5rem" color="#2979ff" />
                         <div class="title">
                             <p class="fs-16">在线投递简历</p>
-                            <span class="fs-12 c-747474">2022-11-10 17:49 更新</span>
+                            <span class="fs-12 c-747474">{{resumeInfo.modifyTime}}更新</span>
                         </div>
-                        <p class="fs-14 c-747474">完成度：<span class="c-2979ff">60%</span></p>
+                        <p class="fs-14 c-747474">完成度：<span class="c-2979ff">{{ Number(resumeInfo.completion) * 100 }}%</span></p>
                     </div>
-                    <van-button class="btn-confirm fs-14" type="primary" @click="isShow = false">确认投递</van-button>
+                    <van-button class="btn-confirm fs-14" type="primary"
+                        @click="delivery(options.positionId)">确认投递</van-button>
                 </div>
             </van-action-sheet>
         </div>
@@ -44,22 +46,54 @@
 
 <script setup lang="ts">
 import useUtil from '@/assets/util';
-import { ref, toRefs } from 'vue'
+import { ref, toRefs,provide, inject } from 'vue';
+import type { Ref } from 'vue';
 import type { CardItem } from '../../views/position/types/card';
-
-let { parseAssetFile } = useUtil()
+import { useJobStore } from "@/stores/job";//接口
+import { useRouter } from 'vue-router';
+const router = useRouter();
+const useJob = useJobStore();
 
 let props = defineProps<{
     options: CardItem
 }>();
 let { options } = toRefs(props);
 let isShow = ref(false);
+// 申请职位接口
+const deliveryJob = async (params: number) => {
+    let res: any = await useJob.deliveryPosition({ positionId: params });
+    console.log(res);
+    if (res.code == 200) {
+        isShow.value = false;
+    }
+}
+// 确认投递
+const delivery = function (id: number) {
+    deliveryJob(id);
+    window.location.href = '/position'
+}
+
+interface ResumeInfo {
+    completion: number,
+    modifyTime: string
+}
+
+let resumeInfo = ref()  as Ref<ResumeInfo>
+
+// 查询简历完成度
+const getSelectCompletion = async () => {
+    let res: any = await useJob.getSelectCompletion();
+    console.log(res);
+    if (res.code == 200) {
+        resumeInfo.value = res.data
+    }
+}
+getSelectCompletion()
 
 </script>
 
 <style lang="scss" scoped>
 .item {
-    // border-bottom: .4rem solid #f5f5f5;
     justify-content: space-between;
     background-color: #ffffff;
 

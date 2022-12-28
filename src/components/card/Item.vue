@@ -20,11 +20,11 @@
                 </div>
             </div>
         </div>
-        <div class="operation">
+        <div class="operation" @click.stop="">
             <p class=" mt-14 c-fb5530 fs-14 fw-600 money">{{ !options.positionMoney ? '' :
         options.positionMoney.replace(/,/g, '-').replace(/0/g, '') + 'k'
 }}</p>
-            <van-button class="mt-20 btn fw-600" size="mini" type="primary" @click="isShow = true">申请</van-button>
+            <van-button class="mt-20 btn fw-600" size="mini" type="primary" @click.stop="isShow = true">申请</van-button>
             <van-action-sheet v-model:show="isShow" title="确认投递简历">
                 <div class="content">
                     <div class="flex">
@@ -59,8 +59,9 @@ let isShow = ref(false);
 
 <style lang="scss" scoped>
 .item {
-    border-bottom: .4rem solid #f5f5f5;
+    // border-bottom: .4rem solid #f5f5f5;
     justify-content: space-between;
+    background-color: #ffffff;
 
     .gang {
         margin: 0 .3rem;

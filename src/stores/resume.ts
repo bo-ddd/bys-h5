@@ -104,5 +104,9 @@ export const useResumeStore = defineStore('resume', () => {
     const selectInvitation = (payload: {}) => {
         return Api.selectInvitation(payload) as any
     }
-    return { selectInvitation,delStarPosition,starPosition,getCompany, delProject, modifyProject, modifyInternShip, delInternShip, modifyEducation, delEducation, addInternShip, addEducation, addProject, modifyUserStar, modifyBaseData, getSexDrop, getEducationApi, getNationalDrop, getSchoolDrop, getProfessionalDrop, updateLogo, searchSchool, seachProfessinal, getInternShip, getEducation, getOnlineResume, getProject }
+    //获取信息完成度
+    const selectCompletion = (payload: {}) => {
+        return Api.selectCompletion(payload) as any
+    }
+    return { selectCompletion,selectInvitation,delStarPosition,starPosition,getCompany, delProject, modifyProject, modifyInternShip, delInternShip, modifyEducation, delEducation, addInternShip, addEducation, addProject, modifyUserStar, modifyBaseData, getSexDrop, getEducationApi, getNationalDrop, getSchoolDrop, getProfessionalDrop, updateLogo, searchSchool, seachProfessinal, getInternShip, getEducation, getOnlineResume, getProject }
 })

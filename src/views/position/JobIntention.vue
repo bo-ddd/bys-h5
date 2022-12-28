@@ -120,6 +120,9 @@ let wishNature: string = '';
 
 
 
+// 获取求职意向
+
+
 // 返回
 const onClickLeft = () => history.back();
 // 期望职位
@@ -129,7 +132,7 @@ const activeIdsJob: Ref<any[]> = ref([]);
 const activeIndexJob = ref(0);
 let showJob = ref(false);
 let job: any = ref([]);
-let jobInfo = JSON.parse(localStorage.getItem('jobInfo')!);
+let jobInfo = JSON.parse(localStorage.getItem('jobInfo')!) as JobInfo;
 interface Key {
     [propsName: string]: any
 }
@@ -155,7 +158,8 @@ let columnIndustry: any[] = reactive([]);
 const activeIdsIndustry: Ref<any[]> = ref([]);
 let showindustry = ref(false);
 let industry: any = ref([]);
-let industryInfo = JSON.parse(localStorage.getItem('industryInfo')!);
+let industryInfo = JSON.parse(localStorage.getItem('industryInfo')!) as JobInfo;
+
 if (industryInfo) {
     for (key in industryInfo) {
         industryInfo[key] = industryInfo[key]
@@ -309,7 +313,7 @@ let workplaceReset = () => {
 
 // 保存
 const submit = (): void => {
-    if (!jobInfo.job.length) {
+    if (jobInfo.activeId.length) {
         Toast('请输入期望职位');
     }
     else if (salary.value.length == 0) {
@@ -327,6 +331,7 @@ const submit = (): void => {
             icon: 'success',
         });
 
+        router.push({ path: "/position" });
         // 修改
         const setModifyJobIntent = async (params: JobInfo) => {
             let res = await useJob.setModifyJobIntentInfo(params);
@@ -353,11 +358,10 @@ const submit = (): void => {
             area: showArea.value
         }));
         // 返回
-        router.push({ path: "/position" });
     }
 }
-
-// 获取求职意向
+let modifyindustry = { activeId: [], columnsIndustry: [], industry: [] } as JobInfo;
+let modifyjobInfo = { activeId: [], columnsJob: [], job: [] } as JobInfo;
 const getJobIntent = async () => {
     let res: any = await useJob.getJobIntentList({ userId: 10000 });
     if (res.code == 200) {
@@ -367,6 +371,9 @@ const getJobIntent = async () => {
             jobInfo.activeId.length = 0;
             jobInfo.columnsJob.length = 0;
             jobInfo.job.length = 0;
+
+        }
+        if (industryInfo) {
             industryInfo.activeId.length = 0;
             industryInfo.columnsIndustry.length = 0;
             industryInfo.industry.length = 0;
@@ -408,6 +415,7 @@ const getJobIntent = async () => {
         }
         // 职位
         let jobId = 0;
+
         res.data.wishPosition.forEach((item: JobInfo) => {
             // 修改求职意向 期望职位
             // wishPositionLeft += item.positionIdOn + ',';
@@ -415,16 +423,18 @@ const getJobIntent = async () => {
             console.log('-------------------------')
             console.log(item)
             if (item != null) {
-            jobId = Number(item.positionIdDown) * Number(item.positionIdOn);
-            jobInfo.activeId.push(jobId);
-            jobInfo.activeId = [...new Set(jobInfo.activeId)];
-            jobInfo.columnsJob.push({ text: item.positionNameDown, id: jobId });
-            jobInfo.job.push({ parent: item.positionNameOn, children: item.positionNameDown });
-            console.log('jobId',jobId)
+                jobId = Number(item.positionIdDown) * Number(item.positionIdOn);
+                modifyjobInfo.activeId!.push(jobId);
+                modifyjobInfo.activeId = [...new Set(modifyjobInfo.activeId)];
+                modifyjobInfo.columnsJob.push({ text: item.positionNameDown, id: jobId });
+                modifyjobInfo.job.push({ parent: item.positionNameOn, children: item.positionNameDown });
+                console.log('jobId', jobId)
             }
         })
-        console.log('jobInfo',jobInfo);
-        localStorage.setItem('jobInfo', JSON.stringify(jobInfo));
+        // console.log('modifyjobInfo', modifyjobInfo);
+        if(!localStorage.getItem('jobInfo')){
+            localStorage.setItem('jobInfo', JSON.stringify(modifyjobInfo));
+        }
         let industryId = 0;
         res.data.wishIndustry.forEach((item: JobInfo) => {
             // // 修改求职意向 期望行业
@@ -433,17 +443,20 @@ const getJobIntent = async () => {
             if (item != null) {
                 console.log(wishIndustryLeft)
                 industryId += Number(item.industryIdDown) * Number(item.industryIdOn)
-                industryInfo.activeId.push(industryId);
-                console.log(industryInfo.activeId)
-                industryInfo.activeId = [...new Set(industryInfo.activeId)];
-                industryInfo.columnsIndustry.push({ text: item.industryNameDown, id: industryId });
-                industryInfo.industry.push({ parent: item.industryNameOn, children: item.industryNameDown });
+                modifyindustry.activeId.push(industryId);
+                console.log(modifyindustry.activeId)
+                modifyindustry.activeId = [...new Set(modifyindustry.activeId)];
+                modifyindustry.columnsIndustry.push({ text: item.industryNameDown, id: industryId });
+                modifyindustry.industry.push({ parent: item.industryNameOn, children: item.industryNameDown });
             }
         });
-        localStorage.setItem('industryInfo', JSON.stringify(industryInfo));
+        if(!localStorage.getItem('industryInfo')){
+            localStorage.setItem('industryInfo', JSON.stringify(modifyindustry));
+        }
     }
 }
 getJobIntent()
+
 
 </script>
 

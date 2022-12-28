@@ -2,27 +2,29 @@
     <div class="wrap item just-center">
         <div class="container">
             <div class="header">
-                <p class="fs-16">{{ options.title }}</p>
+                <p class="fs-16">{{ options.positionName }}</p>
                 <div class="align-center  mt-14">
-                    <span class="fs-14 c-747474">{{ options.region }}</span>
+                    <span class="fs-14 c-747474">{{ options.positionAddr }}</span>
                     <span class="fs-12 c-747474 gang">|</span>
-                    <span class="fs-14 c-747474">{{ options.position }}</span>
+                    <span class="fs-14 c-747474">{{ options.positionIndustry }}</span>
                 </div>
-                <p class="fs-12  c-747474 education flex-ja-center mt-5">{{ options.education }}</p>
+                <p class="fs-12  c-747474 education flex-ja-center mt-5">{{ options.positionEducationName }}</p>
             </div>
             <div class="footer mt-14 align-center ">
-                <img class="icon" :src="parseAssetFile(options.url)" alt="">
+                <img class="icon" :src="options.companyLogoUrl" alt="">
                 <div class="">
                     <p class="fs-14">{{ options.companyName }}</p>
-                    <span class="fs-12 c-747474">{{ options.count }}</span>
+                    <span class="fs-12 c-747474">{{ options.companySize }}人</span>
                     <span class=" gang c-747474">|</span>
-                    <span class="fs-12 c-747474">{{ options.typeWork }}</span>
+                    <span class="fs-12 c-747474">{{ options.companyIndustry }}</span>
                 </div>
             </div>
         </div>
         <div class="operation">
-            <p class=" mt-14 c-fb5530 fs-14 fw-600">{{ options.wages }}</p>
-            <van-button class="mt-20 btn " size="mini" type="primary" @click="isShow = true">申请</van-button>
+            <p class=" mt-14 c-fb5530 fs-14 fw-600 money">{{ !options.positionMoney ? '' :
+        options.positionMoney.replace(/,/g, '-').replace(/0/g, '') + 'k'
+}}</p>
+            <van-button class="mt-20 btn fw-600" size="mini" type="primary" @click="isShow = true">申请</van-button>
             <van-action-sheet v-model:show="isShow" title="确认投递简历">
                 <div class="content">
                     <div class="flex">
@@ -43,24 +45,12 @@
 <script setup lang="ts">
 import useUtil from '@/assets/util';
 import { ref, toRefs } from 'vue'
-
+import type { CardItem } from '../../views/position/types/card';
 
 let { parseAssetFile } = useUtil()
 
-interface Options {
-    id: number,
-    title: string,
-    region: string,
-    position: string,
-    education: string,
-    url: string,
-    companyName: string,
-    count: string,
-    typeWork: string,
-    wages: string,
-}
 let props = defineProps<{
-    options: Options
+    options: CardItem
 }>();
 let { options } = toRefs(props);
 let isShow = ref(false);
@@ -93,6 +83,7 @@ let isShow = ref(false);
 
             .icon {
                 width: 3.2rem;
+                height: 3.2rem;
             }
         }
     }
@@ -100,6 +91,7 @@ let isShow = ref(false);
     .operation {
         .content {
             padding: 2rem;
+
             .flex {
                 height: 61vh;
                 gap: 1rem;
@@ -108,15 +100,18 @@ let isShow = ref(false);
                     line-height: 2.5rem;
                 }
             }
-            .btn-confirm{
+
+            .btn-confirm {
                 width: 100%;
             }
         }
 
         .btn {
-            margin-top: 2rem;
+            margin-top: 3rem;
             border-radius: .5rem;
-            padding: .5rem 1rem;
+            padding: 1.4rem 1rem;
+            background-color: #3b7dff;
+
         }
     }
 }

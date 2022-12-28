@@ -157,5 +157,4 @@ const onConfirm = () => {
     </div>
 </template>
 <style lang="scss" scoped>
-.position-list {}
 </style>

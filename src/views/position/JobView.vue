@@ -126,7 +126,6 @@ const goBack = () => {
     })
     let wishPositionRighta = '';
     items.forEach((item: any) => {
-        // console.log()
         item.children.forEach((itemChildren: any) => {
             wishPositionRight.value.split(',').forEach(items => {
                 if (itemChildren.id == Number(items)) {
@@ -140,7 +139,7 @@ const goBack = () => {
                     }
                 }
             });
-        });
+        }); 
     });
     console.log('showJob.value', showJob.value);
     console.log('columnsJob', columnsJob)
@@ -157,7 +156,7 @@ const goBack = () => {
         })
     );
     
-    // router.push({ path: "/jobIntention" });
+    router.push({ path: "/jobIntention" });
 };
 </script>
 

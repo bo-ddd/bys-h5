@@ -157,7 +157,7 @@ const goBack = () => {
         wishIndustryRight:wishIndustryRighta,
     })
     );
-    // router.push({ path: "/jobIntention" });
+    router.push({ path: "/jobIntention" });
 
 };
 </script>

@@ -16,71 +16,98 @@
     </header>
     <header class=" wrap just-between" v-show="isShow">
       <p class="fs-16 fw-700 job">{{ wishPositionRight.replace(/、$/, '') }}</p>
-      <p class="fs-14 c-747474"><span v-for="item, index in area" :key="index">{{ item }}</span></p>
-      <p class="fs-14 c-747474"><span>{{ salary }}</span> <img class="icon-fillin" @click="jump('/jobIntention')"
+      <p class="fs-14 c-747474 area"><span v-for="item, index in area" :key="index">{{ item }}</span></p>
+      <p class="fs-14 c-5d5d5d money"><span>{{ salary }}</span> <img class="icon-fillin" @click="jump('/jobIntention')"
           src="@/assets/images/icon-fillin.png"></p>
     </header>
     <main class="container">
-      <!-- <Card.Wrap>
-        <Card.Item v-for="item in cardList" :key="item.id" :options="item" ></Card.Item>
-      </Card.Wrap> -->
+      <Card.Wrap>
+        <Card.Item v-for="item in cardList" :key="item.companyId" :options="item" @click="jump('/positionDetail',item.positionId)"></Card.Item>
+      </Card.Wrap>
+      <div class=" text">
+        <p class="c-5d5d5d fs-14  just-center">没有更多数据了</p>
+      </div>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import Card from '@/components/card'
+import { reactive, ref } from 'vue';
+import type { Ref } from 'vue'
+import Card from '@/components/card';
 import { useRouter } from 'vue-router';
-import { useJobStore } from "@/stores/job"//接口
+import { useJobStore } from "@/stores/job";//接口
+import type { JobInfo } from './types/jobInfo';
+import type { CardItem } from './types/card';
 const router = useRouter();
 const useJob = useJobStore();
 
 
-const jump = (src: string) => {
-  router.push({ path: src })
+const jump = (src: string, params?: number) => {
+  if (params) {
+    router.push({ path: src, query: { positionId: params } })
+  } else {
+    router.push({ path: src })
+  }
 }
-
-// localStorage.setItem('jobInfo', JSON.stringify({
-//     activeId: [],
-//     columnsJob: [],
-//     job: []
-// }))
-// localStorage.setItem('industryInfo', JSON.stringify({
-//     activeId:[],
-//         columnsIndustry:[],
-//         industry:[]
-// }))
 
 let isShow = ref(false)
 let area: any = ref();//地区
 let wishPositionRight = ref('');//职业右
 let salary = ref('');//薪资
+// 获取求职意向
 const getJobIntent = async () => {
   let res: any = await useJob.getJobIntentList({ userId: 10000 });
-  console.log('res', res);
   if (res.code == 200) {
     if (res.data.wishAddr.length) {
       isShow.value = true
     }
     // 地区
     area.value = (res.data.wishAddr);
-    console.log(area.value);
     // 职位
     res.data.wishPosition.forEach((item: any) => {
       wishPositionRight.value += item.positionNameDown + '、'
     });
     // 薪资
     salary.value = res.data.wishMoney.replace(/000/g, 'k').replace(/,/, '-').replace(/k/, '')
+    // 职位
+    let jobId = 0;
+    let modifyjobInfo = { activeId: [], columnsJob: [], job: [] } as JobInfo;
+    res.data.wishPosition.forEach((item: JobInfo) => {
+      if (item != null) {
+        jobId = Number(item.positionIdDown) * Number(item.positionIdOn);
+        modifyjobInfo.activeId!.push(jobId);
+        modifyjobInfo.activeId = [...new Set(modifyjobInfo.activeId)];
+        modifyjobInfo.columnsJob.push({ text: item.positionNameDown, id: jobId });
+        modifyjobInfo.job.push({ parent: item.positionNameOn, children: item.positionNameDown });
+      }
+    })
+    localStorage.setItem('jobInfo', JSON.stringify(modifyjobInfo));
+    let industryId = 0;
+    let modifyindustry = { activeId: [], columnsIndustry: [], industry: [] } as JobInfo;
+    res.data.wishIndustry.forEach((item: JobInfo) => {
+      if (item != null) {
+        industryId += Number(item.industryIdDown) * Number(item.industryIdOn)
+        modifyindustry.activeId.push(industryId);
+        modifyindustry.activeId = [...new Set(modifyindustry.activeId)];
+        modifyindustry.columnsIndustry.push({ text: item.industryNameDown, id: industryId });
+        modifyindustry.industry.push({ parent: item.industryNameOn, children: item.industryNameDown });
+      }
+    });
+    localStorage.setItem('industryInfo', JSON.stringify(modifyindustry));
   }
 }
 getJobIntent()
 
+// 获取推荐职位列表
+let cardList = ref([]) as Ref<CardItem[]>;
 const getSelectPosition = async () => {
-  let res = await useJob.getSelectPositionList({
-    "userId": 100000,
-    "wishMoneyLeft": 1,
+  let res: any = await useJob.getSelectPositionList({
   });
+  if (res.code == 200) {
+    cardList.value = cardList.value.concat(res.data);
+    console.log(cardList.value)
+  }
   console.log(res);
 }
 getSelectPosition();
@@ -206,13 +233,26 @@ getSelectPosition();
   header {
     height: 7.2rem;
 
-    .job {
-      font-weight: 700;
-      width: 10rem;
+    .job,
+    .area {
       overflow: hidden; //超出的文本隐藏
       text-overflow: ellipsis; //溢出用省略号显示
       white-space: nowrap; // 默认不换行；
+
     }
+
+    .job {
+      font-weight: 700;
+      width: 15rem;
+    }
+
+    .area {
+      width: 5rem;
+    }
+
+    // .money {
+    //   font-family: STLiti !important;
+    // }
 
     .container {
       padding: 1.6rem 0;
@@ -227,6 +267,11 @@ getSelectPosition();
         .icon-invitation {
           width: 2.2rem;
         }
+      }
+
+      .text {
+        padding: 2rem 0 4rem;
+        margin: 0;
       }
     }
 

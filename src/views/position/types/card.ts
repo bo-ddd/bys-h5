@@ -10,5 +10,7 @@ export interface CardItem {
     positionIndustry: null | string,
     positionMoney: string,
     positionName: string,
-    companyName:string,
+    companyName: string,
+    isDelivery?: boolean,
+    isStar: boolean,
 }

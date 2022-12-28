@@ -1,6 +1,6 @@
 <template>
   <div class="position">
-    <header class=" wrap just-between" v-show="!isShow">
+    <header class=" wrap just-between" v-if="!isShow">
       <div class="container flex">
         <div class="icon">
           <img class="icon-invitation" src="@/assets/images/icon-invitation.png" alt="">
@@ -14,7 +14,7 @@
         <van-button class="btn-plain" size="mini" color="#3b80fb" plain @click="jump('/jobIntention')">去填写</van-button>
       </div>
     </header>
-    <header class=" wrap just-between" v-show="isShow">
+    <header class=" wrap just-between" v-if="isShow">
       <p class="fs-16 fw-700 job">{{ wishPositionRight.replace(/、$/, '') }}</p>
       <p class="fs-14 c-747474 area"><span v-for="item, index in area" :key="index">{{ item }}</span></p>
       <p class="fs-14 c-5d5d5d money"><span>{{ salary }}</span> <img class="icon-fillin" @click="jump('/jobIntention')"
@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { reactive, ref,inject,provide } from 'vue';
 import type { Ref } from 'vue'
 import Card from '@/components/card';
 import { useRouter } from 'vue-router';

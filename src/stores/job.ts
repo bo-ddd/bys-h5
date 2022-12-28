@@ -1,6 +1,16 @@
 import { defineStore } from 'pinia'
 import Api from "@/assets/api/z-api";
 
+interface PositionParams{
+    wishAddr?:string,
+    wishEducation?:string,
+    wishIndustryLeft?:string,
+    wishMoneyLeft?:string,
+    wishMoneyRight?:string,
+    wishNature?:string,
+    wishPositionLeft?:string
+}
+
 export const useJobStore = defineStore('job', () => {
     //获取期望薪资
     const getWishMoneyList = (payload: any = {}) => {
@@ -26,6 +36,9 @@ export const useJobStore = defineStore('job', () => {
     const setModifyJobIntentInfo = (payload: any = {}) => {
         return Api.setModifyJobIntent(payload);
     };
+    const selectPositionList = (payload:PositionParams)=>{
+        return Api.selectPositionList(payload);
+    }
 
     return {
         getWishMoneyList,
@@ -34,5 +47,6 @@ export const useJobStore = defineStore('job', () => {
         getSelectPositionList, 
         getJobIntentList,
         setModifyJobIntentInfo,
+        selectPositionList
     }
 })

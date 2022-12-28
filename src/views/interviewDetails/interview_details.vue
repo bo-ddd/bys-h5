@@ -1,5 +1,8 @@
 <template>
     <div class="interview_details">
+        <div class="nav-bar">
+            <van-nav-bar title="我的面试" left-arrow @click-left="onClickLeft" />
+        </div>
         <div class="interview_details">
             <div>
                 <div class="interview_details_box align-center">
@@ -25,32 +28,32 @@
                 <h4>面试信息</h4>
                 <ul class="container_ul mt-24">
                     <li>
-                        <label class="mr-5">联系人</label>
+                        <label class="mr-1">联系人</label>
                         <span>
                             {{ interviewData.interviewPhone }}
                             <van-icon class="c2471fb" name="phone-o" />
                         </span>
                     </li>
                     <li>
-                        <label class="mr-5">面试时间</label>
+                        <label class="mr-1">面试时间</label>
                         <span>
                             {{ interviewData.interviewTime }}
                         </span>
                     </li>
                     <li>
-                        <label class="mr-5">面试形式</label>
+                        <label class="mr-1">面试形式</label>
                         <span>
                             线下面试
                         </span>
                     </li>
                     <li>
-                        <label class="mr-5">面试地址</label>
+                        <label class="mr-1">面试地址</label>
                         <span>
                             {{ interviewData.interviewAddr }}
                         </span>
                     </li>
                     <li>
-                        <label class="mr-5">备注信息</label>
+                        <label class="mr-1">备注信息</label>
                         <span>
                             无
                         </span>
@@ -65,7 +68,7 @@
 import { useMineStore } from '@/stores/mineStores';
 import { ref } from "vue";
 import { reactive } from 'vue';
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 
 
@@ -88,7 +91,7 @@ interface interviewDataType {
     companyLogoUrl: string,// LOGOurl
 }
 
-
+const router = useRouter();
 const axios = useMineStore();
 const route = useRoute();
 let interviewData = reactive({}) as interviewDataType;
@@ -116,9 +119,23 @@ async function getUserInterview() {
 function log() {
     console.log(111)
 }
+
+// 返回上一级
+function onClickLeft() {
+    router.go(-1)
+};
 </script>
 
 <style scoped lang="scss">
+:deep(.van-nav-bar .van-icon) {
+    color: #000;
+}
+
+:deep(.van-nav-bar) {
+    background-color: #5893fc;
+    border: none;
+}
+
 .ml-23 {
     margin-left: 2.3rem;
 }
@@ -135,8 +152,8 @@ function log() {
     margin-top: 2.4rem;
 }
 
-.mr-5 {
-    margin-right: .5rem;
+.mr-1 {
+    margin-right: 1rem;
 }
 
 .c2471fb {
@@ -199,11 +216,11 @@ function log() {
                     display: inline-block;
                     width: 5.6rem;
                     text-align-last: justify;
-                    color: #535353;
+                    color: #000000;
                 }
 
                 span {
-                    color: #535353;
+                    color: #6e6b6b;
                 }
             }
         }

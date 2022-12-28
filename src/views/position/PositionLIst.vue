@@ -9,8 +9,12 @@ const useJob = useJobStore();
 const feedbackStore = useFeedbackStore();
 
 let router = useRouter();
-let jump = (url: string) => {
-    router.push({ path: url })
+const jump = (src: string, params?: number) => {
+    if (params) {
+        router.push({ path: src, query: { positionId: params } })
+    } else {
+        router.push({ path: src })
+    }
 }
 
 let cardList = ref();
@@ -178,7 +182,7 @@ const submitFilter = async () => {
     if (checkwishMoney.label == "不限") {
         wishMoneyLeft = "不限";
         wishMoneyRight = "不限"
-    }else if (checkwishMoney.label == "30K以上") {
+    } else if (checkwishMoney.label == "30K以上") {
         wishMoneyLeft = "30000";
         wishMoneyRight = "不限"
     } else {
@@ -283,7 +287,8 @@ const onClickLeft = () => history.back();
 
 
         <Card.Wrap>
-            <Card.Item class="mt-5" v-for="item in cardList" :options="item"></Card.Item>
+            <Card.Item class="mt-5" v-for="item in cardList" @click="jump('/positionDetail', item.positionId)"
+                :options="item"></Card.Item>
         </Card.Wrap>
 
         <van-empty v-if="!cardList" description="还没有职位" />

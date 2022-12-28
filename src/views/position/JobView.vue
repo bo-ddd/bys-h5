@@ -9,7 +9,7 @@
                 <div class="align-center check">
                     <p v-for="item, index in showJob" :key="index">
                         <span class="check-job c-2979ff">{{ item.parent }}:{{ item.children }}
-                            <span class="c-747474">
+                            <span class="c-747474" @click="deliet(index, item)">
                                 <van-icon name="cross" />
                             </span></span>
                     </p>
@@ -28,7 +28,8 @@ import { useJobStore } from "@/stores/job";
 import { ref, reactive } from "vue";
 import { Toast } from "vant";
 import type { TreeSelectChild } from "vant"
-
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const useJob = useJobStore();
 
 let items: any[] = reactive([]);
@@ -55,18 +56,12 @@ let activeId = ref([]);
 let showJob: any = ref([]);
 let columnsJob: any[] = reactive([]);
 let jobInfo = JSON.parse(localStorage.getItem('jobInfo')!);
-interface Key {
-    [propsName: string]: any
-}
-let key: keyof Key;
+
 if (jobInfo) {
-    // for (key in jobInfo) {
-    //     jobInfo[key] = (jobInfo[key])
-    // }
     console.log(jobInfo)
     activeId.value = Array.from(jobInfo.activeId);
-    showJob.value =jobInfo.job
-    columnsJob =jobInfo.columnsJob
+    showJob.value = jobInfo.job
+    columnsJob = jobInfo.columnsJob
 }
 let activeIndex = ref(0);
 let navCity = ref(items[activeIndex.value]);
@@ -107,14 +102,61 @@ let handlJobItem = function (item: TreeSelectChild): void {
 let handlJobNav = function (index: number): void {
     navCity.value = items[index];
 }
+
+//删除
+let deliet: (index: number, el: any) => void = (index: number, el: any): void => {
+    showJob.value = showJob.value.filter((item: any, cIndex: number) => { return index != cIndex })
+    activeId.value = activeId.value.filter((item: any, cIndex: number) => { return index != cIndex })
+    columnsJob = columnsJob.filter((item: any) => el.children != item.text)
+}
+
 // 点击确定返回上一级
 const goBack = () => {
+    let wishPositionLeft = ref('');
+    let wishPositionRight = ref('');
+    // 左
+    items.forEach((item: any) => {
+        showJob.value.forEach((items: any) => {
+            wishPositionLeft.value += items.parent == item.text ? item.id + ',' : '';
+        });
+    })
+    // 右
+    columnsJob.forEach((item: any) => {
+        wishPositionRight.value += item.id + ','
+    })
+    let wishPositionRighta = '';
+    items.forEach((item: any) => {
+        item.children.forEach((itemChildren: any) => {
+            wishPositionRight.value.split(',').forEach(items => {
+                if (itemChildren.id == Number(items)) {
+                    if (item.id != 1) {
+                        console.log(Number(items));
+                        console.log(item.children.length)
+                        console.log('----', Number(items) - item.children.length)
+                        wishPositionRighta += (Number(items) - item.children.length) + ','
+                    } else {
+                        wishPositionRighta += items+','
+                    }
+                }
+            });
+        }); 
+    });
+    console.log('showJob.value', showJob.value);
+    console.log('columnsJob', columnsJob)
+
     window.localStorage.setItem('jobInfo', JSON.stringify({
         job: showJob.value,
         activeId: activeId.value,
         columnsJob: columnsJob,
     }));
-    history.back();
+    window.localStorage.setItem('modifyJobInfo',
+        JSON.stringify({
+            wishPositionLeft: wishPositionLeft.value,
+            wishPositionRight: wishPositionRighta,
+        })
+    );
+    
+    router.push({ path: "/jobIntention" });
 };
 </script>
 

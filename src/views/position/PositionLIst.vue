@@ -13,116 +13,7 @@ let jump = (url: string) => {
     router.push({ path: url })
 }
 
-let cardList = [
-    {
-        id: 1,
-        title: '机械工程师1',
-        region: '上海市',
-        position: '研发工程师',
-        education: '硕士',
-        url: 'company.png',
-        companyName: '中国移动',
-        count: '100-499',
-        typeWork: '工程施工',
-        wages: '12k-24k',
-    },
-    {
-        id: 2,
-        title: '机械工程师2',
-        region: '上海市',
-        position: '研发工程师',
-        education: '硕士',
-        url: 'company.png',
-        companyName: '中国移动',
-        count: '100-499',
-        typeWork: '工程施工',
-        wages: '12k-24k'
-    },
-    {
-        id: 3,
-        title: '机械工程师3',
-        region: '上海市',
-        position: '研发工程师',
-        education: '硕士',
-        url: 'company.png',
-        companyName: '中国移动',
-        count: '100-499',
-        typeWork: '工程施工',
-        wages: '12k-24k'
-    },
-    {
-        id: 4,
-        title: '机械工程师1',
-        region: '上海市',
-        position: '研发工程师',
-        education: '硕士',
-        url: 'company.png',
-        companyName: '中国移动',
-        count: '100-499',
-        typeWork: '工程施工',
-        wages: '12k-24k',
-    },
-    {
-        id: 5,
-        title: '机械工程师2',
-        region: '上海市',
-        position: '研发工程师',
-        education: '硕士',
-        url: 'company.png',
-        companyName: '中国移动',
-        count: '100-499',
-        typeWork: '工程施工',
-        wages: '12k-24k'
-    },
-    {
-        id: 6,
-        title: '机械工程师3',
-        region: '上海市',
-        position: '研发工程师',
-        education: '硕士',
-        url: 'company.png',
-        companyName: '中国移动',
-        count: '100-499',
-        typeWork: '工程施工',
-        wages: '12k-24k'
-    },
-    {
-        id: 7,
-        title: '机械工程师1',
-        region: '上海市',
-        position: '研发工程师',
-        education: '硕士',
-        url: 'company.png',
-        companyName: '中国移动',
-        count: '100-499',
-        typeWork: '工程施工',
-        wages: '12k-24k',
-    },
-    {
-        id: 8,
-        title: '机械工程师2',
-        region: '上海市',
-        position: '研发工程师',
-        education: '硕士',
-        url: 'company.png',
-        companyName: '中国移动',
-        count: '100-499',
-        typeWork: '工程施工',
-        wages: '12k-24k'
-    },
-    {
-        id: 9,
-        title: '机械工程师3',
-        region: '上海市',
-        position: '研发工程师',
-        education: '硕士',
-        url: 'company.png',
-        companyName: '中国移动',
-        count: '100-499',
-        typeWork: '工程施工',
-        wages: '12k-24k'
-    },
-]
+let cardList = ref();
 
 
 /**
@@ -232,7 +123,14 @@ const wishMoneyArr = ref();
 const getWishMoney = async () => {
     let res: any = await feedbackStore.getWishMoney({});
     if (res.code == 200) {
-        wishMoneyArr.value = res.data.wishMoenyRightList;
+        wishMoneyArr.value = res.data;
+        wishMoneyArr.value.forEach((item: Item) => {
+            if (item.label == '不限') {
+                item.isClass = true;
+            } else {
+                item.isClass = false;
+            }
+        })
     }
 }
 getWishMoney();
@@ -245,21 +143,48 @@ const resetFilter = () => {
 
     educationSeleArr.value.find((item: Item) => item.label == '不限')!.isClass = true;
     natureArr.find((item: Item) => item.label == '不限')!.isClass = true;
+    wishMoneyArr.value.find((item: Item) => item.label == '不限')!.isClass = true;
 }
 
 
 
-const submitFilter = ()=>{
+const submitFilter = async ()=>{
     let checkNatur =  natureArr.find((item: Item) => item.isClass == true);
     let checkEduation =  educationSeleArr.value.filter((item: Item) => item.isClass == true);
     let checkwishMoney = wishMoneyArr.value.find((item: Item) => item.isClass == true);
     console.log(checkNatur);
     console.log(checkEduation);
     console.log(checkwishMoney);
+
+    let res = await useJob.selectPositionList({
+        
+    })
+
+
     item2.value.toggle();
 }
+
+
+/***
+ * 
+ * 职位列表
+ * 
+ */
+
+ const selectPositionList = async ()=>{
+      let res:any = await useJob.selectPositionList({});
+      if(res.code == 200){
+        cardList.value = res.data;        
+      }
+ }
+
+ selectPositionList();
+
+
+const onClickLeft = () => history.back();
 </script>
 <template>
+    <van-nav-bar  left-text="返回" title="职位列表" left-arrow @click-left="onClickLeft" />
     <div class="position-list">
         <van-dropdown-menu>
             <van-dropdown-item title="职位" ref="item3">
@@ -317,8 +242,8 @@ const submitFilter = ()=>{
         </van-dropdown-menu>
 
 
-        <Card.Wrap @click="jump('/positionDetail')">
-            <Card.Item v-for="item in cardList" :key="item.id" :options="item"></Card.Item>
+        <Card.Wrap>
+            <Card.Item v-for="item in cardList"  :options="item"></Card.Item>
         </Card.Wrap>
     </div>
 </template>
@@ -328,7 +253,7 @@ const submitFilter = ()=>{
 }
 
 .screen {
-    height: 73vh;
+    height: 68vh;
     background: #fff;
 
     .screen-btn {
@@ -372,7 +297,7 @@ const submitFilter = ()=>{
                     padding: 1.1rem 1.85rem;
                     border-radius: .4rem;
                     font-size: 1.5rem;
-                    border: 1px solid rgb(241, 241, 241);
+                    border: .1rem solid rgb(241, 241, 241);
                     width: 7.5rem;
                     text-align: center;
                 }

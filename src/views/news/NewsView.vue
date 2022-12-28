@@ -26,9 +26,16 @@
     <div v-if="loginStatus&&newsList.length==0" class="news-box">
       <img :src="parseAssetFile('icon-nomessage.png')" />
       <div class="text-title mt-20">暂无企业的邀请</div>
-      <div class="text-tip mt-10">您的在线简历完善度只有45分，低于平均分82.8。在线简历完善后，就能吸引更多企业</div>
+      <div class="text-tip mt-10">
+        <span v-if="perfectionNum==0">请先填写个人基本信息，企业才能向您抛出橄榄枝</span>
+        <span v-else>您的在线简历完善度只有{{perfectionNum*100}}分，低于平均分82.8。在线简历完善后，就能吸引更多企业</span>
+        <!-- <span v-else>建议您主动出击，寻找合适机会</span> -->
+        </div>
       <div class="btn-box mt-20">
-        <van-button class="btn2" type="primary" @click="to('/createResume')">完善简历</van-button>
+        <van-button class="btn2" type="primary" @click="to('/createResume')">
+        <span v-if="perfectionNum==0">去填写</span>
+        <span v-else>完善简历</span>
+        </van-button>
       </div>
     </div>
     <div v-if="loginStatus&&newsList.length!=0" class="news-box2">
@@ -36,7 +43,9 @@
         <van-cell class="just-between" v-for="item in newsList" :key="item.companyId">
           <template #title>
             <div class="new-item">
-              <div class="new-date">{{item.createTime.split(' ')[0]+' '+item.createTime.split(' ')[1].slice(0,5)}}</div>
+              <div
+                class="new-date"
+              >{{item.createTime.split(' ')[0]+' '+item.createTime.split(' ')[1].slice(0,5)}}</div>
               <div class="flex mt-10">
                 <img class="com-img" :src="item.companyLogoUrl" alt />
                 <div>
@@ -70,6 +79,7 @@ const to = function (path: any) {
   router.push(path);
 };
 let newsList = ref([]);
+let perfectionNum = ref(0);
 const getNewsList = async () => {
   let res = await use.selectInvitation({
     userId: 10000,
@@ -77,10 +87,20 @@ const getNewsList = async () => {
   console.log(res);
   if (res.code == 200) {
     console.log(newsList.value);
+    newsList.value = res.data;
+  }
+};
+const getPerfectionNum = async () => {
+  let res = await use.selectCompletion({
+    userId: 10000,
+  });
+  if (res.code == 200) {
+    perfectionNum.value = res.data;
   }
 };
 onMounted(() => {
   getNewsList();
+  getPerfectionNum()
 });
 </script>
 <style lang="scss" scoped>
@@ -131,10 +151,10 @@ onMounted(() => {
       .van-button {
         border-radius: 0.5rem;
       }
-      .btn1{
+      .btn1 {
         padding: 1rem 9rem;
       }
-      .btn2{
+      .btn2 {
         padding: 1rem 5rem;
       }
     }

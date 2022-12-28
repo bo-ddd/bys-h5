@@ -1,6 +1,17 @@
 import axios from "./axios";
 import { postConfig } from "./config";
 
+
+interface PositionParams{
+    wishAddr?:string,
+    wishEducation?:string,
+    wishIndustryLeft?:string,
+    wishMoneyLeft?:string,
+    wishMoneyRight?:string,
+    wishNature?:string,
+    wishPositionLeft?:string
+}
+
 export default {
     //获取期望薪资
     getWishMoney:(params:any = {})=>{
@@ -26,4 +37,9 @@ export default {
     setModifyJobIntent:(params:any = {})=>{
         return axios.post(`/phone/modifyJobIntent`,params,postConfig)
     },
+    //查询职位列表
+
+    selectPositionList:(params:PositionParams)=>{
+        return axios.post('/phone/selectPositionList',params,postConfig)
+    }
 }

@@ -9,7 +9,7 @@
                 <div class="align-center check">
                     <p v-for="item, index in showIndustry" :key="index">
                         <span class="check-industry c-2979ff">{{ item.parent }}:{{ item.children }}
-                            <span class="c-747474"  @click="deliet(index)">
+                            <span class="c-747474" @click="deliet(index, item)">
                                 <van-icon name="cross" />
                             </span></span>
                     </p>
@@ -28,7 +28,8 @@ import { useJobStore } from "@/stores/job";
 import { ref, reactive } from "vue";
 import { Toast } from "vant";
 import type { TreeSelectChild } from "vant"
-
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const useJob = useJobStore();
 
 let items: any[] = reactive([]);
@@ -51,22 +52,16 @@ let getCompanyIndustry = async () => {
         });
     })
 }
-console.log('items',items)
+console.log('items', items)
 let activeId = ref([]);
 let showIndustry: any = ref([]);
 let columnsIndustry: any[] = reactive([]);
 let industryInfo = JSON.parse(localStorage.getItem('industryInfo')!);
-interface Key {
-    [propsName: string]: any
-}
-let key: keyof Key;
+
 if (industryInfo) {
-    // for (key in industryInfo) {
-    //     industryInfo[key] = (industryInfo[key])
-    // }
     activeId.value = industryInfo.activeId;
-    showIndustry.value =industryInfo.industry
-    columnsIndustry =industryInfo.columnsIndustry
+    showIndustry.value = industryInfo.industry
+    columnsIndustry = industryInfo.columnsIndustry
 }
 let activeIndex = ref(0);
 let navCity = ref(items[activeIndex.value]);
@@ -109,19 +104,61 @@ let handlIndustryNav = function (index: number): void {
 }
 
 //删除
-let deliet:(index:number)=>void = (index:number) : void => {
-    showIndustry.value = showIndustry.value.filter((item:any,cIndex:number)=>{return index!=cIndex})
-    activeId.value = activeId.value.filter((item:any,cIndex:number)=>{return index!=cIndex})
+let deliet: (index: number, el: any) => void = (index: number, el: any): void => {
+    showIndustry.value = showIndustry.value.filter((item: any, cIndex: number) => { return index != cIndex })
+    activeId.value = activeId.value.filter((item: any, cIndex: number) => { return index != cIndex })
+    columnsIndustry = columnsIndustry.filter((item: any) => el.children != item.text)
 }
 
 // 点击确定返回上一级
 const goBack = () => {
+    let wishIndustryLeft = ref('');
+    let wishIndustryRight = ref('');
+    console.log('----------')
+    console.log(columnsIndustry);
+    console.log(navCity.value);
+    console.log(showIndustry.value);
+    // 左
+    items.forEach((item: any) => {
+        showIndustry.value.forEach((items: any) => {
+            wishIndustryLeft.value += items.parent == item.text ? item.id + ',' : '';
+        });
+    })
+    // 右
+    columnsIndustry.forEach((item:any)=>{
+        wishIndustryRight.value += item.id+','
+    })
+    let wishIndustryRighta = '';
+    items.forEach((item: any) => {
+        item.children.forEach((itemChildren: any) => {
+            wishIndustryRight.value.split(',').forEach(items => {
+                if (itemChildren.id == Number(items)) {
+                    if (item.id != 1) {
+                        console.log(Number(items));
+                        console.log(item.children.length)
+                        console.log('----', Number(items) - item.children.length)
+                        wishIndustryRighta += (Number(items) - item.children.length) + ','
+                    } else {
+                        wishIndustryRighta += items+','
+                    }
+                }
+            });
+        });
+    });
+
     window.localStorage.setItem('industryInfo', JSON.stringify({
-        industry:(showIndustry.value),
-        activeId:(activeId.value),
-        columnsIndustry:(columnsIndustry),
+        industry: (showIndustry.value),
+        activeId: (activeId.value),
+        columnsIndustry: (columnsIndustry),
     }));
-    history.back();
+    window.localStorage.setItem('modifyIndustryInfo', 
+    JSON.stringify({
+        wishIndustryLeft: wishIndustryLeft.value,
+        wishIndustryRight:wishIndustryRighta,
+    })
+    );
+    router.push({ path: "/jobIntention" });
+
 };
 </script>
 

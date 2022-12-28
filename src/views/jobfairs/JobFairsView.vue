@@ -65,7 +65,7 @@
               <van-swipe-item class="ptl-20" v-for="item in companyList">
                 <div class="swipe-enterprise_box">
                   <div class="enterprise-item_box">
-                    <div v-for="chil in item.child" @click="to('/companyDetails',item.companyId)">
+                    <div v-for="chil in item.child" @click="to('/companyDetails',chil.companyId)">
                       <img :src="chil.companyUrl">
                   </div>
                 </div>

@@ -65,7 +65,7 @@
               <van-swipe-item class="ptl-20" v-for="item in companyList">
                 <div class="swipe-enterprise_box">
                   <div class="enterprise-item_box">
-                    <div v-for="chil in item.child" @click="to('/companyDetails',item.companyId)">
+                    <div v-for="chil in item.child" @click="to('/companyDetails',chil.companyId)">
                       <img :src="chil.companyUrl">
                   </div>
                 </div>
@@ -140,7 +140,6 @@ let selectLogo = async () => {
   let res: any = await useHome.selectLogo({});
   if (res.code == 200) {
     data.value = res.data;
-    console.log(data.value);
     positionList.value = formatData(data.value.positionList, 4);
     // positionNameList.value = formatData(data.value.positionNameList, 8);
     companyList.value = formatData(data.value.companyList, 8);

@@ -200,4 +200,11 @@ export default {
      selectInvitation: (params: {}) => {
         return axios.post('/phone/selectInvitation', params, postConfig)
     },
+    /**
+    * 获取完成度
+    * @returns 
+    */
+     selectCompletion: (params: {}) => {
+        return axios.post('/phone/selectCompletion', params, postConfig)
+    },
 }

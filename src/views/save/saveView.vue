@@ -93,7 +93,7 @@ getCompanyList();
                             <div class="btm">
                                 <div class="left fs-12">
                                     <p class="mr-5">热招</p>
-                                    <p class="cl-blue"> {{item.positionNameList.join(" ")}}</p>
+                                    <p class="cl-blue"> {{item.positionNameList.splice(0,2).join(" ")}}</p>
                                     <p>等{{item.companyPositionCount}}个职位</p>
                                 </div>
                                 <img src="@/assets/images/icon-arrow_right.png" class="icon-16">

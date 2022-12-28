@@ -8,7 +8,7 @@
                     <p class="fs-12 cl-red fw-700">{{parseMoney(positionDetail?.positionMonthMoney as string)}}k</p>
                 </div>
                 <div class="company-detial fs-12">
-                    <p>上海市-青浦区</p>
+                    <p>{{parsePosition(positionDetail?.positionAddr as string)}}</p>
                     <div class="line mg-0_5"></div>
                     <p>{{positionDetail?.positionName}}</p>
                 </div>
@@ -17,29 +17,6 @@
             <div class="position-desc">
                 <h2 class="fs-20">职位描述</h2>
                 <div class="desc fs-14 cl-grey">
-                    <!-- 岗位职责:
-                    <br>
-                    1、负责航空/汽车压力传感器、转速传感器、温度传感器、振动传感器、开发;
-                    <br>
-                    2、和客户进行技术交流,明确客户需求,制定技术方案;
-                    <br>
-                    3、按照项目计划完成产品详细设计(3D、2D图纸、产品规范等技术文件);
-                    <br>
-                    4、支持电子工程师完成传感器电路设计
-                    <br>
-                    5、产品设计认可,向客户递交认可报告。
-                    <br>
-                    任职要求:
-                    <br>
-                    1、研究生及以上学历,机械、机电一体化、测控技术与仪器、电子技术与科学等相关专业;
-                    <br>
-                    2、可熟练使用一种三维设计软件进行结构设计;
-                    <br>
-                    3、掌握常用金属和工程塑料材料知识及加工工艺知识;
-                    <br>
-                    4、英语能力CET-4以上;
-                    <br>
-                    5、优秀者可适当放宽; -->
                     {{positionDetail?.positionDes}}
                 </div>
             </div>
@@ -47,7 +24,7 @@
                 <h2 class="fs-20">工作地址</h2>
                 <div class="work">
                     <img src="@/assets/images/icon-lou.png" class="icon-16">
-                    <div class="fs-14">{{positionDetail?.positionAddr}}</div>
+                    <div class="fs-14">{{parsePosition(positionDetail?.positionAddr as string)}}</div>
                 </div>
             </div>
             <div class="company-profile" @click="jump('/companyDetails')">
@@ -113,11 +90,12 @@ interface PositionDetail{
 let positionDetail:Ref<PositionDetail | null | undefined> = ref();
 async function getPositionDetail(){
     let res = await positionDetailStore.getPositionDetail({
-        positionId:10001,
+        positionId:10003,
     });
     positionDetail.value = res.data;
 }
 getPositionDetail();
+// 转换钱的方法
 const parseMoney = (str:string):string=>{
     try {
         let moneyArray = str.split(",");
@@ -127,6 +105,14 @@ const parseMoney = (str:string):string=>{
         return targetArray.join("-");
     } catch (error) {
         return "";
+    }
+}
+// 转换地址的方法
+const parsePosition = (str:string):string=>{
+    try {
+       return str.split(",").join('-');
+    } catch (error) {
+        return str;
     }
 }
 </script>

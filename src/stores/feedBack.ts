@@ -16,5 +16,13 @@ export const useFeedbackStore = defineStore('feedback', () => {
     return Api.getStage(payload);
 }
 
-  return { feedback,selectDelivery,getStage }
+  const getEducationDrop = (payload:{})=>{
+    return Api.getEducationDrop(payload);
+  }
+
+  const getWishMoney = (payload:{})=>{
+    return Api.getWishMoney(payload);
+  }
+
+  return { feedback,selectDelivery,getStage,getEducationDrop,getWishMoney }
 })

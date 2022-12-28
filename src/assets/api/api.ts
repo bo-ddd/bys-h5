@@ -36,6 +36,6 @@ export default {
         return axios.post('/drop/getEducation', params, postConfig)
     },
     getWishMoney:(params:{})=>{
-        return axios.post('/drop/getWishMoney',params,postConfig)
+        return axios.post('/drop/getMoney',params,postConfig)
     }
 }

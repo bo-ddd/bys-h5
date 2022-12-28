@@ -232,7 +232,7 @@ const wishMoneyArr = ref();
 const getWishMoney = async () => {
     let res: any = await feedbackStore.getWishMoney({});
     if (res.code == 200) {
-        wishMoneyArr.value = res.data.wishMoenyRightList;
+        wishMoneyArr.value = res.data;
     }
 }
 getWishMoney();
@@ -258,9 +258,13 @@ const submitFilter = ()=>{
     console.log(checkwishMoney);
     item2.value.toggle();
 }
+
+
+const onClickLeft = () => history.back();
 </script>
 <template>
     <div class="position-list">
+         <van-nav-bar  left-text="返回" title="职位列表" left-arrow @click-left="onClickLeft" />
         <van-dropdown-menu>
             <van-dropdown-item title="职位" ref="item3">
                 <van-tree-select v-model:active-id="activeId" v-model:main-active-index="activeIndex" :items="items" />
@@ -372,7 +376,7 @@ const submitFilter = ()=>{
                     padding: 1.1rem 1.85rem;
                     border-radius: .4rem;
                     font-size: 1.5rem;
-                    border: 1px solid rgb(241, 241, 241);
+                    border: .1rem solid rgb(241, 241, 241);
                     width: 7.5rem;
                     text-align: center;
                 }

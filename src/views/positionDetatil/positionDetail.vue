@@ -60,17 +60,24 @@
 </template>
 
 <script lang="ts" setup>
-import { useRouter } from "vue-router";
+import { useRouter,useRoute } from "vue-router";
 import { ref,type Ref} from "vue";
 import { usePositionDetailStore } from "@/stores/positonDetail";
 const positionDetailStore = usePositionDetailStore();
 let router = useRouter();
+let route = useRoute();
+let positionId = ref();
+if(route.query.positionId){
+    positionId.value = route.query.positionId;
+}
+console.log(route.query);
 let back = ()=>{
     router.go(-1);
 }  
 let jump = (url: string) => {
   router.push({ path: url })
 }
+
 interface PositionDetail{
     companyId: number;
     companyIndustry: string;
@@ -90,7 +97,7 @@ interface PositionDetail{
 let positionDetail:Ref<PositionDetail | null | undefined> = ref();
 async function getPositionDetail(){
     let res = await positionDetailStore.getPositionDetail({
-        positionId:10003,
+        positionId:positionId.value,
     });
     positionDetail.value = res.data;
 }

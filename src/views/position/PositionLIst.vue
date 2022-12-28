@@ -148,13 +148,19 @@ const resetFilter = () => {
 
 
 
-const submitFilter = ()=>{
+const submitFilter = async ()=>{
     let checkNatur =  natureArr.find((item: Item) => item.isClass == true);
     let checkEduation =  educationSeleArr.value.filter((item: Item) => item.isClass == true);
     let checkwishMoney = wishMoneyArr.value.find((item: Item) => item.isClass == true);
     console.log(checkNatur);
     console.log(checkEduation);
     console.log(checkwishMoney);
+
+    let res = await useJob.selectPositionList({
+        
+    })
+
+
     item2.value.toggle();
 }
 
@@ -168,9 +174,7 @@ const submitFilter = ()=>{
  const selectPositionList = async ()=>{
       let res:any = await useJob.selectPositionList({});
       if(res.code == 200){
-        cardList.value = res.data;
-        console.log(cardList.value);
-        
+        cardList.value = res.data;        
       }
  }
 

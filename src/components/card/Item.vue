@@ -4,7 +4,7 @@
             <div class="header">
                 <p class="fs-16">{{ options.positionName }}</p>
                 <div class="align-center  mt-14">
-                    <span class="fs-14 c-747474">{{ options.positionAddr }}</span>
+                    <span class="fs-14 c-747474">{{ options.positionAddr.split(',').splice(1,).join('-')}}</span>
                     <span class="fs-12 c-747474 gang">|</span>
                     <span class="fs-14 c-747474">{{ options.positionIndustry }}</span>
                 </div>
@@ -55,9 +55,10 @@ const router = useRouter();
 const useJob = useJobStore();
 
 let props = defineProps<{
-    options: CardItem
+    options: CardItem,
+    resumeInfo:ResumeInfo
 }>();
-let { options } = toRefs(props);
+let { options,resumeInfo={} } = toRefs(props);
 let isShow = ref(false);
 // 申请职位接口
 const deliveryJob = async (params: number) => {
@@ -78,17 +79,17 @@ interface ResumeInfo {
     modifyTime: string
 }
 
-let resumeInfo = ref()  as Ref<ResumeInfo>
+// let resumeInfo = ref()  as Ref<ResumeInfo>
 
-// 查询简历完成度
-const getSelectCompletion = async () => {
-    let res: any = await useJob.getSelectCompletion();
-    console.log(res);
-    if (res.code == 200) {
-        resumeInfo.value = res.data
-    }
-}
-getSelectCompletion()
+// // 查询简历完成度
+// const getSelectCompletion = async () => {
+//     let res: any = await useJob.getSelectCompletion();
+//     console.log(res);
+//     if (res.code == 200) {
+//         resumeInfo.value = res.data
+//     }
+// }
+// getSelectCompletion()
 
 </script>
 

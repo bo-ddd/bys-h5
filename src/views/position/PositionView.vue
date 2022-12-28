@@ -23,6 +23,7 @@
     <main class="container">
       <Card.Wrap class="card-bg">
         <Card.Item :class="index ? 'mt-5' : ''" v-for="item, index in cardList" :key="item.companyId" :options="item"
+          :resumeInfo="resumeInfo"
           @click="jump('/positionDetail', item.positionId)"></Card.Item>
       </Card.Wrap>
       <div class=" text">
@@ -113,6 +114,16 @@ const getSelectPosition = async () => {
 }
 getSelectPosition();
 
+let resumeInfo = ref()  as Ref<ResumeInfo>;
+// 查询简历完成度
+const getSelectCompletion = async () => {
+    let res: any = await useJob.getSelectCompletion();
+    console.log(res);
+    if (res.code == 200) {
+        resumeInfo.value = res.data
+    }
+}
+getSelectCompletion()
 </script>
 
 <style lang="scss" scoped>

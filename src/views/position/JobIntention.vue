@@ -363,7 +363,7 @@ const submit = (): void => {
 let modifyindustry = { activeId: [], columnsIndustry: [], industry: [] } as JobInfo;
 let modifyjobInfo = { activeId: [], columnsJob: [], job: [] } as JobInfo;
 const getJobIntent = async () => {
-    let res: any = await useJob.getJobIntentList({ userId: 10000 });
+    let res: any = await useJob.getJobIntentList({  });
     if (res.code == 200) {
         console.log('res-------', res);
         // 清空原来的 避免重复

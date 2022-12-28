@@ -140,7 +140,6 @@ let selectLogo = async () => {
   let res: any = await useHome.selectLogo({});
   if (res.code == 200) {
     data.value = res.data;
-    console.log(data.value);
     positionList.value = formatData(data.value.positionList, 4);
     // positionNameList.value = formatData(data.value.positionNameList, 8);
     companyList.value = formatData(data.value.companyList, 8);

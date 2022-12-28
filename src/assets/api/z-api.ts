@@ -11,6 +11,9 @@ interface PositionParams{
     wishNature?:string,
     wishPositionLeft?:string
 }
+interface DeliveryPosition{
+    positionId:number 
+}
 
 export default {
     //获取期望薪资
@@ -38,8 +41,15 @@ export default {
         return axios.post(`/phone/modifyJobIntent`,params,postConfig)
     },
     //查询职位列表
-
     selectPositionList:(params:PositionParams)=>{
         return axios.post('/phone/selectPositionList',params,postConfig)
-    }
+    },
+    // 申请职位
+    deliveryPosition:(params:DeliveryPosition)=>{
+        return axios.post('/phone/deliveryPosition',params,postConfig)
+    },
+    // 查询简历完成度
+    selectCompletion:(params:{}={})=>{
+        return axios.post('/phone/selectCompletion',params,postConfig)
+    },
 }

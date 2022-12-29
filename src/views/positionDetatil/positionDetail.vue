@@ -150,11 +150,10 @@ async function getPositionDetail() {
     let res: Res<any> = await positionDetailStore.getPositionDetail({
         positionId: positionId.value,
     });
-    console.log(res);
     if (res.code == 200) {
         positionDetail.value = res.data;
     }
-}
+}   
 getPositionDetail();
 // 收藏职位的接口
 async function setStarPosition() {
@@ -175,8 +174,6 @@ async function setStarPosition() {
 async function getOnlineResume() {
     let res: Res<Resume[]> = await positionDetailStore.getOnlineResume({});
     if (res.code == 200) {
-        console.log('-------我是获取在线简历的接口------');
-        console.log(res);
         resumeList.value = res.data;
     }
 }

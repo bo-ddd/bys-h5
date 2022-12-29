@@ -82,7 +82,7 @@ let newsList = ref([]);
 let perfectionNum = ref(0);
 const getNewsList = async () => {
   let res = await use.selectInvitation({
-    userId: 10000,
+    // userId: 10000,
   });
   console.log(res);
   if (res.code == 200) {
@@ -92,7 +92,7 @@ const getNewsList = async () => {
 };
 const getPerfectionNum = async () => {
   let res = await use.selectCompletion({
-    userId: 10000,
+    // userId: 10000,
   });
   if (res.code == 200) {
     perfectionNum.value = res.data;

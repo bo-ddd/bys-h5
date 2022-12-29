@@ -24,8 +24,8 @@
         <div class="align-center">
           <img class="mr-10" src="@/assets/images/icon-write.png" />
           <div class>
-            <div class="font-gray">已有简历</div>
-            <div>直接上传</div>
+            <div class="font-gray">在线填写</div>
+            <div>1分钟快速创建</div>
           </div>
         </div>
         <div>
@@ -34,7 +34,7 @@
             type="primary"
             color="#f9350b"
             block
-            @click="to('/resumeDetails')"
+            @click="to('/personalInfo')"
           >创建</van-button>
         </div>
       </div>

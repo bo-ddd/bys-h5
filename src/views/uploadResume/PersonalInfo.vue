@@ -3,7 +3,7 @@
     <van-nav-bar title="基本信息" left-arrow @click-left="onClickLeft1" />
     <div ref="scrollRef" class="overy-scoll">
       <van-cell-group>
-        <!-- <UploadAvatar :avaterImg="avaterImg" @success="setAvater"></UploadAvatar> -->
+        <UploadAvatar :avaterImg="avaterImg" @success="setAvater"></UploadAvatar>
         <van-cell class="all-width pb-20" center>
           <template #title>
             <div class="fs-16 color-gray">姓名</div>
@@ -258,9 +258,9 @@ const setNation = (item: any, index: number) => {
 //获取个人信息
 const getInfo = async function () {
   let res = await use.getOnlineResume({
-    userId: 10000,
   });
-  userName.value = res.data.userName;
+  if(res.data){
+      userName.value = res.data.userName;
   userEmail.value = res.data.userEmail;
   userSex.value = res.data.userSex;
   sexValue.value = res.data.userSexId;
@@ -280,6 +280,8 @@ const getInfo = async function () {
     value: res.data.userProfessionalId,
   };
   userYear.value = res.data.userYear;
+  }
+
 };
 const upload: any = ref(null);
 
@@ -436,7 +438,6 @@ const keepInfo = function () {
 //修改信息
 const updateUserInfo = async () => {
   let res = await use.modifyBaseData({
-    userId: 10000,
     userLogoUrl: avaterImg.value,
     userName: userName.value,
     userEmail: userEmail.value,

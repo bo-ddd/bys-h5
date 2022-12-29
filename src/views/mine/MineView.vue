@@ -24,36 +24,43 @@
             <h1>登录毕业申</h1>
           </div>
           <div>
-            <van-button type="primary" class="ft">微信账号快捷登录</van-button>
+            <van-button type="primary" class="ft" @click="jump('login')">手机号码验证登录</van-button>
           </div>
-          <div class="c-747474" @click="jump('login')">手机号码验证登录</div>
+          <div class="c-747474" @click="wxLogin()">微信账号快捷登录</div>
         </div>
       </div>
     </van-popup>
     <!-- list -->
     <main>
       <van-cell center :border="false" class="mt-20 fs-16" v-for="item in list" :key="item.id" :value="item.value"
-        is-link :to="item.link">
+        @click="isLogin(item)">
         <!-- 正常跳转页面的模板 -->
         <template #title v-if="!item.ispopup">
           <van-icon :name="parseAssetFile(item.icon)" />
           <span class="custom-title">{{ item.title }}</span>
         </template>
+
         <!-- 点击求职状态弹层的模板-------------------------- -->
         <template #title v-else>
-          <div @click="showPopup">
-            <div class="van-cell__title">
-              <van-icon :name="parseAssetFile(item.icon)" />
-              <span class="custom-title">{{ item.title }}</span>
-            </div>
+          <div class="van-cell__title">
+            <van-icon :name="parseAssetFile(item.icon)" />
+            <span class="custom-title" @click="showPopup">{{ item.title }}</span>
           </div>
         </template>
-        <!-- 动态修改value描述的模板 -->
+
+        <!-- 动态修改求职状态value -->
         <template #value v-if="item.ispopup">
-          <span @click="showPopup">{{ popupText }}</span>
+          <span @click="showPopup">{{ userStatusName }}</span>
+        </template>
+        <!-- 求职状态结束------------------------- -->
+
+        <!-- 动态修改 站点设置的value -->
+        <template #value v-if="item.title == '站点设置'">
+          <span>{{ userSite }}</span>
         </template>
         <!-- 求职状态结束------------------------- -->
       </van-cell>
+
       <!-- 弹层组件 -->
       <van-popup position="bottom" :style="{ height: '50%' }" v-model:show="show">
         <van-picker :columns="popupData" @cancel="cancel" @confirm="onConfirm" />
@@ -66,7 +73,7 @@
         <van-button class="btn mt-10" round color="#3472e1" size="mini" type="success">去关注</van-button>
       </div>
       <div class="footer flex-ja-center">
-        <van-button class="btn fs-14 "  v-if="token" size="mini" @click="jump('/login')">退出登录</van-button>
+        <van-button class="btn fs-14 " v-if="token" size="mini" @click="logOut()">退出登录</van-button>
       </div>
     </footer>
   </div>
@@ -74,15 +81,20 @@
 
 <script setup lang="ts">
 import { parseAssetFile } from '@/assets/util';
-import { ref } from 'vue';
-import { Toast } from 'vant';
+import { ref, reactive } from 'vue';
+import { Toast, Dialog } from 'vant';
 import { useRouter } from 'vue-router';
 import { useMineStore } from '@/stores/mineStores';
 const token = sessionStorage.getItem("token");
 const use = useMineStore();
 const router = useRouter();
 const showCount = ref(false);
-let list = [
+getUnsrInfo();
+// 求职状态 选择的值
+const userStatusName = ref('');
+// 站点设置 选择的值
+const userSite = ref('')
+let list = reactive([
   {
     id: 1,
     title: '请创建简历',
@@ -90,6 +102,7 @@ let list = [
     link: '/createResume',
     icon: 'icon-resume.png',
     ispopup: false,
+    isLogin: false
   },
   {
     id: 2,
@@ -98,6 +111,7 @@ let list = [
     link: '/appendixResume',
     icon: 'icon-file.png',
     ispopup: false,
+    isLogin: false
   },
   {
     id: 3,
@@ -106,6 +120,7 @@ let list = [
     link: '/evaluation',
     icon: 'icon-occupation.png',
     ispopup: false,
+    isLogin: false
   },
   {
     id: 4,
@@ -114,6 +129,7 @@ let list = [
     link: '/deliveryfeedback',
     icon: 'icon-delivery.png',
     ispopup: false,
+    isLogin: false
   },
   {
     id: 5,
@@ -122,6 +138,7 @@ let list = [
     link: '/collection',
     icon: 'icon-collection.png',
     ispopup: false,
+    isLogin: false
   },
   {
     id: 6,
@@ -130,14 +147,16 @@ let list = [
     link: '/inter',
     icon: 'icon-interview.png',
     ispopup: false,
+    isLogin: false
   },
   {
     id: 7,
     title: '求职状态',
     value: '',
-    // link:'/jobStatus',
+    link: '',
     icon: 'icon-job.png',
     ispopup: true,
+    isLogin: false
   },
   {
     id: 8,
@@ -146,6 +165,7 @@ let list = [
     link: '/feedBack',
     icon: 'icon-opinion.png',
     ispopup: false,
+    isLogin: true
   },
   {
     id: 9,
@@ -154,33 +174,36 @@ let list = [
     link: '/siteSettings',
     icon: 'icon-site.png',
     ispopup: false,
+    isLogin: true
   },
-]
+])
 
+const wxLogin = () => {
+  Toast({
+    message: '微信登录暂不支持,请用手机号码验证码登录。',
+    position: 'top',
+  });
+}
 // popup 逻辑
 const show = ref(false);
-// popup 选择的值
-const popupText = ref('');
-const showPopup = () => show.value = true;
+function showPopup() {
+  show.value = true;
+}
 // popup 数据
-let popupData = ['全职', '实习', '全职和实习']
+let popupData = ['积极求职中', '已有offer,停止求职', '没有offer,暂不求职']
 // popup 左上角 x 号事件
 const cancel = () => {
   show.value = false;
 };
-// interface ModifyJobWantedStatusType {
-//   status: Number | null,
-//   userId: Number,
-// }
 // popup 右上角确定事件
 const onConfirm = async (value: any) => {
   // 掉接口
   let status: null | Number = null;
-  if (value == '全职') {
+  if (value == '积极求职中') {
     status = 0
-  } else if (value == '实习') {
+  } else if (value == '已有offer,停止求职') {
     status = 1
-  } else if (value == '全职和实习') {
+  } else if (value == '没有offer,暂不求职') {
     status = 2
   }
   // 修改求职状态接口
@@ -190,16 +213,57 @@ const onConfirm = async (value: any) => {
   })
   if (res.code == 200) {
     Toast('求职状态修改成功');
-    popupText.value = value;
+    getUnsrInfo();
     show.value = false;
-    console.log(res)
   }
 };
 
-let jump = (src: string) => {
-  if(src == "/login") { 
-    sessionStorage.removeItem("token")
+
+/***
+ * 
+ * 退出登录
+ */
+const logOut = () => {
+  Dialog.confirm({
+    title: '退出登录',
+    message:
+      '确定要退出登录嘛',
+  })
+    .then(() => {
+      sessionStorage.removeItem("token");
+      localStorage.clear();
+      router.push({ path: "/" })
+    })
+    .catch(() => {
+      // on cancel
+    });
+
+}
+
+const isLogin = (item: any) => {
+  if (item.isLogin) {
+    router.push({ path: item.link })
+  } else {
+    if (token) {
+      item.ispopup = true;
+      router.push({ path: item.link })
+    } else {
+      item.ispopup = false;
+      showCount.value = true;
+    }
   }
+}
+
+// 获取用户信息接口
+async function getUnsrInfo() {
+  let res: any = await use.getUserInfo({})
+  if (res.data) {
+    userStatusName.value = res.data.userStatusName;
+    userSite.value = res.data.userSite;
+  }
+}
+
+const jump = (src: string) => {
   router.push({ path: src })
 }
 </script>

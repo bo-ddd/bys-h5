@@ -1,6 +1,6 @@
 <template>
     <div class="deliveryfeedback">
-        <van-nav-bar title="标题" left-text="返回" left-arrow @click-left="onClickLeft" />
+        <van-nav-bar title="投递反馈" left-text="返回" left-arrow @click-left="onClickLeft" />
         <van-tabs v-model:active="active" @click="selectDelivery()" color="#3B80FB">
             <van-tab  v-for="item in stageTitl"  :title="item.label" @click="selectDelivery()">
                 <van-empty v-if="!list.length" image="error" description="空空如也" />

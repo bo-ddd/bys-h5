@@ -56,12 +56,36 @@
                     <p class="fs-14">收藏</p>
                 </div>
             </div>
-            <div class="btn cl-fff fs-14">投递简历</div>
+            <div :class="['btn','cl-fff','fs-14',positionDetail?.isDelivery ? 'bg-low' : 'bg-hight']" @click="showResume">{{positionDetail?.isDelivery ? '已投递' : '投递简历'}}</div>
         </div>
         <!-- 弹出框 -->
-        <van-popup v-model:show="show"  round position="bottom">
+        <van-popup v-model:show="show" round position="bottom">
             <div class="pop">
-                <h3 class="pd-16_0">确定投递简历</h3>
+                <div class="container">
+                    <h3 class="pd-10_0">确认投递简历</h3>
+                    <van-radio-group v-model="checked">
+                        <div class="resume-item mt-5 pd-20_0" v-for="item in resumeList" :key="item.resumeId">
+                            <van-radio :name="item.resumeId" icon-size="2rem">
+                                <img class="icon-30 ml-15" src="@/assets/images/icon-resume.png">
+                                <div class="resume ml-10">
+                                    <div class="top">
+                                        <div class="fs-14">{{item.resumeName}}</div>
+                                        <div class="fs-12 ml-40">
+                                            完成度:
+                                            <span class="cl-blue">60%</span>
+                                        </div>
+                                    </div> 
+                                    <div class="btm fs-12">
+                                        {{item.modifyTime}}更新
+                                    </div>
+                                </div>
+                            </van-radio>
+                        </div>
+                    </van-radio-group>
+                </div>
+                <div class="btn-wrap">
+                    <div class="btn cl-fff flex-center fs-14" @click="Delivery">确认投递</div>
+                </div>
             </div>
         </van-popup>
     </div>
@@ -73,7 +97,6 @@ import { ref, type Ref } from "vue";
 import { usePositionDetailStore } from "@/stores/positonDetail";
 import { parseAssetFile } from "@/assets/util";
 import { Toast } from 'vant';
-
 const positionDetailStore = usePositionDetailStore();
 let router = useRouter();
 let route = useRoute();
@@ -87,7 +110,13 @@ let back = () => {
 let jump = (url: string) => {
     router.push({ path: url })
 }
-
+interface Resume{
+    createTime: string,
+    modifyTime: string,
+    resumeId: number,
+    resumeName: string,
+    resumeUrl:string,
+}
 interface PositionDetail {
     companyId: number;
     companyIndustry: string;
@@ -105,14 +134,17 @@ interface PositionDetail {
     positionPositive: any;
     companyLogoUrl: string;
     isStar: boolean;
+    isDelivery:boolean;    
 }
 interface Res<T> {
     code: number,
     msg: string,
     data: T,
 }
-let positionDetail: Ref<PositionDetail | null | undefined> = ref();
-let show : Ref<boolean> = ref(true);
+let positionDetail: Ref<PositionDetail | null | undefined> = ref();//职位详情
+let show: Ref<boolean> = ref(false);//是否显示简历弹窗
+let checked:Ref<number | null> = ref(null);//这个是选中简历id
+let resumeList:Ref<Resume[]> = ref([]);
 // 获取职位详情的接口
 async function getPositionDetail() {
     let res: Res<any> = await positionDetailStore.getPositionDetail({
@@ -130,7 +162,6 @@ async function setStarPosition() {
         positionId: positionId.value,
     });
     if (res.code == 200) {
-        console.log(res);
         getPositionDetail();
         if (positionDetail.value?.isStar) {
             Toast.success('取消收藏');
@@ -139,12 +170,14 @@ async function setStarPosition() {
         }
     }
 }
+
 // 获取在线简历的接口
 async function getOnlineResume() {
-    let res: Res<any> = await positionDetailStore.getOnlineResume({});
+    let res: Res<Resume[]> = await positionDetailStore.getOnlineResume({});
     if (res.code == 200) {
         console.log('-------我是获取在线简历的接口------');
         console.log(res);
+        resumeList.value = res.data;
     }
 }
 getOnlineResume();
@@ -166,6 +199,25 @@ const parsePosition = (str: string): string => {
         return str.split(",").join('-');
     } catch (error) {
         return str;
+    }
+}
+//投递简历的方法
+const Delivery = ()=>{
+    show.value = false;
+    deliveryPosition();
+}
+// 弹出简历方法
+const showResume = ()=>{
+    show.value = !show.value;
+}
+// 投递职位的方法
+const deliveryPosition = async ()=>{
+    let res:Res<any> = await positionDetailStore.deliveryPosition({
+        resumeId:checked.value as number,
+        positionId:positionId.value,
+    });
+    if(res.code == 200){
+        getPositionDetail();
     }
 }
 </script>
@@ -276,16 +328,52 @@ const parsePosition = (str: string): string => {
             display: inline-block;
             padding: 1.5rem 8rem;
             border-radius: .5rem;
-            background: #1989fa;
         }
     }
 
-    & .pop{
+    & .pop {
         height: 50rem;
         padding: 0 2rem;
+
+        &>.container {
+            height: calc(50rem - 7rem);
+            overflow-y: scroll;
+
+            &>h3 {
+                font-size: 1.6rem;
+            }
+
+            & .resume-item {
+                display: flex;
+                align-items: center;
+                border-bottom: .2px solid #d8dbe3;
+                & :deep(.van-radio__label){
+                    display: flex;
+                    align-items: center;
+                }
+                & .resume{
+                    flex: 1;
+                    height: 5rem;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    &>.top{
+                        display: flex;
+                    }
+                }
+            }
+        }
+
+        &>.btn-wrap {
+            &>.btn {
+                padding: 1.5rem 0;
+                background: #1989fa;
+            }
+        }
     }
-    .pd-16_0{
-        padding:1.6rem 0;
+
+    .pd-10_0 {
+        padding: 1rem 0;
     }
 
     .cl-red {
@@ -297,7 +385,6 @@ const parsePosition = (str: string): string => {
         width: .1rem;
         background: #ccc;
     }
-
     .mg-0_5 {
         margin: 0 .5rem;
     }
@@ -309,9 +396,15 @@ const parsePosition = (str: string): string => {
     .fw-700 {
         font-weight: 700;
     }
+    .icon-30{
+        width: 3rem;
+    }
 
     .fs-20 {
         font-size: 2rem;
+    }
+    .pd-20_0{
+        padding: 2rem 0;
     }
 
     .cl-grey {
@@ -325,6 +418,12 @@ const parsePosition = (str: string): string => {
     .icon-40 {
         width: 4rem;
     }
+    .ml-40{
+        margin-left: 4rem;
+    }
+    .cl-blue{
+        color: #81aefc;
+    }
 
     .ml-15 {
         margin-left: 1.5rem;
@@ -336,6 +435,21 @@ const parsePosition = (str: string): string => {
 
     .icon-20 {
         width: 2rem;
+    }
+    .ml-10{
+        margin-left: 1rem;
+    }
+
+    .flex-center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .bg-low{
+        background: #84b4fe;
+    }
+    .bg-hight{
+        background: #1989fa;
     }
 }
 </style>

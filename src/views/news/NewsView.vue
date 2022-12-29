@@ -6,9 +6,9 @@
           <h1>登录毕业申</h1>
         </div>
         <div>
-          <van-button type="primary" class="ft">微信账号快捷登录</van-button>
+          <van-button type="primary" class="ft" @click="to('/login')">手机号码验证登录</van-button>
         </div>
-        <div class="c-747474" @click="to('/login')">手机号码验证登录</div>
+        <div class="c-747474" @click="wxLogin()">微信账号快捷登录</div>
       </div>
     </div>
   </van-popup>
@@ -70,6 +70,7 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { parseAssetFile } from "@/assets/util";
 import { useResumeStore } from "@/stores/resume";
+import { Toast } from 'vant';
 const use = useResumeStore();
 const router = useRouter();
 const loginStatus = ref(false);
@@ -101,6 +102,17 @@ onMounted(() => {
   getNewsList();
   getPerfectionNum()
 });
+
+
+/***
+ * 微信登录的提示信息
+ */
+const wxLogin = ()=>{
+  Toast({
+    message: '微信登录暂不支持,请用手机号码验证码登录。',
+    position: 'top',
+  });
+}
 </script>
 <style lang="scss" scoped>
 .back-gray {

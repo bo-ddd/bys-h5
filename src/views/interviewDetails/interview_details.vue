@@ -9,7 +9,7 @@
                     <div class="companyLogo ml-23">
                         <img :src="interviewData.companyLogoUrl" alt="">
                     </div>
-                    <div class="just-between interview_details_box-center" @click="log">
+                    <div class="just-between interview_details_box-center" @click="navPositionDetails">
                         <div>
                             <div>
                                 <div class="fs-14">{{ interviewData.companyName }}</div>
@@ -43,7 +43,7 @@
                     <li>
                         <label class="mr-1">面试形式</label>
                         <span>
-                            线下面试
+                            {{ interviewData.interviewType }}
                         </span>
                     </li>
                     <li>
@@ -69,9 +69,6 @@ import { useMineStore } from '@/stores/mineStores';
 import { ref } from "vue";
 import { reactive } from 'vue';
 import { useRoute, useRouter } from "vue-router";
-
-
-
 interface Res {
     code: Number,
     msg: string,
@@ -86,11 +83,11 @@ interface interviewDataType {
     interviewPhone: string,//: 联系电话,
     interviewTime: string,//: 面试时间,
     positionId: number,//: 职位id,
+    interviewType: string,// 面试形式
     positionMoney: string,//: 职位薪资,
     positionName: string,//: 职位名称
     companyLogoUrl: string,// LOGOurl
 }
-
 const router = useRouter();
 const axios = useMineStore();
 const route = useRoute();
@@ -98,8 +95,6 @@ let interviewData = reactive({}) as interviewDataType;
 getUserInterview();
 // 我的面试页面传过来的id
 let companyId = ref(Number(route.query.companyId))
-
-
 
 // 获取用户面试
 async function getUserInterview() {
@@ -112,12 +107,13 @@ async function getUserInterview() {
                 Object.assign(interviewData, item);
             }
         });
-        console.log(interviewData);
     }
 };
-
-function log() {
-    console.log(111)
+function navPositionDetails() {
+    router.push({
+        name: 'positionDetail',
+        query: { positionId: interviewData.positionId }
+    })
 }
 
 // 返回上一级

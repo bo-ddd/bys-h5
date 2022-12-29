@@ -3,7 +3,7 @@
     <van-nav-bar title="基本信息" left-arrow @click-left="onClickLeft1" />
     <div ref="scrollRef" class="overy-scoll">
       <van-cell-group>
-        <!-- <UploadAvatar :avaterImg="avaterImg" @success="setAvater"></UploadAvatar> -->
+        <UploadAvatar :avaterImg="avaterImg" @success="setAvater"></UploadAvatar>
         <van-cell class="all-width pb-20" center>
           <template #title>
             <div class="fs-16 color-gray">姓名</div>
@@ -48,7 +48,7 @@
             </div>
           </template>
         </van-cell>
-        
+
         <SelectCom :select="userSex" :dataList="sexList" placeholder="请填写性别" @onSelect="setSex"></SelectCom>
         <van-cell class="all-width pb-20" center @click="show4 = true">
           <template #title>
@@ -206,21 +206,22 @@ import { useSchoolStore } from "@/stores/schoolChoice";
 import { useMajorStore } from "@/stores/majorChoice";
 import { useResumeStore } from "@/stores/resume";
 import { getScrollTop } from "vant/lib/utils";
-import UploadAvatar from '@/components/upload/UploadAvatar.vue'
-import SelectCom from '@/components/select/SelectCom.vue'
+import UploadAvatar from "@/components/upload/UploadAvatar.vue";
+import SelectCom from "@/components/select/SelectCom.vue";
 const { selectSchool } = storeToRefs(useSchoolStore());
 const { setSchool, clearSchool } = useSchoolStore();
 const { selectMajor } = storeToRefs(useMajorStore());
 const { setMajor, clearMajor } = useMajorStore();
 
 //首次进入页面获取下拉列表
-onMounted(async() => {
+onMounted(async () => {
   await getInfo();
   await gerSexList();
   await gerNationList();
   await getEducationrList();
 });
 onActivated(() => {
+  getInfo();
   getSchoolInfo();
   getScrollValue();
 });
@@ -257,32 +258,55 @@ const setNation = (item: any, index: number) => {
 };
 //获取个人信息
 const getInfo = async function () {
-  let res = await use.getOnlineResume({
-    userId: 10000,
-  });
-  userName.value = res.data.userName;
-  userEmail.value = res.data.userEmail;
-  userSex.value = res.data.userSex;
-  sexValue.value = res.data.userSexId;
-  avaterImg.value = res.data.userLogoUrl;
-  userBirthday.value = res.data.userBirthday.slice(0, 10);
-  userNational.value = res.data.userNationalName;
-  nationValue.value = res.data.userNational;
-  userEducation.value = res.data.userEducation;
-  educationValue.value =res.data.userEducationId;
-  userAddr.value = res.data.userAddr;
-  userSchool.value = {
-    name: res.data.userSchoolName,
-    value: res.data.userSchool,
-  };
-  userProfessional.value = {
-    name: res.data.userProfessionalName,
-    value: res.data.userProfessionalId,
-  };
-  userYear.value = res.data.userYear;
+  let res = await use.getOnlineResume({});
+  if (res.data) {
+    userName.value = res.data.userName;
+    userEmail.value = res.data.userEmail;
+    userSex.value = res.data.userSex;
+    sexValue.value = res.data.userSexId;
+    avaterImg.value = res.data.userLogoUrl;
+    userBirthday.value = res.data.userBirthday.slice(0, 10);
+    userNational.value = res.data.userNationalName;
+    nationValue.value = res.data.userNational;
+    userEducation.value = res.data.userEducation;
+    educationValue.value = res.data.userEducationId;
+    userAddr.value = res.data.userAddr;
+    userSchool.value = {
+      name: res.data.userSchoolName,
+      value: res.data.userSchool,
+    };
+    userProfessional.value = {
+      name: res.data.userProfessionalName,
+      value: res.data.userProfessionalId,
+    };
+    userYear.value = res.data.userYear;
+  }
 };
-const upload: any = ref(null);
+const clearUserInfo=function(){
+    userName.value = '';
+    userEmail.value = '';
+    userSex.value = '';
+    sexValue.value = '';
+    avaterImg.value = '';
+    userBirthday.value = '';
+    userNational.value = '';
+    nationValue.value = '';
+    userEducation.value = '';
+    educationValue.value = '';
+    userAddr.value = '';
+    userSchool.value = {
+      name: '',
+      value: '',
+    };
+    userProfessional.value = {
+      name: '',
+      value: '',
+    };
+    userYear.value = '';
 
+}
+
+const upload: any = ref(null);
 
 const use = useResumeStore();
 const route = useRoute();
@@ -301,7 +325,8 @@ const clearKeep = function () {
   //清空滚轮的位置
   scrollTop.value = 0;
   //重新获取用户信息
-  getInfo();
+  // getInfo();
+  clearUserInfo()
   //清空stores
   clearSchool();
   clearMajor();
@@ -313,9 +338,9 @@ const userEmail = ref("");
 //头像
 const avaterImg = ref("");
 const fileList = ref([]);
-const setAvater=(img:string)=>{
-  avaterImg.value=img;
-}
+const setAvater = (img: string) => {
+  avaterImg.value = img;
+};
 //性别
 const sexList: any = reactive([]);
 const userSex = ref("");
@@ -436,7 +461,6 @@ const keepInfo = function () {
 //修改信息
 const updateUserInfo = async () => {
   let res = await use.modifyBaseData({
-    userId: 10000,
     userLogoUrl: avaterImg.value,
     userName: userName.value,
     userEmail: userEmail.value,

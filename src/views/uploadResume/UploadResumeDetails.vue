@@ -11,13 +11,14 @@
           </van-step>
           <van-step>
             <h3 class="linheight-20">
-              2.点击下方<span class="fw-700">立即上传</span>。找到刚才发送的对象，选择上传的简历。
+              2.点击下方
+              <span class="fw-700">立即上传</span>。找到刚才发送的对象，选择上传的简历。
             </h3>
             <div class="back back-img2 mt-10"></div>
           </van-step>
         </van-steps>
-        <van-uploader class="upload-btn" accept=".pdf,.doc,.docx">
-        <van-button type="primary"  block @click="to('/uploadResumeChoice')">立即上传</van-button>
+        <van-uploader class="upload-btn" accept=".pdf, .doc, .docx" :after-read="afterRead">
+          <van-button type="primary" block>立即上传</van-button>
         </van-uploader>
       </div>
     </div>
@@ -25,18 +26,34 @@
 </template>
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
+import { Toast } from "vant";
 import { parseAssetFile } from "@/assets/util";
+import { useResumeStore } from "@/stores/resume";
+const use = useResumeStore();
 const router = useRouter();
-let onClickLeft2 = () => history.back()
+let onClickLeft2 = () => history.back();
 const to = function (path: any) {
   router.push(path);
 };
+const afterRead = async(file: any) => {
+  console.log(file);
+  let formData = new FormData();
+  formData.append("resumeName", file.file.name);
+  formData.append("resume", file.file);
+  console.log(formData);
+  let res=await use.addResume(formData);
+  if(res.code==200){
+    Toast.success("上传成功");
+    to('/appendixResume')
+  }
+};
+// const
 </script>
 <style lang="scss" scoped>
-.upload-page{
-    height: 100vh;
-    display: grid;
-    grid-template-rows: 4.6rem auto;
+.upload-page {
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 4.6rem auto;
 }
 .content {
   height: calc(100vh - 4.6rem);
@@ -54,8 +71,8 @@ const to = function (path: any) {
     position: relative;
     box-sizing: border-box;
     padding: 2rem;
-    .linheight-20{
-        line-height: 2rem;
+    .linheight-20 {
+      line-height: 2rem;
     }
   }
   h3 {
@@ -79,7 +96,7 @@ const to = function (path: any) {
     position: absolute;
     bottom: 2rem;
     width: calc(100% - 4rem);
-    :deep(.van-uploader__input-wrapper){
+    :deep(.van-uploader__input-wrapper) {
       width: 100%;
     }
   }
@@ -88,10 +105,10 @@ const to = function (path: any) {
   color: black;
 }
 :deep(.van-step--vertical) {
-    padding-right: 0;
+  padding-right: 0;
 }
 :deep(.van-step--vertical .van-step__line) {
-    width: 0.1rem;
+  width: 0.1rem;
 }
 .fw-700 {
   font-weight: 700;

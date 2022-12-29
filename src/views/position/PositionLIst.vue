@@ -19,6 +19,24 @@ const jump = (src: string, params?: number) => {
 
 let cardList = ref();
 
+// 查询简历完成度
+let resumeInfo = ref();
+const getSelectCompletion = async () => {
+    let res: any = await useJob.getSelectCompletion();
+    console.log(res);
+    if (res.code == 200) {
+        if (res.data.companyId != null) {
+            resumeInfo.value = res.data;
+        } else {
+            resumeInfo.value = {
+                completion: 0,
+                modifyTime: ''
+            }
+        }
+    }
+}
+getSelectCompletion()
+
 
 /**
  * 职位
@@ -288,7 +306,7 @@ const onClickLeft = () => history.back();
 
         <Card.Wrap>
             <Card.Item class="mt-5" v-for="item in cardList" @click="jump('/positionDetail', item.positionId)"
-                :options="item"></Card.Item>
+              :resumeInfo="resumeInfo"  :options="item"></Card.Item>
         </Card.Wrap>
 
         <van-empty v-if="!cardList" description="还没有职位" />

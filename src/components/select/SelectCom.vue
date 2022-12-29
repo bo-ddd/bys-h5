@@ -24,10 +24,11 @@
 </template>
 <script lang="ts" setup>
 import { ref, toRef } from "vue";
-import { Toast } from "vant";
+import {  Toast } from "vant";
+import type { ActionSheetAction } from "vant";
 const show = ref(false);
 const props = defineProps<{
-  dataList: string[];
+  dataList: ActionSheetAction[];
   select: string;
   placeholder:string
 }>();

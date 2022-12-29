@@ -11,6 +11,13 @@ export const useMineStore = defineStore('mine', () => {
         return Api.ModifyJobWantedStatus(payload);
     }
     /**
+   * 获取用户信息
+   * @describe userId:Number 用户id
+   */
+    const getUserInfo = (payload: {}) => {
+        return Api.getUserInfoApi(payload);
+    }
+    /**
    * 修改站点
    * @describe site : string 站点
    * @describe userId : Number 用户id
@@ -29,6 +36,7 @@ export const useMineStore = defineStore('mine', () => {
     return {
         ModifyJobWantedStatus,
         setSite,
-        getUserInterviewApi
+        getUserInterviewApi,
+        getUserInfo
     }
 })

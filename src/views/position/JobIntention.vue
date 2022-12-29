@@ -102,27 +102,6 @@ let wishMoneyLeft: string = '';
 let wishMoneyRight: string = '';
 let wishNature: string = '';
 
-// localStorage.setItem('jobIndustry',JSON.stringify({
-//     area:'',
-//     industry:{
-//         activeId:[],
-//         columnsIndustry:[],
-//         industry:[]
-//     },
-//     job:{
-//         activeId:[],
-//         columnsJob:[],
-//         job:[]
-//     },
-//     salary:'',
-//     workNature:''
-// }))
-
-
-
-// 获取求职意向
-
-
 // 返回
 const onClickLeft = () => history.back();
 // 期望职位
@@ -362,96 +341,100 @@ const submit = (): void => {
 }
 let modifyindustry = { activeId: [], columnsIndustry: [], industry: [] } as JobInfo;
 let modifyjobInfo = { activeId: [], columnsJob: [], job: [] } as JobInfo;
+
+// 获取求职意向
 const getJobIntent = async () => {
-    let res: any = await useJob.getJobIntentList({  });
+    let res: any = await useJob.getJobIntentList({});
     if (res.code == 200) {
         console.log('res-------', res);
-        // 清空原来的 避免重复
-        if (jobInfo) {
-            jobInfo.activeId.length = 0;
-            jobInfo.columnsJob.length = 0;
-            jobInfo.job.length = 0;
+        if (res.data.legth) {
+            // 清空原来的 避免重复
+            if (jobInfo) {
+                jobInfo.activeId.length = 0;
+                jobInfo.columnsJob.length = 0;
+                jobInfo.job.length = 0;
 
-        }
-        if (industryInfo) {
-            industryInfo.activeId.length = 0;
-            industryInfo.columnsIndustry.length = 0;
-            industryInfo.industry.length = 0;
-        }
-        //地区
-        showArea.value = showArea.value.concat(res.data.wishAddr);
-        console.log('workplace', workplace)
-        console.log('showArea', showArea.value)
-        res.data.wishAddr.forEach((item: JobInfo) => {
-            let positionArr = item.split("-");
-            let cityLeft = positionArr[0];
-            let cityRight = positionArr[1];
-            let res = items.find((city: any) => {
-                return city.text == cityLeft;
-            }).children.find((child: any) => {
-                return child.text == cityRight;
-            })
-            workplace.push({
-                text: res.text,
-                id: res.id,
-            })
-            activeId.value.push(res.id);
-        });
-        activeId.value = [...new Set(activeId.value)];
-        console.log(activeId.value);
-        // 薪资
-        salary.value = res.data.wishMoney.replace(/000/g, '').split(',').join('-') + 'k';
-        console.log(res.data.wishMoney);
-        wishMoneyLeft = res.data.wishMoney.split(',')[0];
-        wishMoneyRight = res.data.wishMoney.split(',')[1];
-        // 工作性质
-        workNature.value = res.data.wishNatureName;
-        if (workNature.value = '全职和实习') {
-            wishNature = '0';
-        } else if (workNature.value = '实习') {
-            wishNature = '1';
-        } else {
-            wishNature = '2';
-        }
-        // 职位
-        let jobId = 0;
+            }
+            if (industryInfo) {
+                industryInfo.activeId.length = 0;
+                industryInfo.columnsIndustry.length = 0;
+                industryInfo.industry.length = 0;
+            }
+            //地区
+            showArea.value = showArea.value.concat(res.data.wishAddr);
+            console.log('workplace', workplace)
+            console.log('showArea', showArea.value)
+            res.data.wishAddr.forEach((item: JobInfo) => {
+                let positionArr = item.split("-");
+                let cityLeft = positionArr[0];
+                let cityRight = positionArr[1];
+                let res = items.find((city: any) => {
+                    return city.text == cityLeft;
+                }).children.find((child: any) => {
+                    return child.text == cityRight;
+                })
+                workplace.push({
+                    text: res.text,
+                    id: res.id,
+                })
+                activeId.value.push(res.id);
+            });
+            activeId.value = [...new Set(activeId.value)];
+            console.log(activeId.value);
+            // 薪资
+            salary.value = res.data.wishMoney.replace(/000/g, '').split(',').join('-') + 'k';
+            console.log(res.data.wishMoney);
+            wishMoneyLeft = res.data.wishMoney.split(',')[0];
+            wishMoneyRight = res.data.wishMoney.split(',')[1];
+            // 工作性质
+            workNature.value = res.data.wishNatureName;
+            if (workNature.value = '全职和实习') {
+                wishNature = '0';
+            } else if (workNature.value = '实习') {
+                wishNature = '1';
+            } else {
+                wishNature = '2';
+            }
+            // 职位
+            let jobId = 0;
 
-        res.data.wishPosition.forEach((item: JobInfo) => {
-            // 修改求职意向 期望职位
-            // wishPositionLeft += item.positionIdOn + ',';
-            // wishPositionRight += item.positionIdDown + ',';
-            console.log('-------------------------')
-            console.log(item)
-            if (item != null) {
-                jobId = Number(item.positionIdDown) * Number(item.positionIdOn);
-                modifyjobInfo.activeId!.push(jobId);
-                modifyjobInfo.activeId = [...new Set(modifyjobInfo.activeId)];
-                modifyjobInfo.columnsJob.push({ text: item.positionNameDown, id: jobId });
-                modifyjobInfo.job.push({ parent: item.positionNameOn, children: item.positionNameDown });
-                console.log('jobId', jobId)
+            res.data.wishPosition.forEach((item: JobInfo) => {
+                // 修改求职意向 期望职位
+                // wishPositionLeft += item.positionIdOn + ',';
+                // wishPositionRight += item.positionIdDown + ',';
+                console.log('-------------------------')
+                console.log(item)
+                if (item != null) {
+                    jobId = Number(item.positionIdDown) * Number(item.positionIdOn);
+                    modifyjobInfo.activeId!.push(jobId);
+                    modifyjobInfo.activeId = [...new Set(modifyjobInfo.activeId)];
+                    modifyjobInfo.columnsJob.push({ text: item.positionNameDown, id: jobId });
+                    modifyjobInfo.job.push({ parent: item.positionNameOn, children: item.positionNameDown });
+                    console.log('jobId', jobId)
+                }
+            })
+            // console.log('modifyjobInfo', modifyjobInfo);
+            if (!localStorage.getItem('jobInfo')) {
+                localStorage.setItem('jobInfo', JSON.stringify(modifyjobInfo));
             }
-        })
-        // console.log('modifyjobInfo', modifyjobInfo);
-        if(!localStorage.getItem('jobInfo')){
-            localStorage.setItem('jobInfo', JSON.stringify(modifyjobInfo));
-        }
-        let industryId = 0;
-        res.data.wishIndustry.forEach((item: JobInfo) => {
-            // // 修改求职意向 期望行业
-            // wishIndustryLeft += item.industryIdOn + ',';
-            // wishIndustryRight += item.industryIdDown + ',';
-            if (item != null) {
-                console.log(wishIndustryLeft)
-                industryId += Number(item.industryIdDown) * Number(item.industryIdOn)
-                modifyindustry.activeId.push(industryId);
-                console.log(modifyindustry.activeId)
-                modifyindustry.activeId = [...new Set(modifyindustry.activeId)];
-                modifyindustry.columnsIndustry.push({ text: item.industryNameDown, id: industryId });
-                modifyindustry.industry.push({ parent: item.industryNameOn, children: item.industryNameDown });
+            let industryId = 0;
+            res.data.wishIndustry.forEach((item: JobInfo) => {
+                // // 修改求职意向 期望行业
+                // wishIndustryLeft += item.industryIdOn + ',';
+                // wishIndustryRight += item.industryIdDown + ',';
+                if (item != null) {
+                    console.log(wishIndustryLeft)
+                    industryId += Number(item.industryIdDown) * Number(item.industryIdOn)
+                    modifyindustry.activeId.push(industryId);
+                    console.log(modifyindustry.activeId)
+                    modifyindustry.activeId = [...new Set(modifyindustry.activeId)];
+                    modifyindustry.columnsIndustry.push({ text: item.industryNameDown, id: industryId });
+                    modifyindustry.industry.push({ parent: item.industryNameOn, children: item.industryNameDown });
+                }
+            });
+            if (!localStorage.getItem('industryInfo')) {
+                localStorage.setItem('industryInfo', JSON.stringify(modifyindustry));
             }
-        });
-        if(!localStorage.getItem('industryInfo')){
-            localStorage.setItem('industryInfo', JSON.stringify(modifyindustry));
         }
     }
 }

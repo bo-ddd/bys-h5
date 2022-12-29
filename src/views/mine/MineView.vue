@@ -224,6 +224,7 @@ const logOut = () => {
 })
   .then(() => {
     sessionStorage.removeItem("token");
+    localStorage.clear();
   router.push({ path: "/" })
   })
   .catch(() => {

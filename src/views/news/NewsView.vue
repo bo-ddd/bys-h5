@@ -47,7 +47,7 @@
                 class="new-date"
               >{{item.createTime.split(' ')[0]+' '+item.createTime.split(' ')[1].slice(0,5)}}</div>
               <div class="flex mt-10">
-                <img class="com-img" :src="item.companyLogoUrl" alt />
+                <img class="com-img" :src="item.companyLogoUrl" />
                 <div>
                   <div class="new-title">{{item.companyName}}</div>
                   <div
@@ -79,7 +79,7 @@ const showPopup = ref(!loginStatus.value);
 const to = function (path: any) {
   router.push(path);
 };
-let newsList = ref([]);
+let newsList:any = ref([]);
 let perfectionNum = ref(0);
 const getNewsList = async () => {
   let res = await use.selectInvitation({
@@ -93,7 +93,6 @@ const getNewsList = async () => {
 };
 const getPerfectionNum = async () => {
   let res = await use.selectCompletion({
-    // userId: 10000,
   });
   if (res.code == 200) {
     perfectionNum.value = res.data;

@@ -6,9 +6,9 @@
           <h1>登录毕业申</h1>
         </div>
         <div>
-          <van-button type="primary" class="ft">微信账号快捷登录</van-button>
+          <van-button type="primary" class="ft" @click="to('/login')">手机号码验证登录</van-button>
         </div>
-        <div class="c-747474" @click="to('/login')">手机号码验证登录</div>
+        <div class="c-747474" @click="wxLogin()">微信账号快捷登录</div>
       </div>
     </div>
   </van-popup>
@@ -47,7 +47,7 @@
                 class="new-date"
               >{{item.createTime.split(' ')[0]+' '+item.createTime.split(' ')[1].slice(0,5)}}</div>
               <div class="flex mt-10">
-                <img class="com-img" :src="item.companyLogoUrl" alt />
+                <img class="com-img" :src="item.companyLogoUrl" />
                 <div>
                   <div class="new-title">{{item.companyName}}</div>
                   <div
@@ -70,6 +70,7 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { parseAssetFile } from "@/assets/util";
 import { useResumeStore } from "@/stores/resume";
+import { Toast } from 'vant';
 const use = useResumeStore();
 const router = useRouter();
 const loginStatus = ref(false);
@@ -78,7 +79,7 @@ const showPopup = ref(!loginStatus.value);
 const to = function (path: any) {
   router.push(path);
 };
-let newsList = ref([]);
+let newsList:any = ref([]);
 let perfectionNum = ref(0);
 const getNewsList = async () => {
   let res = await use.selectInvitation({
@@ -92,7 +93,6 @@ const getNewsList = async () => {
 };
 const getPerfectionNum = async () => {
   let res = await use.selectCompletion({
-    // userId: 10000,
   });
   if (res.code == 200) {
     perfectionNum.value = res.data;
@@ -102,6 +102,17 @@ onMounted(() => {
   getNewsList();
   getPerfectionNum()
 });
+
+
+/***
+ * 微信登录的提示信息
+ */
+const wxLogin = ()=>{
+  Toast({
+    message: '微信登录暂不支持,请用手机号码验证码登录。',
+    position: 'top',
+  });
+}
 </script>
 <style lang="scss" scoped>
 .back-gray {

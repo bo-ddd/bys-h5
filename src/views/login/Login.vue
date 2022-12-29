@@ -16,7 +16,7 @@ const submitLogin = async () => {
         smsCode: smsCode.value
     })
     if (res.code == 200) {
-        sessionStorage.setItem('token',res.data);
+        sessionStorage.setItem('token', res.data);
         Toast({
             message: '登录成功',
             position: 'top',
@@ -31,12 +31,42 @@ const submitLogin = async () => {
 }
 
 const getSmsFn = async () => {
-    const res = await userHome.getSms(phoneInput.value);
-    console.log(res);
+    if(!regPhone.test(phoneInput.value)){ 
+        Toast({
+            message: "请输入手机号",
+            position: 'top',
+        });
+       return;
+     };
+    const res: any = await userHome.getSms(phoneInput.value);
+    if (res.code == 200) {
+        isSecond.value = true;
+        smCode();
+    }
 }
 
 const jump = (url: string) => {
     router.push({ path: url })
+}
+
+
+/*****
+ * 
+ * 验证码按钮的实现
+ * 
+ */
+let second = ref(60);
+let isSecond = ref(false);
+const smCode = () => {
+    second.value = 60;
+    let codeInterVal = setInterval(() => {
+        if (second.value == 0) {
+            isSecond.value = false;
+            clearInterval(codeInterVal)
+        } else {
+            second.value--;
+        }
+    }, 1000)
 }
 
 </script>
@@ -56,7 +86,10 @@ const jump = (url: string) => {
 
                     <van-field center clearable v-model="smsCode" left-icon="closed-eye" placeholder="请输入短信验证码">
                         <template #button>
-                            <van-button size="small" type="primary" @click="getSmsFn()">发送验证码</van-button>
+                            <van-button size="small" class="btn" type="primary" v-if="!isSecond"
+                                @click="getSmsFn()">发送验证码</van-button>
+                            <van-button size="small" class="btn" type="primary" disabled
+                                v-show="isSecond">{{ second }}s后重试</van-button>
                         </template>
                     </van-field>
 
@@ -75,6 +108,10 @@ const jump = (url: string) => {
 <style lang="scss" scoped>
 :deep(.van-cell) {
     padding: 1.8rem 0;
+}
+
+.btn{
+    width: 8rem;
 }
 
 .login {

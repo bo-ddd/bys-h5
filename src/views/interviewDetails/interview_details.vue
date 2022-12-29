@@ -69,8 +69,6 @@ import { useMineStore } from '@/stores/mineStores';
 import { ref } from "vue";
 import { reactive } from 'vue';
 import { useRoute, useRouter } from "vue-router";
-
-
 interface Res {
     code: Number,
     msg: string,
@@ -90,7 +88,6 @@ interface interviewDataType {
     positionName: string,//: 职位名称
     companyLogoUrl: string,// LOGOurl
 }
-
 const router = useRouter();
 const axios = useMineStore();
 const route = useRoute();
@@ -98,8 +95,6 @@ let interviewData = reactive({}) as interviewDataType;
 getUserInterview();
 // 我的面试页面传过来的id
 let companyId = ref(Number(route.query.companyId))
-
-
 
 // 获取用户面试
 async function getUserInterview() {
@@ -112,12 +107,13 @@ async function getUserInterview() {
                 Object.assign(interviewData, item);
             }
         });
-        console.log(interviewData);
     }
 };
-
 function navPositionDetails() {
-    console.log(111)
+    router.push({
+        name: 'positionDetail',
+        query: { positionId: interviewData.positionId }
+    })
 }
 
 // 返回上一级

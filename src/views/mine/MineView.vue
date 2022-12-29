@@ -64,7 +64,7 @@
 
 
         <template #value v-if="token&&isUserInfoData&&(item.id == 1)">
-          <span>完成度：<span class="perfection-title">{{perfectionNum.completion*100}}%</span></span>
+          <span>完成度：<span class="perfection-title">{{perfectionNum*100}}%</span></span>
         </template>
 
         <!-- 动态修改求职状态value -->
@@ -110,7 +110,7 @@ const use = useMineStore();
 const useResume = useResumeStore();
 const router = useRouter();
 const showCount = ref(false);
-const userInfo=ref({});
+const userInfo:any=ref({});
 const perfectionNum=ref(0);
 getUnsrInfo();
 const isUserInfoData=ref(false);
@@ -294,7 +294,7 @@ const getPerfectionNum = async () => {
   let res = await useResume.selectCompletion({
   });
   if (res.code == 200) {
-    perfectionNum.value = res.data;
+    perfectionNum.value = res.data.completion;
   }
 };
 const jump = (src: string) => {

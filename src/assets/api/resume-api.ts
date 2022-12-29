@@ -212,6 +212,6 @@ export default {
     * @returns 
     */
      addResume: (params: {}) => {
-        return axios.post('/phone/addResume', params, postConfig)
+        return axios.post('/phone/addResume', params, PostFormConfig)
     },
 }

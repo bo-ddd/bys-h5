@@ -10,6 +10,7 @@
       </div> -->
       <div>
         <div>最多可以上传3份简历</div>
+
       </div>
       <van-button class="upload-btn" type="primary" @click="to('/uploadResumeChoice')">上传附件简历</van-button>
     </div>
@@ -26,7 +27,7 @@ const to = function (path: any) {
   router.push(path);
 };
 const getResumeList=function(){
-  return use.getR 
+  // return use.getR 
 }
 </script>
 <style lang="scss" scoped>

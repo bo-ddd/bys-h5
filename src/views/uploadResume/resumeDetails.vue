@@ -25,10 +25,15 @@
           <img class="img-10 mt-5" :src="parseAssetFile('icon-pen.png')" />
         </template>
       </van-cell>
-      <van-cell is-link class="pad-25-15">
+      <van-cell to='/jobIntention' is-link class="pad-25-15">
         <template #title>
           <div class="intention">
             <div class="fs-20 color-black">求职意向</div>
+            <div v-if="!jobStatus" class="mt-20">
+              <span class="color-gray">填写完求职意向，我们会推荐你期望的相关职位哦 ~</span>
+            </div>
+            <div v-else>
+
             <div class="align-center mt-10">
               <img class="mr-10" :src="parseAssetFile('icon-job.png')" /> web前端开发
             </div>
@@ -42,6 +47,7 @@
             </div>
             <div class="align-center mt-10">
               <img class="mr-10" :src="parseAssetFile('icon-position.png')" />山西省-临汾市、北京-北京市
+            </div>
             </div>
           </div>
         </template>
@@ -92,7 +98,10 @@ import { parseAssetFile } from "@/assets/util";
 import { onActivated, onMounted, ref } from "vue";
 import type { Ref } from "vue";
 import { useResumeStore } from "@/stores/resume";
+import { useJobStore } from "@/stores/job"//接口
 const use = useResumeStore();
+const useJob = useJobStore();
+const jobStatus=ref(false)
 const onClickLeft1 = () => 
   router.push({
     path:'/mine'
@@ -111,6 +120,7 @@ const onClickLeft = () => {
 };
 onMounted(() => {});
 onActivated(() => {
+  getJobList()
   getExperience();
   getScrollValue();
 });
@@ -149,6 +159,13 @@ const userHobby = ref("");
 const educationData: any = ref([]);
 const internShipData: any = ref([]);
 const projectnData: any = ref([]);
+//获取求职状态
+const getJobList=async()=>{
+  let res: any = await useJob.getJobIntentList({});
+  if(res.data!=='[]'){
+    jobStatus.value=true;
+  }
+}
 //获取个人信息
 const getExperience = async () => {
   let res = await use.getOnlineResume({

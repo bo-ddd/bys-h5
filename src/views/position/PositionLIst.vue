@@ -19,7 +19,6 @@ const jump = (src: string, params?: number) => {
 
 let cardList = ref();
 
-
 // 查询简历完成度
 let resumeInfo = ref();
 const getSelectCompletion = async () => {

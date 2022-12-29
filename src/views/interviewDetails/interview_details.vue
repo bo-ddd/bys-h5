@@ -9,7 +9,7 @@
                     <div class="companyLogo ml-23">
                         <img :src="interviewData.companyLogoUrl" alt="">
                     </div>
-                    <div class="just-between interview_details_box-center" @click="log">
+                    <div class="just-between interview_details_box-center" @click="navPositionDetails">
                         <div>
                             <div>
                                 <div class="fs-14">{{ interviewData.companyName }}</div>
@@ -43,7 +43,7 @@
                     <li>
                         <label class="mr-1">面试形式</label>
                         <span>
-                            线下面试
+                            {{ interviewData.interviewType }}
                         </span>
                     </li>
                     <li>
@@ -85,6 +85,7 @@ interface interviewDataType {
     interviewPhone: string,//: 联系电话,
     interviewTime: string,//: 面试时间,
     positionId: number,//: 职位id,
+    interviewType: string,// 面试形式
     positionMoney: string,//: 职位薪资,
     positionName: string,//: 职位名称
     companyLogoUrl: string,// LOGOurl
@@ -115,7 +116,7 @@ async function getUserInterview() {
     }
 };
 
-function log() {
+function navPositionDetails() {
     console.log(111)
 }
 

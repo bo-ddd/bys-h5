@@ -66,7 +66,7 @@
         <van-button class="btn mt-10" round color="#3472e1" size="mini" type="success">去关注</van-button>
       </div>
       <div class="footer flex-ja-center">
-        <van-button class="btn fs-14 " v-if="token" size="mini" @click="jump('/login')">退出登录</van-button>
+        <van-button class="btn fs-14 " v-if="token" size="mini" @click="logOut()">退出登录</van-button>
       </div>
     </footer>
   </div>
@@ -202,10 +202,17 @@ const onConfirm = async (value: any) => {
   }
 };
 
+
+/***
+ * 
+ * 退出登录
+ */
+ const logOut = ()=>{
+  sessionStorage.removeItem("token");
+  router.push({ path: "/" })
+ }
+
 let jump = (src: string) => {
-  if (src == "/login") {
-    sessionStorage.removeItem("token")
-  }
   router.push({ path: src })
 }
 </script>

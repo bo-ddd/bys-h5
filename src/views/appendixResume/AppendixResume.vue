@@ -2,9 +2,15 @@
   <div class="append-page">
     <van-nav-bar title="附件简历" left-arrow @click-left="onClickLeft" />
     <div class="content">
+      <!-- <div>
+
       <img class="mt-80 img" :src="parseAssetFile('file-tip.png')" />
       <div class="mt-20 text-center fs-16 fw-700">您还没有附件简历,请点击下方按钮上传</div>
       <div class="mt-10 text-center fs-14 color-gray">最多可上传3份简历</div>
+      </div> -->
+      <div>
+        <div>最多可以上传3份简历</div>
+      </div>
       <van-button class="upload-btn" type="primary" @click="to('/uploadResumeChoice')">上传附件简历</van-button>
     </div>
   </div>
@@ -12,11 +18,16 @@
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
 import { parseAssetFile } from "@/assets/util";
+import { useResumeStore } from "@/stores/resume";
+const use = useResumeStore();
 const router = useRouter();
 const onClickLeft = () => history.back();
 const to = function (path: any) {
   router.push(path);
 };
+const getResumeList=function(){
+  return use.getR 
+}
 </script>
 <style lang="scss" scoped>
 .append-page{
@@ -29,8 +40,6 @@ const to = function (path: any) {
   height: 100%;
 }
 .content {
-  background-color: #f2f3f6;
-//   height: calc(100vh - 4.7rem);
   box-sizing: border-box;
   padding: 2rem;
   position: relative;

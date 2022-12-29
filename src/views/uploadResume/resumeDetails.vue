@@ -93,13 +93,22 @@ import { onActivated, onMounted, ref } from "vue";
 import type { Ref } from "vue";
 import { useResumeStore } from "@/stores/resume";
 const use = useResumeStore();
-const onClickLeft1 = () => history.back();
+const onClickLeft1 = () => 
+  router.push({
+    path:'/mine'
+    }
+  );
 const router = useRouter();
 const to = function (path: any) {
   // router.push(path);
   console.log(path);
 };
-const onClickLeft = () => history.back();
+const onClickLeft = () => {
+  router.push({
+    path:'/mine'
+    }
+  )
+};
 onMounted(() => {});
 onActivated(() => {
   getExperience();

@@ -24,15 +24,15 @@
             <h1>登录毕业申</h1>
           </div>
           <div>
-            <van-button type="primary" class="ft">微信账号快捷登录</van-button>
+            <van-button type="primary" class="ft" @click="jump('login')" >手机号码验证登录</van-button>
           </div>
-          <div class="c-747474" @click="jump('login')">手机号码验证登录</div>
+          <div class="c-747474" @click="wxLogin()">微信账号快捷登录</div>
         </div>
       </div>
     </van-popup>
     <!-- list -->
     <main>
-      <van-cell center :border="false" class="mt-20 fs-16" v-for="item in list" :key="item.id" :value="item.value"
+      <van-cell center :border="false" class="mt-20 fs-16"  v-for="item in list" :key="item.id" :value="item.value"
         is-link :to="item.link">
         <!-- 正常跳转页面的模板 -->
         <template #title v-if="!item.ispopup">
@@ -66,7 +66,7 @@
         <van-button class="btn mt-10" round color="#3472e1" size="mini" type="success">去关注</van-button>
       </div>
       <div class="footer flex-ja-center">
-        <van-button class="btn fs-14 "  v-if="token" size="mini" @click="jump('/login')">退出登录</van-button>
+        <van-button class="btn fs-14 " v-if="token" size="mini" @click="jump('/login')">退出登录</van-button>
       </div>
     </footer>
   </div>
@@ -157,6 +157,12 @@ let list = [
   },
 ]
 
+const wxLogin = () => {
+  Toast({
+    message: '微信登录暂不支持,请用手机号码验证码登录。',
+    position: 'top',
+  });
+}
 // popup 逻辑
 const show = ref(false);
 // popup 选择的值
@@ -197,7 +203,7 @@ const onConfirm = async (value: any) => {
 };
 
 let jump = (src: string) => {
-  if(src == "/login") { 
+  if (src == "/login") {
     sessionStorage.removeItem("token")
   }
   router.push({ path: src })

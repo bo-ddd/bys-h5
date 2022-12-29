@@ -75,7 +75,7 @@
 <script setup lang="ts">
 import { parseAssetFile } from '@/assets/util';
 import { ref,reactive } from 'vue';
-import { Toast } from 'vant';
+import { Toast ,Dialog} from 'vant';
 import { useRouter } from 'vue-router';
 import { useMineStore } from '@/stores/mineStores';
 const token = sessionStorage.getItem("token");
@@ -217,8 +217,19 @@ const onConfirm = async (value: any) => {
  * 退出登录
  */
 const logOut = () => {
-  sessionStorage.removeItem("token");
+  Dialog.confirm({
+  title: '退出登录',
+  message:
+    '确定要退出登录嘛',
+})
+  .then(() => {
+    sessionStorage.removeItem("token");
   router.push({ path: "/" })
+  })
+  .catch(() => {
+    // on cancel
+  });
+  
 }
 
 const isLogin = (item: any) => {

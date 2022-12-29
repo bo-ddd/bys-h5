@@ -1,6 +1,6 @@
 <template>
   <div class="position">
-    <header class=" wrap just-between" v-show="!isShow">
+    <header class=" wrap just-between" v-if="!isShow">
       <div class="container flex">
         <div class="icon">
           <img class="icon-invitation" src="@/assets/images/icon-invitation.png" alt="">
@@ -14,7 +14,7 @@
         <van-button class="btn-plain" size="mini" color="#3b80fb" plain @click="jump('/jobIntention')">去填写</van-button>
       </div>
     </header>
-    <header class=" wrap just-between" v-show="isShow">
+    <header class=" wrap just-between" v-if="isShow">
       <p class="fs-16 fw-700 job">{{ wishPositionRight.replace(/、$/, '') }}</p>
       <p class="fs-14 c-747474 area"><span v-for="item, index in area" :key="index">{{ item }}</span></p>
       <p class="fs-14 c-5d5d5d money"><span>{{ salary }}</span> <img class="icon-fillin" @click="jump('/jobIntention')"
@@ -23,7 +23,7 @@
     <main class="container">
       <Card.Wrap class="card-bg">
         <Card.Item :class="index ? 'mt-5' : ''" v-for="item, index in cardList" :key="item.companyId" :options="item"
-          @click="jump('/positionDetail', item.positionId)"></Card.Item>
+          :resumeInfo="resumeInfo" @click="jump('/positionDetail', item.positionId)"></Card.Item>
       </Card.Wrap>
       <div class=" text">
         <p class="c-5d5d5d fs-14  just-center">没有更多数据了</p>
@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { reactive, ref, inject, provide } from 'vue';
 import type { Ref } from 'vue'
 import Card from '@/components/card';
 import { useRouter } from 'vue-router';
@@ -60,42 +60,44 @@ let salary = ref('');//薪资
 const getJobIntent = async () => {
   let res: any = await useJob.getJobIntentList({});
   if (res.code == 200) {
-    if (res.data.wishAddr.length) {
-      isShow.value = true
+    if (res.data.legth) {
+      if (res.data.wishAddr.length) {
+        isShow.value = true
+      }
+      // 地区
+      area.value = (res.data.wishAddr);
+      // 职位
+      res.data.wishPosition.forEach((item: any) => {
+        wishPositionRight.value += item.positionNameDown + '、'
+      });
+      // 薪资
+      salary.value = res.data.wishMoney.replace(/000/g, 'k').replace(/,/, '-').replace(/k/, '')
+      // 职位
+      let jobId = 0;
+      let modifyjobInfo = { activeId: [], columnsJob: [], job: [] } as JobInfo;
+      res.data.wishPosition.forEach((item: JobInfo) => {
+        if (item != null) {
+          jobId = Number(item.positionIdDown) * Number(item.positionIdOn);
+          modifyjobInfo.activeId!.push(jobId);
+          modifyjobInfo.activeId = [...new Set(modifyjobInfo.activeId)];
+          modifyjobInfo.columnsJob.push({ text: item.positionNameDown, id: jobId });
+          modifyjobInfo.job.push({ parent: item.positionNameOn, children: item.positionNameDown });
+        }
+      })
+      localStorage.setItem('jobInfo', JSON.stringify(modifyjobInfo));
+      let industryId = 0;
+      let modifyindustry = { activeId: [], columnsIndustry: [], industry: [] } as JobInfo;
+      res.data.wishIndustry.forEach((item: JobInfo) => {
+        if (item != null) {
+          industryId += Number(item.industryIdDown) * Number(item.industryIdOn)
+          modifyindustry.activeId.push(industryId);
+          modifyindustry.activeId = [...new Set(modifyindustry.activeId)];
+          modifyindustry.columnsIndustry.push({ text: item.industryNameDown, id: industryId });
+          modifyindustry.industry.push({ parent: item.industryNameOn, children: item.industryNameDown });
+        }
+      });
+      localStorage.setItem('industryInfo', JSON.stringify(modifyindustry));
     }
-    // 地区
-    area.value = (res.data.wishAddr);
-    // 职位
-    res.data.wishPosition.forEach((item: any) => {
-      wishPositionRight.value += item.positionNameDown + '、'
-    });
-    // 薪资
-    salary.value = res.data.wishMoney.replace(/000/g, 'k').replace(/,/, '-').replace(/k/, '')
-    // 职位
-    let jobId = 0;
-    let modifyjobInfo = { activeId: [], columnsJob: [], job: [] } as JobInfo;
-    res.data.wishPosition.forEach((item: JobInfo) => {
-      if (item != null) {
-        jobId = Number(item.positionIdDown) * Number(item.positionIdOn);
-        modifyjobInfo.activeId!.push(jobId);
-        modifyjobInfo.activeId = [...new Set(modifyjobInfo.activeId)];
-        modifyjobInfo.columnsJob.push({ text: item.positionNameDown, id: jobId });
-        modifyjobInfo.job.push({ parent: item.positionNameOn, children: item.positionNameDown });
-      }
-    })
-    localStorage.setItem('jobInfo', JSON.stringify(modifyjobInfo));
-    let industryId = 0;
-    let modifyindustry = { activeId: [], columnsIndustry: [], industry: [] } as JobInfo;
-    res.data.wishIndustry.forEach((item: JobInfo) => {
-      if (item != null) {
-        industryId += Number(item.industryIdDown) * Number(item.industryIdOn)
-        modifyindustry.activeId.push(industryId);
-        modifyindustry.activeId = [...new Set(modifyindustry.activeId)];
-        modifyindustry.columnsIndustry.push({ text: item.industryNameDown, id: industryId });
-        modifyindustry.industry.push({ parent: item.industryNameOn, children: item.industryNameDown });
-      }
-    });
-    localStorage.setItem('industryInfo', JSON.stringify(modifyindustry));
   }
 }
 getJobIntent()
@@ -112,7 +114,27 @@ const getSelectPosition = async () => {
   console.log(res);
 }
 getSelectPosition();
-
+interface ResumeInfo {
+  completion: number,
+  modifyTime: string
+}
+let resumeInfo = ref() as Ref<ResumeInfo>;
+// 查询简历完成度
+const getSelectCompletion = async () => {
+  let res: any = await useJob.getSelectCompletion();
+  console.log(res);
+  if (res.code == 200) {
+    if (res.data.companyId != null) {
+      resumeInfo.value = res.data;
+    } else {
+      resumeInfo.value = {
+        completion: 0,
+        modifyTime: ''
+      }
+    }
+  }
+}
+getSelectCompletion()
 </script>
 
 <style lang="scss" scoped>

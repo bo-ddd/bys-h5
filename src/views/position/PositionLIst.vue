@@ -9,8 +9,12 @@ const useJob = useJobStore();
 const feedbackStore = useFeedbackStore();
 
 let router = useRouter();
-let jump = (url: string) => {
-    router.push({ path: url })
+const jump = (src: string, params?: number) => {
+    if (params) {
+        router.push({ path: src, query: { positionId: params } })
+    } else {
+        router.push({ path: src })
+    }
 }
 
 let cardList = ref();
@@ -23,9 +27,18 @@ const activeId = ref(0);  //右侧的id
 const activeIndex = ref(0); //左侧的索引
 
 let item3 = ref();
-const positionSelect = () => {
-    console.log(activeId.value);
-    console.log(activeIndex.value);
+let posttionTitle = ref("职位");
+const positionSelect = async () => {
+    let wishIndustry = items[activeIndex.value];
+    let wishPosition = items[activeIndex.value].children.find((item: any) => item.id == activeId.value);
+    posttionTitle.value = wishPosition.text;
+    let res: any = await useJob.selectPositionList({
+        wishIndustryLeft: wishIndustry.text,
+        wishPositionLeft: wishPosition.text
+    })
+    if (res.code == 200) {
+        cardList.value = res.data;
+    }
     item3.value.toggle();
 }
 
@@ -55,16 +68,26 @@ getPositionList();
  */
 const item = ref();
 let addressTitle = ref("地区");
-const onConfirm = (e: { name: string, code: string }[]) => {
+const onConfirm = async (e: { name: string, code: string }[]) => {
+    let wishAddress: { name: string; code: string; }[] = [];
     e.forEach((item, index) => {
         if (item !== undefined) {
             if (item.name !== '') {
+                wishAddress.push(item);
                 addressTitle.value = item.name;
             } else if (index == 0) {
                 addressTitle.value = '不限';
             }
         }
     })
+    let wishAddrStr = wishAddress.map(item => item.name).toString();
+    let res: any = await useJob.selectPositionList({
+        wishAddr: wishAddrStr || "不限"
+    })
+    if (res.code == 200) {
+        cardList.value = res.data;
+    }
+
     item.value.toggle();
 };
 
@@ -148,18 +171,39 @@ const resetFilter = () => {
 
 
 
-const submitFilter = async ()=>{
-    let checkNatur =  natureArr.find((item: Item) => item.isClass == true);
-    let checkEduation =  educationSeleArr.value.filter((item: Item) => item.isClass == true);
+const submitFilter = async () => {
+    let checkNatur = natureArr.find((item: Item) => item.isClass == true);
+    let checkEduation = educationSeleArr.value.filter((item: Item) => item.isClass == true);
     let checkwishMoney = wishMoneyArr.value.find((item: Item) => item.isClass == true);
-    console.log(checkNatur);
-    console.log(checkEduation);
-    console.log(checkwishMoney);
 
-    let res = await useJob.selectPositionList({
-        
+    let eduation = checkEduation.map((item: any) => item.label).toString();
+    let wishMoneyLeft = "";
+    let wishMoneyRight = "";
+    if (checkwishMoney.label == "不限") {
+        wishMoneyLeft = "不限";
+        wishMoneyRight = "不限"
+    } else if (checkwishMoney.label == "30K以上") {
+        wishMoneyLeft = "30000";
+        wishMoneyRight = "不限"
+    } else {
+        let wishMoney = checkwishMoney.label.split("-");
+        let regMoney = /[0-9]+/;
+        wishMoneyLeft = wishMoney[0].replace(regMoney, (val: string) => val + "000");
+        wishMoney[1].replace(regMoney, (val: string) => {
+            wishMoneyRight = val + "000";
+        });
+    }
+
+    let res: any = await useJob.selectPositionList({
+        wishNature: checkNatur?.label,
+        wishEducation: eduation,
+        wishMoneyLeft,
+        wishMoneyRight
     })
 
+    if (res.code == 200) {
+        cardList.value = res.data;
+    }
 
     item2.value.toggle();
 }
@@ -171,23 +215,23 @@ const submitFilter = async ()=>{
  * 
  */
 
- const selectPositionList = async ()=>{
-      let res:any = await useJob.selectPositionList({});
-      if(res.code == 200){
-        cardList.value = res.data;        
-      }
- }
+const selectPositionList = async () => {
+    let res: any = await useJob.selectPositionList({});
+    if (res.code == 200) {
+        cardList.value = res.data;
+    }
+}
 
- selectPositionList();
+selectPositionList();
 
 
 const onClickLeft = () => history.back();
 </script>
 <template>
-    <van-nav-bar  left-text="返回" title="职位列表" left-arrow @click-left="onClickLeft" />
+    <van-nav-bar left-text="返回" title="职位列表" left-arrow @click-left="onClickLeft" />
     <div class="position-list">
         <van-dropdown-menu>
-            <van-dropdown-item title="职位" ref="item3">
+            <van-dropdown-item :title="posttionTitle" ref="item3">
                 <van-tree-select v-model:active-id="activeId" v-model:main-active-index="activeIndex" :items="items" />
                 <van-button type="primary" class="position-btn" @click="positionSelect()">确定</van-button>
             </van-dropdown-item>
@@ -243,13 +287,22 @@ const onClickLeft = () => history.back();
 
 
         <Card.Wrap>
-            <Card.Item v-for="item in cardList"  :options="item"></Card.Item>
+            <Card.Item class="mt-5" v-for="item in cardList" @click="jump('/positionDetail', item.positionId)"
+                :options="item"></Card.Item>
         </Card.Wrap>
+
+        <van-empty v-if="!cardList" description="还没有职位" />
+
     </div>
 </template>
 <style lang="scss" scoped>
 .position-btn {
     width: 100%;
+}
+
+.position-list {
+    background: rgb(246, 246, 246);
+    min-height: calc(100vh - 4.6rem);
 }
 
 .screen {

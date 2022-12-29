@@ -48,5 +48,11 @@ export default {
      */
     getPositionDetail:(params:any)=>{
         return axios.post('/phone/getPosition',params,postConfig);
+    },
+    /**
+     * @description 这个是申请职位的接口
+     */
+    deliveryPosition:(params:any)=>{
+        return axios.post('/phone/deliveryPosition',params,postConfig);
     }
 }

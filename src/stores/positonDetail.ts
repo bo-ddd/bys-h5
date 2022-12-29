@@ -3,20 +3,26 @@ import Api from "@/assets/api/hs-api";
 interface Save {
     companyId?: number,
     positionId?: number,
-    userId: number,
 }
-interface PositionDetail{
-    positionId:number;
+interface PositionDetail {
+    positionId: number;
+}
+interface DeliveryPosition {
+    positionId: number,
+    resumeId: number,
 }
 export const usePositionDetailStore = defineStore('positionDetail', () => {
     // 收藏职位
-    let setStarPosition = (payload:Save) => {
-        return Api.setStarPosition(payload);
+    let setStarPosition = (payload: Save) => {
+        return Api.setStarPosition(payload) as any;
     }
     // 职位详情
-    let getPositionDetail = (payload:PositionDetail)=>{
-        return Api.getPositionDetail(payload);
+    let getPositionDetail = (payload: PositionDetail) => {
+        return Api.getPositionDetail(payload) as any;
     }
-
-    return { setStarPosition,getPositionDetail }
+    // 申请职位
+    let deliveryPosition = (payload:DeliveryPosition) => {
+        return Api.deliveryPosition(payload) as any;
+    }
+    return { setStarPosition, getPositionDetail, deliveryPosition }
 })

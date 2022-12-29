@@ -54,6 +54,8 @@ const router = useRouter();
 const onClickLeft = () => {
     router.go(-1)
 };
+getUnsrInfo()
+
 // popupShow 弹层打开与否
 const popupShow = ref(false);
 const popupValue = ref('');
@@ -94,6 +96,14 @@ function cancel() {
         .catch(() => {
             // on cancel
         });
+}
+
+// 获取用户信息接口
+async function getUnsrInfo() {
+    let res: any = await use.getUserInfo({})
+    if (res.data) {
+        popupValue.value = res.data.userSite;
+    }
 }
 </script>
 

@@ -207,4 +207,11 @@ export default {
      selectCompletion: (params: {}) => {
         return axios.post('/phone/selectCompletion', params, postConfig)
     },
+    /**
+    * 上传简历
+    * @returns 
+    */
+     addResume: (params: {}) => {
+        return axios.post('/phone/addResume', params, postConfig)
+    },
 }

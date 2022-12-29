@@ -16,8 +16,8 @@
             <div class="back back-img2 mt-10"></div>
           </van-step>
         </van-steps>
-        <van-uploader class="upload-btn" accept=".pdf,.doc,.docx">
-        <van-button type="primary"  block @click="to('/uploadResumeChoice')">立即上传</van-button>
+        <van-uploader class="upload-btn" accept=".pdf,.doc,.docx"  :after-read="afterRead" >
+        <van-button type="primary" block>立即上传</van-button>
         </van-uploader>
       </div>
     </div>
@@ -26,11 +26,19 @@
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
 import { parseAssetFile } from "@/assets/util";
+import { useResumeStore } from "@/stores/resume";
+const use = useResumeStore();
 const router = useRouter();
 let onClickLeft2 = () => history.back()
 const to = function (path: any) {
   router.push(path);
 };
+const afterRead=(file:File)=>{
+console.log(file);
+let res=use.addResume({
+
+})
+}
 </script>
 <style lang="scss" scoped>
 .upload-page{
@@ -42,7 +50,6 @@ const to = function (path: any) {
   height: calc(100vh - 4.6rem);
   box-sizing: border-box;
   &-head {
-    background-color: #f2f3f6;
     font-size: 1.4rem;
     height: 4rem;
     display: flex;

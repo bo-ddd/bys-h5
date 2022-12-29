@@ -1,18 +1,23 @@
 <template>
   <div class="">
     <!-- 头部 -->
-    <header class="wrap header c-ffffff" @click="showCount = true">
+    <header class="wrap header c-ffffff" @click="token?jump('personalInfo'):showCount = true">
       <div class="container just-between ">
-        <div class="title" v-if="token">
+        <div class="title" v-if="token&&!isUserInfoData">
           <p class="fs-22 fw-600"><span>请创建简历</span></p>
           <span class="fs-12"><span>点击头像可编辑</span></span>
         </div>
-        <div class="title" v-else="!token">
+        <div class="title" v-else-if="!token">
           <p class="fs-22 fw-600"><span>未登录/注册</span></p>
           <span class="fs-12"><span>点击头像可进行登录/注册</span></span>
         </div>
+        <div class="title" v-else-if="token&&isUserInfoData">
+          <p class="fs-22 fw-600"><span>{{userInfo.userName}}</span></p>
+          <span class="fs-12"><span>{{userInfo.userSchoolName}}/{{userInfo.userEducation}}/{{userInfo.userProfessionalName}}</span></span>
+        </div>
         <div class="upload flex-ja-center">
-          <img class="icon-camera" src="@/assets/images/icon-camera.png" alt="">
+          <img v-if="!token||!isUserInfoData" class="icon-camera" src="@/assets/images/icon-camera.png" alt="">
+          <img v-else class="icon-camera" :src="userInfo.userLogoUrl" alt="">
         </div>
       </div>
     </header>
@@ -34,8 +39,17 @@
     <main>
       <van-cell center :border="false" class="mt-20 fs-16" v-for="item in list" :key="item.id" :value="item.value"
         @click="isLogin(item)">
+
+        <template #title v-if="item.id == 1">
+          <van-icon :name="parseAssetFile(item.icon)" />
+          <span v-if="!token" class="custom-title">在线简历</span>
+          <span v-else-if="token&&!isUserInfoData" class="custom-title">请创建简历</span>
+          <span v-else-if="token&&isUserInfoData" class="custom-title">在线简历</span>
+        </template>
+
+
         <!-- 正常跳转页面的模板 -->
-        <template #title v-if="!item.ispopup">
+        <template #title v-else-if="!item.ispopup">
           <van-icon :name="parseAssetFile(item.icon)" />
           <span class="custom-title">{{ item.title }}</span>
         </template>
@@ -46,6 +60,11 @@
             <van-icon :name="parseAssetFile(item.icon)" />
             <span class="custom-title" @click="showPopup">{{ item.title }}</span>
           </div>
+        </template>
+
+
+        <template #value v-if="token&&isUserInfoData&&(item.id == 1)">
+          <span>完成度：<span class="perfection-title">{{perfectionNum.completion*100}}%</span></span>
         </template>
 
         <!-- 动态修改求职状态value -->
@@ -85,11 +104,16 @@ import { ref, reactive } from 'vue';
 import { Toast, Dialog } from 'vant';
 import { useRouter } from 'vue-router';
 import { useMineStore } from '@/stores/mineStores';
+import { useResumeStore } from "@/stores/resume";
 const token = sessionStorage.getItem("token");
 const use = useMineStore();
+const useResume = useResumeStore();
 const router = useRouter();
 const showCount = ref(false);
+const userInfo=ref({});
+const perfectionNum=ref(0);
 getUnsrInfo();
+const isUserInfoData=ref(false);
 // 求职状态 选择的值
 const userStatusName = ref('');
 // 站点设置 选择的值
@@ -258,11 +282,21 @@ const isLogin = (item: any) => {
 async function getUnsrInfo() {
   let res: any = await use.getUserInfo({})
   if (res.data) {
+    getPerfectionNum()
     userStatusName.value = res.data.userStatusName;
     userSite.value = res.data.userSite;
+    isUserInfoData.value=true;
+    userInfo.value=res.data;
   }
 }
-
+//获取完成度
+const getPerfectionNum = async () => {
+  let res = await useResume.selectCompletion({
+  });
+  if (res.code == 200) {
+    perfectionNum.value = res.data;
+  }
+};
 const jump = (src: string) => {
   router.push({ path: src })
 }
@@ -350,6 +384,10 @@ footer {
     color: #427de3;
     font-size: 1.5rem;
   }
+}
+.perfection-title{
+  color: rgb(58, 144, 252);
+  font-size: 1.6rem;
 }
 </style>
   

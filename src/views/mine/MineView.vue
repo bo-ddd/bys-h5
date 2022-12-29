@@ -24,7 +24,7 @@
             <h1>登录毕业申</h1>
           </div>
           <div>
-            <van-button type="primary" class="ft" @click="jump('login')" >手机号码验证登录</van-button>
+            <van-button type="primary" class="ft" @click="jump('login')">手机号码验证登录</van-button>
           </div>
           <div class="c-747474" @click="wxLogin()">微信账号快捷登录</div>
         </div>
@@ -32,8 +32,8 @@
     </van-popup>
     <!-- list -->
     <main>
-      <van-cell center :border="false" class="mt-20 fs-16"  v-for="item in list" :key="item.id" :value="item.value"
-        is-link :to="item.link">
+      <van-cell center :border="false" class="mt-20 fs-16" v-for="item in list" :key="item.id" :value="item.value"
+        @click="isLogin(item)">
         <!-- 正常跳转页面的模板 -->
         <template #title v-if="!item.ispopup">
           <van-icon :name="parseAssetFile(item.icon)" />
@@ -74,7 +74,7 @@
 
 <script setup lang="ts">
 import { parseAssetFile } from '@/assets/util';
-import { ref } from 'vue';
+import { ref,reactive } from 'vue';
 import { Toast } from 'vant';
 import { useRouter } from 'vue-router';
 import { useMineStore } from '@/stores/mineStores';
@@ -82,7 +82,7 @@ const token = sessionStorage.getItem("token");
 const use = useMineStore();
 const router = useRouter();
 const showCount = ref(false);
-let list = [
+let list = reactive([
   {
     id: 1,
     title: '请创建简历',
@@ -90,6 +90,7 @@ let list = [
     link: '/createResume',
     icon: 'icon-resume.png',
     ispopup: false,
+    isLogin: false
   },
   {
     id: 2,
@@ -98,6 +99,7 @@ let list = [
     link: '/appendixResume',
     icon: 'icon-file.png',
     ispopup: false,
+    isLogin: false
   },
   {
     id: 3,
@@ -106,6 +108,7 @@ let list = [
     link: '/evaluation',
     icon: 'icon-occupation.png',
     ispopup: false,
+    isLogin: false
   },
   {
     id: 4,
@@ -114,6 +117,7 @@ let list = [
     link: '/deliveryfeedback',
     icon: 'icon-delivery.png',
     ispopup: false,
+    isLogin: false
   },
   {
     id: 5,
@@ -122,6 +126,7 @@ let list = [
     link: '/collection',
     icon: 'icon-collection.png',
     ispopup: false,
+    isLogin: false
   },
   {
     id: 6,
@@ -130,6 +135,7 @@ let list = [
     link: '/inter',
     icon: 'icon-interview.png',
     ispopup: false,
+    isLogin: false
   },
   {
     id: 7,
@@ -137,7 +143,8 @@ let list = [
     value: '',
     // link:'/jobStatus',
     icon: 'icon-job.png',
-    ispopup: true,
+    ispopup: false,
+    isLogin: false
   },
   {
     id: 8,
@@ -146,6 +153,7 @@ let list = [
     link: '/feedBack',
     icon: 'icon-opinion.png',
     ispopup: false,
+    isLogin: true
   },
   {
     id: 9,
@@ -154,8 +162,9 @@ let list = [
     link: '/siteSettings',
     icon: 'icon-site.png',
     ispopup: false,
+    isLogin: true
   },
-]
+])
 
 const wxLogin = () => {
   Toast({
@@ -207,12 +216,29 @@ const onConfirm = async (value: any) => {
  * 
  * 退出登录
  */
- const logOut = ()=>{
+const logOut = () => {
   sessionStorage.removeItem("token");
   router.push({ path: "/" })
- }
+}
 
-let jump = (src: string) => {
+const isLogin = (item: any) => {
+  
+  if (item.isLogin) {
+    router.push({ path: item.link })
+  }else{
+    if(token){
+      item.ispopup = true;
+      router.push({ path: item.link })
+    }else{
+      item.ispopup = false;
+      showCount.value = true;
+    }
+  }
+
+}
+
+
+const jump = (src: string) => {
   router.push({ path: src })
 }
 </script>

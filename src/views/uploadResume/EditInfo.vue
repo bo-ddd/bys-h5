@@ -505,16 +505,16 @@ const checkForm = () => {
   } else if (!education.value) {
     Toast("请选择学历");
     return;
-  } else if (!day.value) {
+  } else if (!beginTime.value) {
     Toast("请选择入学时间");
     return;
-  } else if (!dayOver.value) {
+  } else if (!overTime.value) {
     Toast("请选择毕业时间");
     return;
   } else if (!schoolDesc.value) {
     Toast("请填写在校经历");
     return;
-  } else if (day.value > dayOver.value) {
+  } else if (beginTime.value > overTime.value) {
     Toast("入学开始时间不能高于结束时间");
     return;
   }

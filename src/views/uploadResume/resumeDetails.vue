@@ -143,7 +143,6 @@ const projectnData: any = ref([]);
 //获取个人信息
 const getExperience = async () => {
   let res = await use.getOnlineResume({
-    userId: 10000,
   });
   if (res.code == 200) {
     userName.value = res.data.userName;

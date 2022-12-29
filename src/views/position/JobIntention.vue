@@ -292,7 +292,8 @@ let workplaceReset = () => {
 
 // 保存
 const submit = (): void => {
-    if (jobInfo.activeId.length) {
+
+    if (!jobInfo.activeId.length) {
         Toast('请输入期望职位');
     }
     else if (salary.value.length == 0) {

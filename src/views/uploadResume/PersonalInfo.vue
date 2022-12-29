@@ -282,6 +282,30 @@ const getInfo = async function () {
     userYear.value = res.data.userYear;
   }
 };
+const clearUserInfo=function(){
+    userName.value = '';
+    userEmail.value = '';
+    userSex.value = '';
+    sexValue.value = '';
+    avaterImg.value = '';
+    userBirthday.value = '';
+    userNational.value = '';
+    nationValue.value = '';
+    userEducation.value = '';
+    educationValue.value = '';
+    userAddr.value = '';
+    userSchool.value = {
+      name: '',
+      value: '',
+    };
+    userProfessional.value = {
+      name: '',
+      value: '',
+    };
+    userYear.value = '';
+
+}
+
 const upload: any = ref(null);
 
 const use = useResumeStore();
@@ -301,7 +325,8 @@ const clearKeep = function () {
   //清空滚轮的位置
   scrollTop.value = 0;
   //重新获取用户信息
-  getInfo();
+  // getInfo();
+  clearUserInfo()
   //清空stores
   clearSchool();
   clearMajor();

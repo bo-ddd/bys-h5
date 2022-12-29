@@ -28,7 +28,7 @@
             <van-button v-if="!options.isDelivery" class="mt-20 btn fw-600" size="mini" type="primary"
                 @click.stop="apply()">申请</van-button>
             <van-action-sheet @click.prevent.stop="" v-model:show="isShow" title="确认投递简历">
-                <div class="content" v-show="!show">
+                <div class="content" v-show="!(resumeInfo.completion ==0)">
                     <div class="flex">
                         <van-icon name="checked" size="2.5rem" color="#2979ff" />
                         <div class="title">
@@ -41,12 +41,26 @@
                     <van-button class="btn-confirm fs-14" type="primary"
                         @click="delivery(options.positionId)">确认投递</van-button>
                 </div>
-                <div class="content" v-show="show">
+                <div class="content" v-show="resumeInfo.completion == 0">
                     <div class="just-center flex">
-                        <p class="fs-14 c-747474">还未填写简历，点击<a href="" @click="jump('/createResume')" class="c-2979ff">去填写</a></p>
+                        <p class="fs-14 c-747474">还未填写简历，点击<a href="" @click="jump('/createResume')"
+                                class="c-2979ff">去填写</a></p>
                     </div>
                 </div>
             </van-action-sheet>
+            <van-popup v-model:show="showCount" closeable round :style="{ height: '25%', width: '80%' }">
+                <div class="show-count_box">
+                    <div class="show-wrap">
+                        <div>
+                            <h1>登录毕业申</h1>
+                        </div>
+                        <div>
+                            <van-button type="primary" class="ft" @click="jump('/login')">手机号码验证登录</van-button>
+                        </div>
+                        <div class="c-747474" @click="wxLogin()">微信账号快捷登录</div>
+                    </div>
+                </div>
+            </van-popup>
         </div>
     </div>
 </template>
@@ -58,6 +72,7 @@ import type { Ref } from 'vue';
 import type { CardItem } from '../../views/position/types/card';
 import { useJobStore } from "@/stores/job";//接口
 import { useRouter } from 'vue-router';
+import { Toast } from 'vant';
 const router = useRouter();
 const useJob = useJobStore();
 
@@ -68,15 +83,24 @@ let props = defineProps<{
 
 let { options, resumeInfo = {} } = toRefs(props);
 
+const token = sessionStorage.getItem("token");
 let isShow = ref(false);
 let show = ref(false);
+const showCount = ref(false);
 
 const jump = (src: string, params?: number) => {
-  if (params) {
-    router.push({ path: src, query: { positionId: params } })
-  } else {
-    router.push({ path: src })
-  }
+    if (params) {
+        router.push({ path: src, query: { positionId: params } })
+    } else {
+        router.push({ path: src })
+    }
+}
+// 微信号登录
+const wxLogin = () => {
+    Toast({
+        message: '微信登录暂不支持,请用手机号码验证码登录。',
+        position: 'top',
+    });
 }
 
 
@@ -101,10 +125,14 @@ interface ResumeInfo {
 
 //申请职位 
 const apply = function () {
-    isShow.value = true;
-    if ((resumeInfo as ResumeInfo).modifyTime == undefined) {
-        show.value = true;
+    console.log(resumeInfo.value)
+    if (!token) {
+        showCount.value = true
     } else {
+        isShow.value = true;
+        if ((resumeInfo as ResumeInfo).modifyTime == 'null') {
+            show.value = true;
+        }
     }
 }
 
@@ -173,5 +201,26 @@ const apply = function () {
         }
     }
 
+    .show-count_box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+
+        .show-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+
+            h1 {
+                font-weight: 500;
+            }
+
+            .ft {
+                font-size: 1.8rem;
+            }
+        }
+    }
 }
 </style>

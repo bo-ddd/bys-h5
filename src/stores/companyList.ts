@@ -8,7 +8,7 @@ export const useCompanyListStore = defineStore('feedback', () => {
     * @returns 
     */
     function getSaveList(params?: any) {
-        return Api.getSaveList(params);
+        return Api.getSaveList(params) as any;
     }
     /**
      * @description 这个是获取企业规模的下拉框
@@ -16,7 +16,7 @@ export const useCompanyListStore = defineStore('feedback', () => {
      * @returns 
      */
     function getCompanySize(params?: any) {
-        return Api.getCompanySize(params);
+        return Api.getCompanySize(params) as any;
     }
     /**
      * @description 这个是获取企业性质下拉框
@@ -24,7 +24,7 @@ export const useCompanyListStore = defineStore('feedback', () => {
      * @returns 
      */
     function getCompanyNature(params?: any) {
-        return Api.getCompanyNature(params);
+        return Api.getCompanyNature(params) as any;
     }
     /**
      * @decription 获取所属行业下拉框
@@ -32,7 +32,13 @@ export const useCompanyListStore = defineStore('feedback', () => {
      * @returns 
      */
     function getCompanyIndustry(params?: any) {
-        return Api.getCompanyIndustry(params)
+        return Api.getCompanyIndustry(params) as any;
     }
-    return { getSaveList,getCompanySize,getCompanyNature,getCompanyIndustry}
+    /**
+     * @description 这个是获取企业列表的接口
+     */
+    function getCompanyList(params?:any){
+        return Api.getCompanyList(params) as any;
+    }
+    return { getSaveList,getCompanySize,getCompanyNature,getCompanyIndustry,getCompanyList}
 })

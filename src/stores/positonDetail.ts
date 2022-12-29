@@ -24,5 +24,9 @@ export const usePositionDetailStore = defineStore('positionDetail', () => {
     let deliveryPosition = (payload:DeliveryPosition) => {
         return Api.deliveryPosition(payload) as any;
     }
-    return { setStarPosition, getPositionDetail, deliveryPosition }
+    //获取在线简历
+    let getOnlineResume = (payload?:any)=>{
+        return Api.getOnlineResume(payload) as any;
+    }
+    return { setStarPosition, getPositionDetail, deliveryPosition ,getOnlineResume}
 })

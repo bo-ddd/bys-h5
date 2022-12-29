@@ -39,21 +39,28 @@
           <van-icon :name="parseAssetFile(item.icon)" />
           <span class="custom-title">{{ item.title }}</span>
         </template>
+
         <!-- 点击求职状态弹层的模板-------------------------- -->
         <template #title v-else>
-          <div @click="showPopup">
-            <div class="van-cell__title">
-              <van-icon :name="parseAssetFile(item.icon)" />
-              <span class="custom-title">{{ item.title }}</span>
-            </div>
+          <div class="van-cell__title">
+            <van-icon :name="parseAssetFile(item.icon)" />
+            <span class="custom-title" @click="showPopup">{{ item.title }}</span>
           </div>
         </template>
-        <!-- 动态修改value描述的模板 -->
+
+        <!-- 动态修改求职状态value -->
         <template #value v-if="item.ispopup">
-          <span @click="showPopup">{{ popupText }}</span>
+          <span @click="showPopup">{{ userStatusName }}</span>
+        </template>
+        <!-- 求职状态结束------------------------- -->
+
+        <!-- 动态修改 站点设置的value -->
+        <template #value v-if="item.title == '站点设置'">
+          <span>{{ userSite }}</span>
         </template>
         <!-- 求职状态结束------------------------- -->
       </van-cell>
+
       <!-- 弹层组件 -->
       <van-popup position="bottom" :style="{ height: '50%' }" v-model:show="show">
         <van-picker :columns="popupData" @cancel="cancel" @confirm="onConfirm" />
@@ -74,14 +81,19 @@
 
 <script setup lang="ts">
 import { parseAssetFile } from '@/assets/util';
-import { ref,reactive } from 'vue';
-import { Toast ,Dialog} from 'vant';
+import { ref, reactive } from 'vue';
+import { Toast, Dialog } from 'vant';
 import { useRouter } from 'vue-router';
 import { useMineStore } from '@/stores/mineStores';
 const token = sessionStorage.getItem("token");
 const use = useMineStore();
 const router = useRouter();
 const showCount = ref(false);
+getUnsrInfo();
+// 求职状态 选择的值
+const userStatusName = ref('');
+// 站点设置 选择的值
+const userSite = ref('')
 let list = reactive([
   {
     id: 1,
@@ -141,9 +153,9 @@ let list = reactive([
     id: 7,
     title: '求职状态',
     value: '',
-    // link:'/jobStatus',
+    link: '',
     icon: 'icon-job.png',
-    ispopup: false,
+    ispopup: true,
     isLogin: false
   },
   {
@@ -174,28 +186,24 @@ const wxLogin = () => {
 }
 // popup 逻辑
 const show = ref(false);
-// popup 选择的值
-const popupText = ref('');
-const showPopup = () => show.value = true;
+function showPopup() {
+  show.value = true;
+}
 // popup 数据
-let popupData = ['全职', '实习', '全职和实习']
+let popupData = ['积极求职中', '已有offer,停止求职', '没有offer,暂不求职']
 // popup 左上角 x 号事件
 const cancel = () => {
   show.value = false;
 };
-// interface ModifyJobWantedStatusType {
-//   status: Number | null,
-//   userId: Number,
-// }
 // popup 右上角确定事件
 const onConfirm = async (value: any) => {
   // 掉接口
   let status: null | Number = null;
-  if (value == '全职') {
+  if (value == '积极求职中') {
     status = 0
-  } else if (value == '实习') {
+  } else if (value == '已有offer,停止求职') {
     status = 1
-  } else if (value == '全职和实习') {
+  } else if (value == '没有offer,暂不求职') {
     status = 2
   }
   // 修改求职状态接口
@@ -205,9 +213,8 @@ const onConfirm = async (value: any) => {
   })
   if (res.code == 200) {
     Toast('求职状态修改成功');
-    popupText.value = value;
+    getUnsrInfo();
     show.value = false;
-    console.log(res)
   }
 };
 
@@ -218,37 +225,43 @@ const onConfirm = async (value: any) => {
  */
 const logOut = () => {
   Dialog.confirm({
-  title: '退出登录',
-  message:
-    '确定要退出登录嘛',
-})
-  .then(() => {
-    sessionStorage.removeItem("token");
-    localStorage.clear();
-  router.push({ path: "/" })
+    title: '退出登录',
+    message:
+      '确定要退出登录嘛',
   })
-  .catch(() => {
-    // on cancel
-  });
-  
+    .then(() => {
+      sessionStorage.removeItem("token");
+      localStorage.clear();
+      router.push({ path: "/" })
+    })
+    .catch(() => {
+      // on cancel
+    });
+
 }
 
 const isLogin = (item: any) => {
-  
   if (item.isLogin) {
     router.push({ path: item.link })
-  }else{
-    if(token){
+  } else {
+    if (token) {
       item.ispopup = true;
       router.push({ path: item.link })
-    }else{
+    } else {
       item.ispopup = false;
       showCount.value = true;
     }
   }
-
 }
 
+// 获取用户信息接口
+async function getUnsrInfo() {
+  let res: any = await use.getUserInfo({})
+  if (res.data) {
+    userStatusName.value = res.data.userStatusName;
+    userSite.value = res.data.userSite;
+  }
+}
 
 const jump = (src: string) => {
   router.push({ path: src })

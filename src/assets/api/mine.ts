@@ -10,6 +10,13 @@ export default {
         return axios.post('/phone/modifyStatus', params, postConfig)
     },
     /**
+    * 修改求职状态
+    * @returns 
+    */
+    getUserInfoApi: (params: {}) => {
+        return axios.post('/phone/getOnlineResume', params, postConfig)
+    },
+    /**
     * 修改站点
     * @returns 
     */

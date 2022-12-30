@@ -59,9 +59,9 @@
             <div :class="['btn','cl-fff','fs-14',positionDetail?.isDelivery ? 'bg-low' : 'bg-hight']" @click="showResume">{{positionDetail?.isDelivery ? '已投递' : '投递简历'}}</div>
         </div>
         <!-- 弹出框 -->
-        <van-popup v-model:show="show" round position="bottom">
+        <van-popup v-model:show="show" round position="bottom" v-if="!positionDetail?.isDelivery">
             <div class="pop">
-                <div class="container">
+                <div class="container-resume">
                     <h3 class="pd-10_0">确认投递简历</h3>
                     <van-radio-group v-model="checked">
                         <div class="resume-item mt-5 pd-20_0" v-for="item in resumeList" :key="item.resumeId">
@@ -70,9 +70,9 @@
                                 <div class="resume ml-10">
                                     <div class="top">
                                         <div class="fs-14">{{item.resumeName}}</div>
-                                        <div class="fs-12 ml-40">
+                                        <div class="fs-12 ml-40" v-if="item.isOnline">
                                             完成度:
-                                            <span class="cl-blue">60%</span>
+                                            <span class="cl-blue">{{item.completion ? item.completion * 100 : ''}}%</span>
                                         </div>
                                     </div> 
                                     <div class="btm fs-12">
@@ -100,7 +100,7 @@ import { Toast } from 'vant';
 const positionDetailStore = usePositionDetailStore();
 let router = useRouter();
 let route = useRoute();
-let positionId = ref();
+let positionId:Ref<any> = ref();
 if (route.query.positionId) {
     positionId.value = route.query.positionId;
 }
@@ -116,6 +116,8 @@ interface Resume{
     resumeId: number,
     resumeName: string,
     resumeUrl:string,
+    isOnline:boolean,
+    completion?:number,
 }
 interface PositionDetail {
     companyId: number;
@@ -173,8 +175,21 @@ async function setStarPosition() {
 // 获取在线简历的接口
 async function getOnlineResume() {
     let res: Res<Resume[]> = await positionDetailStore.getOnlineResume({});
-    if (res.code == 200) {
+    if (res.code == 200) { 
         resumeList.value = res.data;
+        let check = resumeList.value.find((item)=>{
+            return item.isOnline == true;
+        })
+        if(check){
+            checked.value = check.resumeId;
+        }else{
+            if(resumeList.value.length){
+                checked.value = resumeList.value[0].resumeId;
+            }
+        }
+        resumeList.value.sort((a : any,b :any)=>{
+            return b.isOnline - a.isOnline;
+        });
     }
 }
 getOnlineResume();
@@ -217,6 +232,19 @@ const deliveryPosition = async ()=>{
         getPositionDetail();
     }
 }
+//获取在线信息完成度
+const selectCompletion = async ()=>{
+    let res :Res<any> = await positionDetailStore.selectCompletion({});
+        if(res.code == 200){
+            let check = resumeList.value.find((item)=>{
+                return item.isOnline == true;
+            })
+            if(check){
+                check.completion = res.data.completion;
+            }
+        }
+}
+selectCompletion();
 </script>
 <style lang="scss" scoped>
 .position-detail {
@@ -332,7 +360,7 @@ const deliveryPosition = async ()=>{
         height: 50rem;
         padding: 0 2rem;
 
-        &>.container {
+        &>.container-resume {
             height: calc(50rem - 7rem);
             overflow-y: scroll;
 
@@ -360,7 +388,6 @@ const deliveryPosition = async ()=>{
                 }
             }
         }
-
         &>.btn-wrap {
             &>.btn {
                 padding: 1.5rem 0;

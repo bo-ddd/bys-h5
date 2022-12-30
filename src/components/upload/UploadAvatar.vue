@@ -1,5 +1,5 @@
 <template>
-  <van-uploader class="upload" :after-read="afterRead">
+  <van-uploader class="upload" accept="image/png, image/jpeg" :after-read="afterRead">
     <van-cell class="upload-cell" center>
       <template #title>
         <div class="fs-18">头像</div>
@@ -17,6 +17,7 @@
 import { useResumeStore } from "@/stores/resume";
 import { parseAssetFile } from "@/assets/util";
 import { toRef } from "vue";
+import { Toast } from "vant";
 let props = defineProps<{
   avaterImg: string;
 }>();
@@ -24,7 +25,11 @@ const use = useResumeStore();
 const avaterImg = toRef(props, "avaterImg");
 const afterRead = (file: any) => {
   // 此时可以自行将文件上传至服务器
-  uploadAvater(file.file);
+  if(file.file.type=='image/jpeg'||file.file.type=='image/png'){
+    uploadAvater(file.file);
+  }else{
+    Toast('图片格式不正确')
+  }
 };
 const uploadAvater = async function (file: any) {
   let formData = new FormData();

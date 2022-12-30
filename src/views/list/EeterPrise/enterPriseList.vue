@@ -248,31 +248,6 @@ getCompanyList();
                     </div>
                 </div>
             </div>
-            <!-- <div class="item">
-                <div class="left">
-                    <img src="@/assets/images/company.png" class="icon-40">
-                </div>
-                <div class="right">
-                    <div class="top">
-                        <p class="fs-16">人保科技</p>
-                        <div class="desc fs-14">
-                            <p>上海市</p>
-                            <div class="line mg-0_5"></div>
-                            <p>10000人以上</p>
-                            <div class="line mg-0_5"></div>
-                            <p>电子商务</p>
-                        </div>
-                    </div>
-                    <div class="btm just-between">
-                        <div class="desc align-center fs-12">
-                            <p>热招</p>
-                            <p class="mg-0_5 cl-blue">数据中心 灾备岗</p>
-                            <p>等42个职位</p>
-                        </div>
-                        <img src="@/assets/images/icon-arrow_right.png" class="icon-16">
-                    </div>
-                </div>
-            </div> -->
         </div>
     </div>
 </template>

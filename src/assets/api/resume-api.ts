@@ -214,4 +214,11 @@ export default {
      addResume: (params: {}) => {
         return axios.post('/phone/addResume', params, PostFormConfig)
     },
+    /**
+    * 获取简历列表
+    * @returns 
+    */
+     selectResume: (params: {}) => {
+        return axios.post('/phone/selectResume', params, postConfig)
+    },
 }

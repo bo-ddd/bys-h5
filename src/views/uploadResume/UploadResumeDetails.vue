@@ -35,16 +35,24 @@ let onClickLeft2 = () => history.back();
 const to = function (path: any) {
   router.push(path);
 };
-const afterRead = async(file: any) => {
-  console.log(file);
-  let formData = new FormData();
-  formData.append("resumeName", file.file.name);
-  formData.append("resume", file.file);
-  console.log(formData);
-  let res=await use.addResume(formData);
-  if(res.code==200){
-    Toast.success("上传成功");
-    to('/appendixResume')
+const afterRead = async (file: any) => {
+  if (
+    file.file.type == "application/pdf" ||
+    file.file.type == "application/msword" ||
+    file.file.type ==
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  ) {
+    let formData = new FormData();
+    formData.append("resumeName", file.file.name);
+    formData.append("resume", file.file);
+
+    let res = await use.addResume(formData);
+    if (res.code == 200) {
+      Toast.success("上传成功");
+      to("/appendixResume");
+    }
+  } else {
+    Toast("文件格式不正确");
   }
 };
 // const

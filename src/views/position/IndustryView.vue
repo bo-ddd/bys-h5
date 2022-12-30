@@ -26,9 +26,11 @@
 //接口
 import { useJobStore } from "@/stores/job";
 import { ref, reactive } from "vue";
+import type { Ref } from 'vue';
 import { Toast } from "vant";
 import type { TreeSelectChild } from "vant"
 import { useRouter } from 'vue-router';
+import type { JobInfo } from "./types/jobInfo";
 const router = useRouter();
 const useJob = useJobStore();
 
@@ -36,7 +38,6 @@ let items: any[] = reactive([]);
 let getCompanyIndustry = async () => {
     let res = await useJob.getCompanyIndustryList({});
     let data = res.data;
-    console.log(data)
     data.forEach((item: any) => {
         let children: any[] = [];
         item.children.forEach((item: any) => {
@@ -52,16 +53,15 @@ let getCompanyIndustry = async () => {
         });
     })
 }
-console.log('items', items)
-let activeId = ref([]);
+let activeId = ref([]) as Ref<number[]>;
 let showIndustry: any = ref([]);
 let columnsIndustry: any[] = reactive([]);
 let industryInfo = JSON.parse(localStorage.getItem('industryInfo')!);
 
 if (industryInfo) {
     activeId.value = industryInfo.activeId;
-    showIndustry.value = industryInfo.industry
-    columnsIndustry = industryInfo.columnsIndustry
+    showIndustry.value = industryInfo.industry;
+    columnsIndustry = industryInfo.columnsIndustry;
 }
 let activeIndex = ref(0);
 let navCity = ref(items[activeIndex.value]);
@@ -114,10 +114,6 @@ let deliet: (index: number, el: any) => void = (index: number, el: any): void =>
 const goBack = () => {
     let wishIndustryLeft = ref('');
     let wishIndustryRight = ref('');
-    console.log('----------')
-    console.log(columnsIndustry);
-    console.log(navCity.value);
-    console.log(showIndustry.value);
     // 左
     items.forEach((item: any) => {
         showIndustry.value.forEach((items: any) => {
@@ -125,8 +121,8 @@ const goBack = () => {
         });
     })
     // 右
-    columnsIndustry.forEach((item:any)=>{
-        wishIndustryRight.value += item.id+','
+    columnsIndustry.forEach((item: any) => {
+        wishIndustryRight.value += item.id + ','
     })
     let wishIndustryRighta = '';
     items.forEach((item: any) => {
@@ -134,12 +130,9 @@ const goBack = () => {
             wishIndustryRight.value.split(',').forEach(items => {
                 if (itemChildren.id == Number(items)) {
                     if (item.id != 1) {
-                        console.log(Number(items));
-                        console.log(item.children.length)
-                        console.log('----', Number(items) - item.children.length)
                         wishIndustryRighta += (Number(items) - item.children.length) + ','
                     } else {
-                        wishIndustryRighta += items+','
+                        wishIndustryRighta += items + ','
                     }
                 }
             });
@@ -151,11 +144,11 @@ const goBack = () => {
         activeId: (activeId.value),
         columnsIndustry: (columnsIndustry),
     }));
-    window.localStorage.setItem('modifyIndustryInfo', 
-    JSON.stringify({
-        wishIndustryLeft: wishIndustryLeft.value,
-        wishIndustryRight:wishIndustryRighta,
-    })
+    window.localStorage.setItem('modifyIndustryInfo',
+        JSON.stringify({
+            wishIndustryLeft: wishIndustryLeft.value,
+            wishIndustryRight: wishIndustryRighta,
+        })
     );
     router.push({ path: "/jobIntention" });
 

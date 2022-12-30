@@ -4,11 +4,11 @@ import Api from "@/assets/api/z-api";
 interface PositionParams{
     wishAddr?:string,
     wishEducation?:string,
-    wishIndustryLeft?:string,
+    wishIndustryLeft?:number,
     wishMoneyLeft?:string,
     wishMoneyRight?:string,
     wishNature?:string,
-    wishPositionLeft?:string
+    wishPositionLeft?:number
 }
 interface DeliveryPosition{
     positionId:number 

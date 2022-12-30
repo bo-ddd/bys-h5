@@ -86,7 +86,7 @@ const smCode = () => {
 
                     <van-field center clearable v-model="smsCode" left-icon="closed-eye" placeholder="请输入短信验证码">
                         <template #button>
-                            <van-button size="small" class="btn" type="primary" v-if="!isSecond"
+                            <van-button size="small" class="" type="primary" v-if="!isSecond"
                                 @click="getSmsFn()">发送验证码</van-button>
                             <van-button size="small" class="btn" type="primary" disabled
                                 v-show="isSecond">{{ second }}s后重试</van-button>

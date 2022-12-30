@@ -18,9 +18,9 @@
           >
             <div class="align-center gap-10">
               <div>
-                <!-- <img v-if="item." src="@/assets/images/icon-pdf.png" alt=""> -->
-                <img src="@/assets/images/icon-pdf.png" alt />
-                <!-- <img v-else src="@/assets/images/icon-pdf.png" alt=""> -->
+                <!-- <img v-if="item." src="@/assets/images/icon-pdf.png" =""> -->
+                <img src="@/assets/images/icon-pdf.png"  />
+                <!-- <img v-else src="@/assets/images/icon-pdf.png" =""> -->
               </div>
               <div>
                 <div class="title fs-16">{{item.resumeName}}</div>

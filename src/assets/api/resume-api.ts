@@ -191,7 +191,7 @@ export default {
     * @returns 
     */
      delStarPosition: (params: {}) => {
-        return axios.post('/phone/delStarPosition', params, postConfig)
+        return axios.post('/phone/starPosition', params, postConfig)
     },
     /**
     * 消息页面 企业邀请列表
@@ -220,5 +220,12 @@ export default {
     */
      selectResume: (params: {}) => {
         return axios.post('/phone/selectResume', params, postConfig)
+    },
+    /**
+    * 申请职位
+    * @returns 
+    */
+     deliveryPosition: (params: {}) => {
+        return axios.post('/phone/deliveryPosition', params, postConfig)
     },
 }

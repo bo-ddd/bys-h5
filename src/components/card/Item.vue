@@ -125,7 +125,6 @@ interface ResumeInfo {
 
 //申请职位 
 const apply = function () {
-    console.log(resumeInfo.value)
     if (!token) {
         showCount.value = true
     } else {

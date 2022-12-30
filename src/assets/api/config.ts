@@ -1,4 +1,4 @@
-let serveUrl = import.meta.env.MODE == "production" ? "http://49.235.119.92:8080/" : "/api";
+let serveUrl = import.meta.env.MODE == "production" ? "http://49.235.119.92:8090/" : "/api";
 export const postConfig = {
     url: "",
     baseURL: serveUrl,

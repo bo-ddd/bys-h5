@@ -33,7 +33,6 @@
               <span class="color-gray">填写完求职意向，我们会推荐你期望的相关职位哦 ~</span>
             </div>
             <div v-else>
-
             <div class="align-center mt-10">
               <img class="mr-10" :src="parseAssetFile('icon-job.png')" /> web前端开发
             </div>

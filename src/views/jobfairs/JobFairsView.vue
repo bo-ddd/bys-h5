@@ -46,7 +46,8 @@
             <van-swipe class="my-swipe" :autoplay="4000" indicator-color="white">
               <van-swipe-item class="ptl-20" v-for="item in positionList">
                 <div class="swipe-item_box">
-                  <div @click="jump('/positionLIst')" v-for="child in item.child">
+      
+                  <div @click="jump('/positionLIst',child.positionId,child.positionName)" v-for="child in item.child">
                     <img :src="child.positionUrl" alt="">
                     <p class="pt-6">{{ child.positionName }}</p>
                   </div>
@@ -79,7 +80,7 @@
           <template #content>
             <div class="position-box">
               <div :class="isOpen ? 'is-item-box' : 'item-box'">
-                <div class="item" v-for="item in data.positionNameList" @click="jump('/positionLIst')">{{ item }}</div>
+                <div class="item" v-for="item in data.positionNameList" @click="jump('/positionLIst',item)">{{ item }}</div>
               </div>
               <div class="is-open">
                 <span @click="isOpenFn">{{ isOpen ? 'close' : "open" }}</span>
@@ -116,8 +117,8 @@ import JobFairsNav from "@/components/jobfairs/JobFairsNav.vue";
 import { useRouter } from 'vue-router';
 let useHome = useHomeStore();
 let router = useRouter();
-let jump = (url: string) => {
-  router.push({ path: url })
+let jump = (url: string,positionId?:number,positionName?:string) => {
+  router.push({ path: url ,query:{positionId,positionName}})
 }
 let to=(url:string,id:number)=>{
   router.push({

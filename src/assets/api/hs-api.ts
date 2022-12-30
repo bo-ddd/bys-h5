@@ -56,15 +56,21 @@ export default {
         return axios.post('/phone/deliveryPosition',params,postConfig);
     },
     /**
-     * @description 这个是获取在线简历
+     * @description 这个是获取简历列表
      */
     getOnlineResume:(params:any)=>{
-        return axios.post('/phone/getOnlineResume',params,postConfig);
+        return axios.post('/phone/selectResume',params,postConfig);
     },
     /**
      * @description 这个是获取企业列表的接口.
      */
     getCompanyList:(params:any)=>{
         return axios.post('/phone/selectCompanyList',params,postConfig);
+    },
+    /**
+     * @description 这个是获取在线简历信息完成度的接口
+     */
+    selectCompletion:(params:any)=>{
+        return axios.post('/phone/selectCompletion',params,postConfig)
     }
 }

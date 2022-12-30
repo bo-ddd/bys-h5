@@ -51,14 +51,12 @@ let getPosition = async () => {
         });
     })
 }
-console.log(items)
 let activeId = ref([]);
 let showJob: any = ref([]);
 let columnsJob: any[] = reactive([]);
 let jobInfo = JSON.parse(localStorage.getItem('jobInfo')!);
 
 if (jobInfo) {
-    console.log(jobInfo)
     activeId.value = Array.from(jobInfo.activeId);
     showJob.value = jobInfo.job
     columnsJob = jobInfo.columnsJob
@@ -130,9 +128,6 @@ const goBack = () => {
             wishPositionRight.value.split(',').forEach(items => {
                 if (itemChildren.id == Number(items)) {
                     if (item.id != 1) {
-                        console.log(Number(items));
-                        console.log(item.children.length)
-                        console.log('----', Number(items) - item.children.length)
                         wishPositionRighta += (Number(items) - item.children.length) + ','
                     } else {
                         wishPositionRighta += items+','
@@ -141,8 +136,6 @@ const goBack = () => {
             });
         }); 
     });
-    console.log('showJob.value', showJob.value);
-    console.log('columnsJob', columnsJob)
 
     window.localStorage.setItem('jobInfo', JSON.stringify({
         job: showJob.value,

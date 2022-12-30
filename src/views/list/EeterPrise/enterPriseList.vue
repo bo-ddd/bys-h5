@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
-import { ref, provide, reactive } from "vue";
+import { ref, provide, reactive,type Ref } from "vue";
 import Drop from "@/components/dropMenu/index";
 import { areaList } from '@vant/area-data';
 import { useCompanyListStore } from "@/stores/companyList";
@@ -43,11 +43,40 @@ interface Position {
     text: string;
     value: string;
 }
-let jump = (url: string) => {
-    router.push({ path: url })
+interface CompanyDate{
+    companyAddr: string,
+    companyFullName:string,
+    companyId: number,
+    companyIndustry: string,
+    companyIntroducation:string,
+    companyLogoUrl: string,
+    companyName:string,
+    companyNature: string,
+    companySize: string,
+    companyUrl: string,
+    isStar: boolean,
+    positionList:Array<{
+        positionDay: any
+        positionDayMoeny:string,
+        positionEducation: string,
+        positionId: number,
+        positionMonth: any,
+        positionMonthMoney: string,
+        positionName: string,
+        positionPositive: any,
+    }>
+}
+let jump = (url: string,companyId:number) => {
+    router.push({
+         path: url,
+         query:{
+            companyId:companyId
+         }
+     })
 }
 
 let checkItem = ref('');
+let CompanyList : Ref<CompanyDate[]>  = ref([]);
 let back = () => {
     router.go(-1);
 }
@@ -144,6 +173,16 @@ const getCompanyIndustry = async () => {
     console.log('------------这个是获取职位的接口结束---------------');
 }
 getCompanyIndustry();
+// 这个是获取企业的列表
+const getCompanyList =async ()=>{
+    let res:Res<CompanyDate[]> = await Company.getCompanyList({});
+    if(res.code == 200){
+        console.log(res);
+        CompanyList.value = res.data;
+        console.log(CompanyList.value);
+    }
+}
+getCompanyList();
 </script>
 <template>
     <div class="enterprise">
@@ -157,6 +196,7 @@ getCompanyIndustry();
                 <input type="text" placeholder="搜索企业">
             </div>
         </div>
+        <!-- 这个是模糊查询企业 -->
         <Drop.Wrap class="option-wrap">
             <!-- 行业的列表 -->
             <Drop.Item :title="position.label">
@@ -181,8 +221,34 @@ getCompanyIndustry();
                 </div>
             </Drop.Item>
         </Drop.Wrap>
+        <!-- 这个是企业的数据 -->
         <div class="list mask">
-            <div class="item mb-5" @click="jump('/companyDetails')">
+            <div class="item mb-5" @click="jump('/companyDetails',item.companyId)" v-for="item in CompanyList" :key="item.companyId">
+                <div class="left">
+                    <img :src="item.companyLogoUrl" class="icon-40">
+                </div>
+                <div class="right">
+                    <div class="top">
+                        <p class="fs-16">{{item.companyFullName}}</p>
+                        <div class="desc fs-14">
+                            <p>{{item.companyAddr}}</p>
+                            <div class="line mg-0_5"></div>
+                            <p>{{item.companySize}}人以上</p>
+                            <div class="line mg-0_5"></div>
+                            <p>{{item.companyIndustry}}</p>
+                        </div>
+                    </div>
+                    <div class="btm just-between">
+                        <div class="desc align-center fs-12">
+                            <p>热招</p>
+                            <p class="mg-0_5 cl-blue">{{item.positionList.length ? item.positionList[0].positionName : ''}}</p>
+                            <p>等{{item.positionList.length}}个职位</p>
+                        </div>
+                        <img src="@/assets/images/icon-arrow_right.png" class="icon-16">
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="item">
                 <div class="left">
                     <img src="@/assets/images/company.png" class="icon-40">
                 </div>
@@ -206,34 +272,8 @@ getCompanyIndustry();
                         <img src="@/assets/images/icon-arrow_right.png" class="icon-16">
                     </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="left">
-                    <img src="@/assets/images/company.png" class="icon-40">
-                </div>
-                <div class="right">
-                    <div class="top">
-                        <p class="fs-16">人保科技</p>
-                        <div class="desc fs-14">
-                            <p>上海市</p>
-                            <div class="line mg-0_5"></div>
-                            <p>10000人以上</p>
-                            <div class="line mg-0_5"></div>
-                            <p>电子商务</p>
-                        </div>
-                    </div>
-                    <div class="btm just-between">
-                        <div class="desc align-center fs-12">
-                            <p>热招</p>
-                            <p class="mg-0_5 cl-blue">数据中心 灾备岗</p>
-                            <p>等42个职位</p>
-                        </div>
-                        <img src="@/assets/images/icon-arrow_right.png" class="icon-16">
-                    </div>
-                </div>
-            </div>
+            </div> -->
         </div>
-
     </div>
 </template>
 <style lang="scss" scoped>
@@ -331,6 +371,7 @@ getCompanyIndustry();
 
     .icon-40 {
         width: 4rem;
+        height: 4rem;
     }
 
     .icon-8 {

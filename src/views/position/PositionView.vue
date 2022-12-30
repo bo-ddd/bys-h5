@@ -56,16 +56,23 @@ let isShow = ref(false)
 let area: any = ref();//地区
 let wishPositionRight = ref('');//职业右
 let salary = ref('');//薪资
+
+if(localStorage.getItem('jobIndustry')){
+  isShow.value = true;
+}
+
 // 获取求职意向
 const getJobIntent = async () => {
   let res: any = await useJob.getJobIntentList({});
+  console.log(res)
   if (res.code == 200) {
-    if (res.data.legth) {
+    if (res.data!='[]') {
       if (res.data.wishAddr.length) {
         isShow.value = true
       }
       // 地区
       area.value = (res.data.wishAddr);
+      console.log(area.value)
       // 职位
       res.data.wishPosition.forEach((item: any) => {
         wishPositionRight.value += item.positionNameDown + '、'
@@ -109,9 +116,7 @@ const getSelectPosition = async () => {
   });
   if (res.code == 200) {
     cardList.value = cardList.value.concat(res.data);
-    console.log(cardList.value)
   }
-  console.log(res);
 }
 getSelectPosition();
 interface ResumeInfo {
@@ -122,9 +127,8 @@ let resumeInfo = ref() as Ref<ResumeInfo>;
 // 查询简历完成度
 const getSelectCompletion = async () => {
   let res: any = await useJob.getSelectCompletion();
-  console.log(res);
   if (res.code == 200) {
-    if (res.data.companyId != null) {
+    if (res.data.completion != null) {
       resumeInfo.value = res.data;
     } else {
       resumeInfo.value = {

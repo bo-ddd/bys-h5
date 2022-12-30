@@ -48,7 +48,7 @@
                 </van-cell>
                 <van-action-sheet v-model:show="showWorkNature" title="">
                     <div class="content">
-                        <van-picker title="" :columns="columnsWorkNature" @confirm="onConfirmWorkNature"
+                        <van-picker title="" :default-index="Number(wishNature)" :columns="columnsWorkNature" @confirm="onConfirmWorkNature"
                             @cancel="onCancelWorkNature" />
                     </div>
                 </van-action-sheet>
@@ -100,7 +100,7 @@ let wishPositionLeft: string = '';
 let wishPositionRight: string = '';
 let wishMoneyLeft: string = '';
 let wishMoneyRight: string = '';
-let wishNature: string = '';
+let wishNature :Ref<string>= ref('') ;
 
 // 返回
 const onClickLeft = () => history.back();
@@ -160,6 +160,7 @@ let showSalary = ref(false);
 let salary: Ref<string> = ref('');
 const getWishMoney = async () => {
     let res = await useJob.getWishMoneyList({});
+    console.log('期望薪资',res)
     res.data.wishMoenyLeftList.forEach((item: any, index: number) => {
         let right = res.data.wishMoenyRightList.slice(index + 1, res.data.wishMoenyRightList.length)
         right = right.map((item: any) => { return { text: item.label } })
@@ -179,10 +180,10 @@ const onConfirmSalary = (value: any) => {//确认
     console.log(value);
 };
 const handleMoney = function (value: any): string {
-    return ((value[0].text) / 1000) + '-' + ((value[1].text) / 1000) + 'k'
+    return ((value[0].text) / 1000) + '-' + ((value[1].text) / 1000) + 'k';
 }
 const onCancelSalary = () => {//取消
-    showSalary.value = false
+    showSalary.value = false;
 };
 
 // 工作性质-----------------------------------------
@@ -190,11 +191,12 @@ const columnsWorkNature = ['全职和实习', '实习', '全职',];
 let showWorkNature = ref(false);
 let workNature: Ref<string> = ref('');
 const onConfirmWorkNature = (value: string) => {//确认
-    showWorkNature.value = false
-    workNature.value = value
+    showWorkNature.value = false;
+    workNature.value = value;
+    wishNature.value = value;
 };
 const onCancelWorkNature = () => {//取消
-    showWorkNature.value = false
+    showWorkNature.value = false;
 };
 
 // 期望工作地---------------------------------------------
@@ -319,7 +321,6 @@ const submit = (): void => {
         }
         console.log(localStorage.getItem('modifyIndustryInfo'),)
         setModifyJobIntent({
-            userId: 10000,
             wishAddr: [...new Set(showArea.value)].join(','),
             wishIndustryLeft: JSON.parse(localStorage.getItem('modifyIndustryInfo')!).wishIndustryLeft.replace(/,$/, ''),
             wishIndustryRight: JSON.parse(localStorage.getItem('modifyIndustryInfo')!).wishIndustryRight.replace(/,$/, ''),
@@ -348,7 +349,7 @@ const getJobIntent = async () => {
     let res: any = await useJob.getJobIntentList({});
     if (res.code == 200) {
         console.log('res-------', res);
-        if (res.data.legth) {
+        if (res.data!='[]') {
             // 清空原来的 避免重复
             if (jobInfo) {
                 jobInfo.activeId.length = 0;
@@ -389,13 +390,14 @@ const getJobIntent = async () => {
             wishMoneyRight = res.data.wishMoney.split(',')[1];
             // 工作性质
             workNature.value = res.data.wishNatureName;
-            if (workNature.value = '全职和实习') {
-                wishNature = '0';
-            } else if (workNature.value = '实习') {
-                wishNature = '1';
+            if (workNature.value == '全职和实习') {
+                wishNature.value = '0';
+            } else if (workNature.value == '实习') {
+                wishNature.value = '1';
             } else {
-                wishNature = '2';
+                wishNature.value = '2';
             }
+            console.log('工作性质',wishNature.value)
             // 职位
             let jobId = 0;
 

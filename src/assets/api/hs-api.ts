@@ -66,5 +66,11 @@ export default {
      */
     getCompanyList:(params:any)=>{
         return axios.post('/phone/selectCompanyList',params,postConfig);
+    },
+    /**
+     * @description 这个是获取在线简历信息完成度的接口
+     */
+    selectCompletion:(params:any)=>{
+        return axios.post('/phone/selectCompletion',params,postConfig)
     }
 }

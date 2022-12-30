@@ -34,8 +34,8 @@
                 </van-cell>
                 <van-action-sheet v-model:show="showSalary" title="">
                     <div class="content">
-                        <van-picker title="" :columns="columnsSalary" @confirm="onConfirmSalary"
-                            @cancel="onCancelSalary" />
+                        <van-picker title="" :default-index="defaultIndex" :columns="columnsSalary"
+                            @confirm="onConfirmSalary" @cancel="onCancelSalary" />
                     </div>
                 </van-action-sheet>
 
@@ -48,8 +48,8 @@
                 </van-cell>
                 <van-action-sheet v-model:show="showWorkNature" title="">
                     <div class="content">
-                        <van-picker title="" :default-index="Number(wishNature)" :columns="columnsWorkNature" @confirm="onConfirmWorkNature"
-                            @cancel="onCancelWorkNature" />
+                        <van-picker title="" :default-index="Number(wishNature)" :columns="columnsWorkNature"
+                            @confirm="onConfirmWorkNature" @cancel="onCancelWorkNature" />
                     </div>
                 </van-action-sheet>
 
@@ -100,7 +100,7 @@ let wishPositionLeft: string = '';
 let wishPositionRight: string = '';
 let wishMoneyLeft: string = '';
 let wishMoneyRight: string = '';
-let wishNature :Ref<string>= ref('') ;
+let wishNature: Ref<string> = ref('');
 
 // 返回
 const onClickLeft = () => history.back();
@@ -120,7 +120,6 @@ if (jobInfo) {
     for (key in jobInfo) {
         jobInfo[key] = jobInfo[key]
     }
-    console.log(jobInfo)
     if (jobInfo.job) {
         job.value = jobInfo.job;
     }
@@ -153,20 +152,19 @@ if (industryInfo) {
         columnIndustry = industryInfo.columnsIndustry;
     }
 }
-console.log(industryInfo)
 // 期望薪资
 let columnsSalary: any[] = reactive([]);
 let showSalary = ref(false);
 let salary: Ref<string> = ref('');
+let defaultIndex: Ref<number> = ref(0); //默认选中
 const getWishMoney = async () => {
     let res = await useJob.getWishMoneyList({});
-    console.log('期望薪资',res)
     res.data.wishMoenyLeftList.forEach((item: any, index: number) => {
         let right = res.data.wishMoenyRightList.slice(index + 1, res.data.wishMoenyRightList.length)
         right = right.map((item: any) => { return { text: item.label } })
         columnsSalary.push({
             text: item.label,
-            children: right
+            children: right,
         })
     })
 }
@@ -177,7 +175,6 @@ const onConfirmSalary = (value: any) => {//确认
     salary.value = handleMoney(value);
     wishMoneyLeft = value[0].text;
     wishMoneyRight = value[1].text;
-    console.log(value);
 };
 const handleMoney = function (value: any): string {
     return ((value[0].text) / 1000) + '-' + ((value[1].text) / 1000) + 'k';
@@ -187,13 +184,21 @@ const onCancelSalary = () => {//取消
 };
 
 // 工作性质-----------------------------------------
-const columnsWorkNature = ['全职和实习', '实习', '全职',];
+const columnsWorkNature = ['全职', '实习', '全职和实习',];
 let showWorkNature = ref(false);
 let workNature: Ref<string> = ref('');
 const onConfirmWorkNature = (value: string) => {//确认
     showWorkNature.value = false;
     workNature.value = value;
-    wishNature.value = value;
+
+    if(value == '全职'){
+        wishNature.value = '0';
+    }else if(value == '实习'){
+        wishNature.value = '1';
+    }else if(value =  '全职和实习'){
+        wishNature.value = '2';
+    }
+
 };
 const onCancelWorkNature = () => {//取消
     showWorkNature.value = false;
@@ -229,18 +234,13 @@ for (const provinceKey in provinceList) {
         children: childrenArr
     })
 }
-console.log('--------------获取items地址----------------');
-console.log(items);
 
 let navCity = ref(items[activeIndex.value]);
-console.log('nav', navCity.value)
 // 选择地区的事件
 
 let workplace: any[] = reactive([]);
 // 右侧
 let handlWorkplaceItem = function (item: any): void {
-    console.log('点击选中地区')
-    console.log(workplace);
     // let index = workplace.indexOf(item);
     let index = -1;
     for (let i = 0; i < workplace.length; i++) {
@@ -248,21 +248,12 @@ let handlWorkplaceItem = function (item: any): void {
             index = i;
         }
     }
-    console.log(index);
-    console.log(item);
     // showArea.value.forEach((areaItem: any, index: number) => {
     //     if (areaItem.split('-')[1] == item.text) {
     //         workplace.splice(index, 1);
-    //         console.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                log(workplace.splice(index, 1));
     //         showArea.value.splice(index, 1);
-    //         console.log(showArea.value.splice(index, 1));
     //     }
     // })
-    console.log('----------------------')
-    console.log([...new Set(showArea.value)]);
-    console.log('wo', workplace)
-    console.log('item', item);
-    console.log('index', index);
     if (index !== -1) {
         workplace.splice(index, 1);
         showArea.value.splice(index, 1);
@@ -295,7 +286,7 @@ let workplaceReset = () => {
 // 保存
 const submit = (): void => {
 
-    if (!jobInfo.activeId.length) {
+    if (!JSON.parse(localStorage.getItem('jobInfo') as string).activeId.length) {
         Toast('请输入期望职位');
     }
     else if (salary.value.length == 0) {
@@ -317,16 +308,14 @@ const submit = (): void => {
         // 修改
         const setModifyJobIntent = async (params: JobInfo) => {
             let res = await useJob.setModifyJobIntentInfo(params);
-            console.log(res);
         }
-        console.log(localStorage.getItem('modifyIndustryInfo'),)
         setModifyJobIntent({
             wishAddr: [...new Set(showArea.value)].join(','),
             wishIndustryLeft: JSON.parse(localStorage.getItem('modifyIndustryInfo')!).wishIndustryLeft.replace(/,$/, ''),
             wishIndustryRight: JSON.parse(localStorage.getItem('modifyIndustryInfo')!).wishIndustryRight.replace(/,$/, ''),
             wishMoneyLeft: wishMoneyLeft,
             wishMoneyRight: wishMoneyRight,
-            wishNature: wishNature,
+            wishNature: wishNature.value,
             wishPositionLeft: JSON.parse(localStorage.getItem('modifyJobInfo')!).wishPositionLeft.replace(/,$/, ''),
             wishPositionRight: JSON.parse(localStorage.getItem('modifyJobInfo')!).wishPositionRight.replace(/,$/, ''),
         });
@@ -348,8 +337,7 @@ let modifyjobInfo = { activeId: [], columnsJob: [], job: [] } as JobInfo;
 const getJobIntent = async () => {
     let res: any = await useJob.getJobIntentList({});
     if (res.code == 200) {
-        console.log('res-------', res);
-        if (res.data!='[]') {
+        if (res.data != '[]') {
             // 清空原来的 避免重复
             if (jobInfo) {
                 jobInfo.activeId.length = 0;
@@ -364,8 +352,6 @@ const getJobIntent = async () => {
             }
             //地区
             showArea.value = showArea.value.concat(res.data.wishAddr);
-            console.log('workplace', workplace)
-            console.log('showArea', showArea.value)
             res.data.wishAddr.forEach((item: JobInfo) => {
                 let positionArr = item.split("-");
                 let cityLeft = positionArr[0];
@@ -382,54 +368,41 @@ const getJobIntent = async () => {
                 activeId.value.push(res.id);
             });
             activeId.value = [...new Set(activeId.value)];
-            console.log(activeId.value);
             // 薪资
-            salary.value = res.data.wishMoney.replace(/000/g, '').split(',').join('-') + 'k';
-            console.log(res.data.wishMoney);
+            salary.value = res.data.wishMoney.replace(/0/g, '').split(',').join('-') + 'k';
             wishMoneyLeft = res.data.wishMoney.split(',')[0];
             wishMoneyRight = res.data.wishMoney.split(',')[1];
+            defaultIndex.value = Number(wishIndustryLeft.replace(/0/g, ''))
             // 工作性质
             workNature.value = res.data.wishNatureName;
-            if (workNature.value == '全职和实习') {
+            if (workNature.value == '全职') {
                 wishNature.value = '0';
             } else if (workNature.value == '实习') {
                 wishNature.value = '1';
             } else {
                 wishNature.value = '2';
             }
-            console.log('工作性质',wishNature.value)
             // 职位
             let jobId = 0;
 
             res.data.wishPosition.forEach((item: JobInfo) => {
-                // 修改求职意向 期望职位
-                // wishPositionLeft += item.positionIdOn + ',';
-                // wishPositionRight += item.positionIdDown + ',';
-                console.log('-------------------------')
-                console.log(item)
                 if (item != null) {
                     jobId = Number(item.positionIdDown) * Number(item.positionIdOn);
                     modifyjobInfo.activeId!.push(jobId);
                     modifyjobInfo.activeId = [...new Set(modifyjobInfo.activeId)];
                     modifyjobInfo.columnsJob.push({ text: item.positionNameDown, id: jobId });
                     modifyjobInfo.job.push({ parent: item.positionNameOn, children: item.positionNameDown });
-                    console.log('jobId', jobId)
                 }
             })
-            // console.log('modifyjobInfo', modifyjobInfo);
             if (!localStorage.getItem('jobInfo')) {
                 localStorage.setItem('jobInfo', JSON.stringify(modifyjobInfo));
             }
+            // 行业
             let industryId = 0;
             res.data.wishIndustry.forEach((item: JobInfo) => {
-                // // 修改求职意向 期望行业
-                // wishIndustryLeft += item.industryIdOn + ',';
-                // wishIndustryRight += item.industryIdDown + ',';
                 if (item != null) {
-                    console.log(wishIndustryLeft)
-                    industryId += Number(item.industryIdDown) * Number(item.industryIdOn)
+                    industryId = Number(item.industryIdDown) * Number(item.industryIdOn);
                     modifyindustry.activeId.push(industryId);
-                    console.log(modifyindustry.activeId)
                     modifyindustry.activeId = [...new Set(modifyindustry.activeId)];
                     modifyindustry.columnsIndustry.push({ text: item.industryNameDown, id: industryId });
                     modifyindustry.industry.push({ parent: item.industryNameOn, children: item.industryNameDown });

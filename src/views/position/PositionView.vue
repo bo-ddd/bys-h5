@@ -96,7 +96,7 @@ const getJobIntent = async () => {
       let modifyindustry = { activeId: [], columnsIndustry: [], industry: [] } as JobInfo;
       res.data.wishIndustry.forEach((item: JobInfo) => {
         if (item != null) {
-          industryId += Number(item.industryIdDown) * Number(item.industryIdOn)
+          industryId = Number(item.industryIdDown) * Number(item.industryIdOn)
           modifyindustry.activeId.push(industryId);
           modifyindustry.activeId = [...new Set(modifyindustry.activeId)];
           modifyindustry.columnsIndustry.push({ text: item.industryNameDown, id: industryId });
@@ -104,6 +104,15 @@ const getJobIntent = async () => {
         }
       });
       localStorage.setItem('industryInfo', JSON.stringify(modifyindustry));
+
+      localStorage.setItem('modifyIndustryInfo',JSON.stringify({
+        wishIndustryLeft:res.data.wishIndustryLeft,
+        wishIndustryRight:res.data.wishIndustryRight,
+      }))
+      localStorage.setItem('modifyJobInfo',JSON.stringify({
+        wishPositionLeft:res.data.wishPositionTypeLeft,
+        wishPositionRight:res.data.wishPositionTypeRight,
+      }))
     }
   }
 }

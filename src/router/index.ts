@@ -133,6 +133,7 @@ const router = createRouter({
       name: "Login",
       component: () => import('@/views/login/Login.vue')
     },
+    // 管理求职意向
     {
       path: "/jobIntention",
       name: "JobIntention",

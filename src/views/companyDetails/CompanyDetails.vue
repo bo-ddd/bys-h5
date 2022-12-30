@@ -103,14 +103,14 @@
         <van-button
           class="btn-confirm fs-14"
           type="primary"
-          @click="delivery(options.positionId)"
         >确认投递</van-button>
+          <!-- @click="deliveryJob(options.positionId)" -->
       </div>
       <div class="sheet-content" v-show="resumeInfo.completion == 0">
         <div class="just-center flex">
           <p class="fs-14 c-747474">
             还未填写简历，点击
-            <a href @click="jump('/createResume')" class="c-2979ff">去填写</a>
+            <a @click="jump('/createResume')" class="c-2979ff">去填写</a>
           </p>
         </div>
       </div>
@@ -150,6 +150,15 @@ let getResumeInfo = async function () {
     resumeInfo.value=res.data;
   }
 };
+
+// 申请职位接口
+const deliveryJob = async (positionId: number) => {
+    let res: any = await use.deliveryPosition({ positionId   });
+    console.log(res);
+    if (res.code == 200) {
+        showResume.value = false;
+    }
+}
 interface CompanyInfo {
   companyAddr: string;
   companyFullName: string;
@@ -203,7 +212,7 @@ const delStarPosition = async () => {
     Toast.fail("取消失败");
   }
 };
-const k = function () {
+const k = function (event:any) {
   console.log("btn");
   event.cancelBubble = true;
   showResume.value = true;

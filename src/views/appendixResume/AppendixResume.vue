@@ -40,9 +40,9 @@
       :actions="actions"
       cancel-text="取消"
       close-on-click-action
-      @cancel="onCancel"
       @select="deleteRemuse"
     />
+      <!-- @cancel="onCancel" -->
   </div>
 </template>
 <script lang="ts" setup>
@@ -53,7 +53,7 @@ import { parseAssetFile } from "@/assets/util";
 import { useResumeStore } from "@/stores/resume";
 const use = useResumeStore();
 const router = useRouter();
-const resumeList = ref([]);
+const resumeList:any = ref([]);
 const resumeId = ref(0);
 const deleteShow = ref(false);
 const actions = [{ name: "删除简历", color: "#ee0a24" }];

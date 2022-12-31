@@ -273,6 +273,9 @@ const logOut = () => {
 const isLogin = (item: any) => {
   if (item.isLogin) {
     router.push({ path: item.link })
+  }else if(item.id==1&&isUserInfoData){
+    router.push({ path: '/personalInfo' })
+
   } else {
     if (token) {
       item.ispopup = true;

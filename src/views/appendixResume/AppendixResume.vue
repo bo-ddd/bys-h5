@@ -2,13 +2,12 @@
   <div class="append-page">
     <van-nav-bar title="附件简历" left-arrow @click-left="onClickLeft" />
     <div class="content">
-      <!-- <div>
-
-      <img class="mt-80 img" :src="parseAssetFile('file-tip.png')" />
-      <div class="mt-20 text-center fs-16 fw-700">您还没有附件简历,请点击下方按钮上传</div>
-      <div class="mt-10 text-center fs-14 color-gray">最多可上传3份简历</div>
-      </div>-->
-      <div>
+      <div v-if="resumeList.length==0">
+        <img class="mt-80 img" :src="parseAssetFile('file-tip.png')" />
+        <div class="mt-20 text-center fs-16 fw-700">您还没有附件简历,请点击下方按钮上传</div>
+        <div class="mt-10 text-center fs-14 color-gray">最多可上传3份简历</div>
+      </div>
+      <div v-else>
         <div class="head-tip">最多可以上传3份简历</div>
         <div class="list mt-10">
           <div
@@ -19,7 +18,7 @@
             <div class="align-center gap-10">
               <div>
                 <!-- <img v-if="item." src="@/assets/images/icon-pdf.png" =""> -->
-                <img src="@/assets/images/icon-pdf.png"  />
+                <img src="@/assets/images/icon-pdf.png" />
                 <!-- <img v-else src="@/assets/images/icon-pdf.png" =""> -->
               </div>
               <div>
@@ -42,23 +41,25 @@
       close-on-click-action
       @select="deleteRemuse"
     />
-      <!-- @cancel="onCancel" -->
+    <!-- @cancel="onCancel" -->
   </div>
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
-import { Dialog } from "vant";
+import { Dialog, Toast } from "vant";
 import { useRouter } from "vue-router";
 import { parseAssetFile } from "@/assets/util";
 import { useResumeStore } from "@/stores/resume";
 const use = useResumeStore();
 const router = useRouter();
-const resumeList:any = ref([]);
+const resumeList: any = ref([]);
 const resumeId = ref(0);
 const deleteShow = ref(false);
 const actions = [{ name: "删除简历", color: "#ee0a24" }];
 
-const onClickLeft = () => history.back();
+const onClickLeft = () => {
+  to('/mine')
+};
 const to = function (path: any) {
   router.push(path);
 };
@@ -67,7 +68,7 @@ const getResumeList = async function () {
   console.log(res);
 
   if (res.code == 200) {
-    resumeList.value = res.data;
+    resumeList.value = res.data.filter((item: any) => item.isOnline == false);
   }
 };
 const showDeleteOption = function (id: number) {
@@ -80,12 +81,25 @@ const deleteRemuse = function () {
     message: "确认删除此份附件简历？",
     confirmButtonColor: "#3b81fb",
   })
-    .then(() => {
+    .then(async () => {
       // on confirm
+      deleteRemuseApi();
     })
     .catch(() => {
       // on cancel
     });
+};
+const deleteRemuseApi = async function () {
+  let res = await use.delResume({
+    resumeId: resumeId.value,
+  });
+  console.log(res);
+  if (res.code == 200) {
+    Toast.success("删除成功");
+    getResumeList()
+  } else {
+    Toast.fail("删除失败");
+  }
 };
 const updateResume = function () {
   if (resumeList.value.length < 3) {
@@ -95,8 +109,7 @@ const updateResume = function () {
       title: "提示",
       message: "最多只能保留3份附件简历。如需删除简历请点击右侧···",
       confirmButtonColor: "#3b81fb",
-    }).then(() => {
-    });
+    }).then(() => {});
   }
 };
 getResumeList();

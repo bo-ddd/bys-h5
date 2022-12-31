@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
-import { ref, provide, reactive,type Ref ,watch} from "vue";
+import { ref, provide, reactive,type Ref ,watch,onMounted,nextTick} from "vue";
 import Drop from "@/components/dropMenu/index";
 import { areaList } from '@vant/area-data';
 import { useCompanyListStore } from "@/stores/companyList";
 let router = useRouter();
 let Company = useCompanyListStore();
+let maxCount:Ref<number> = ref() as Ref<number>;
 interface Res<T> {
     code?: number;
     msg?: string;
@@ -111,15 +112,14 @@ let guimo: Form = reactive({
     value: null,
 })
 const cmopanyPayload : CompanyPayload = reactive({
-    pageSize:1,
-    pageIndex:10,
+    pageIndex:1,
+    pageSize:5,
     companyName:'',
 }) as CompanyPayload;
 // 公司性质的选择
 const handleCompanyChange = (item: any) => {
     company.label = item.label;
     company.value = item.value;
-    console.log(company);
     cmopanyPayload.companyNature = item.value;
     getCompanyList();
 }
@@ -133,17 +133,14 @@ const handleGuiMoChange = (item: any) => {
 // 选中地址
 const handleAreaChange = (e: any[]) => {
     let targetArr = e;
-    console.log('--------我是选中地址----------');
     area.label = targetArr[e.length - 1].name;
     area.value = targetArr[e.length - 1].code;
     cmopanyPayload.companyAddr = targetArr[e.length - 1].name;
-        console.log(cmopanyPayload);
     getCompanyList();
 }
 
 // 选中右侧职位
 const handlePositionChange = (item: any) => {
-    console.log(item);
     position.label = item.label;
     position.value = item.value;
     let res;
@@ -177,10 +174,7 @@ provide('checkItemFn', checkFn);
 const getGuiMoList = async () => {
     const res: Res<GuiMo[]> = await Company.getCompanySize();
     if (res.code !== 200) return;
-    console.log('--------这个是获取企业规模的接口---------');
-    console.log(res);
     guiMo.push(...(res.data));
-    console.log('--------这个是获取企业规模的接口结束---------');
 }
 getGuiMoList();
 
@@ -188,19 +182,13 @@ getGuiMoList();
 const getCompanyNature = async () => {
     const res:Res<TypeCompany[]> = await Company.getCompanyNature();
     if (res.code !== 200) return;
-    console.log('--------这个是获取企业性质的接口-----------');
-    console.log(res);
     companyType.push(...(res.data));
-    console.log('--------这个是获取企业性质的接口结束-----------');
 }
 getCompanyNature();
 
 const getCompanyIndustry = async () => {
     const res: Res<Position[]> = await Company.getCompanyIndustry();
     if (res.code !== 200) return;
-    console.log('------------这个是获取职位的接口---------------');
-    console.log(res.data);
-    console.log(res);
     let targetArr: Position[] = (res.data).slice();
     targetArr.forEach(item => {
         item.id = item.value;
@@ -211,18 +199,30 @@ const getCompanyIndustry = async () => {
         });
     });
     positoinList.push(...(targetArr));
-    console.log('------------这个是获取职位的接口结束---------------');
 }
 getCompanyIndustry();
 // 这个是获取企业的列表
 const getCompanyList =async ()=>{
-    console.log(cmopanyPayload);
-    let res:Res<{data:CompanyDate[]}> = await Company.getCompanyList(cmopanyPayload);
+    let obj:{[propName : string] : any} = {};
+    let key : keyof CompanyPayload;
+    for (key in cmopanyPayload) {
+        if(cmopanyPayload[key]){
+            if(key){
+                obj[key] = cmopanyPayload[key];
+            }
+        }
+    }
+    let res:Res<{
+        data:{
+            data:CompanyDate[],
+        },
+        maxCount:number,
+    }> = await Company.getCompanyList(obj);
     if(res.code == 200){
-        console.log(res);
-        console.log('---------------这个是获取企业列表---------------')
-        CompanyList.value = res.data.data;
-        console.log(CompanyList.value);
+        CompanyList.value = [];
+        CompanyList.value.push(...res.data.data as any);
+        CompanyList.value = [...new Set(CompanyList.value.map(t=>JSON.stringify(t)))].map(s=>JSON.parse(s));
+        maxCount.value = res.data.maxCount;
     }
 }
 getCompanyList();
@@ -233,6 +233,33 @@ watch(
     getCompanyList();
   }
 )
+const handleCancel = ()=>{
+    area.value = null;
+    area.label = '区域';
+    cmopanyPayload.companyAddr = '';
+    getCompanyList();
+}
+// 页面滚动到底部
+onMounted(()=>{
+    nextTick(()=>{
+        window.onscroll = function() {
+        //变量scrollTop是滚动条滚动时，距离顶部的距离
+        var scrollTop = document.documentElement.scrollTop||document.body.scrollTop;
+        //变量windowHeight是可视区的高度
+        var windowHeight = document.documentElement.clientHeight || document.body.clientHeight;
+        //变量scrollHeight是滚动条的总高度
+        var scrollHeight = document.documentElement.scrollHeight||document.body.scrollHeight;
+        //滚动条到底部的条件
+        if(scrollTop+windowHeight==scrollHeight){
+            if(cmopanyPayload.pageIndex*cmopanyPayload.pageSize<maxCount.value){
+                cmopanyPayload.pageSize += 2;
+                getCompanyList();
+            }
+          //写后台加载数据的函数
+        }  
+      }
+    })
+})
 </script>
 <template>
     <div class="enterprise">
@@ -254,7 +281,7 @@ watch(
             </Drop.Item>
             <!-- 地址的列表 -->
             <Drop.Item :title="area.label">
-                <van-area :area-list="areaList" :columns-num="2" @confirm="handleAreaChange" />
+                <van-area :area-list="areaList" :columns-num="2" @cancel="handleCancel"	 @confirm="handleAreaChange" />
             </Drop.Item>
             <!-- 规模的列表 -->
             <Drop.Item :title="guimo.label">

@@ -28,8 +28,8 @@
       <div class="text-title mt-20">暂无企业的邀请</div>
       <div class="text-tip mt-10">
         <span v-if="perfectionNum==0">请先填写个人基本信息，企业才能向您抛出橄榄枝</span>
-        <span v-else>您的在线简历完善度只有{{perfectionNum*100}}分，低于平均分82.8。在线简历完善后，就能吸引更多企业</span>
-        <!-- <span v-else>建议您主动出击，寻找合适机会</span> -->
+        <span v-else-if="perfectionNum<averageScore">您的在线简历完善度只有{{perfectionNum*100}}分，低于平均分{{averageScore*100}}。在线简历完善后，就能吸引更多企业</span>
+        <span v-else>建议您主动出击，寻找合适机会</span>
         </div>
       <div class="btn-box mt-20">
         <van-button class="btn2" type="primary" @click="to('/personalInfo')">
@@ -52,17 +52,48 @@
                   <div class="new-title">{{item.companyName}}</div>
                   <div
                     class="new-desc"
-                  >{{item.positionName}} | {{item.positionMoney.split(',')[0].slice(0,-3)+'-'+item.positionMoney.split(',')[1].slice(0,-3)}}K</div>
+                  >
+                  {{item.positionName}} | {{item.positionMoney}}K
+                  </div>
                 </div>
               </div>
             </div>
           </template>
           <template #value>
-            <van-button type="primary" size="small">投递</van-button>
+            <van-button type="primary" size="small" @click="showResume=true">投递</van-button>
           </template>
         </van-cell>
       </van-cell-group>
     </div>
+    
+    <van-action-sheet @click.prevent.stop v-model:show="showResume" title="确认投递简历">
+      <div class="sheet-content" v-show="!(resumeInfo.completion ==0)">
+        <div class="flex">
+          <van-icon name="checked" size="2.5rem" color="#2979ff" />
+          <div class="title">
+            <p class="fs-16">在线投递简历</p>
+            <span class="fs-12 c-747474">{{ resumeInfo.modifyTime }}更新</span>
+          </div>
+          <p class="fs-14 c-747474">
+            完成度：
+            <span class="c-2979ff">{{ Number(resumeInfo.completion) * 100 }}%</span>
+          </p>
+        </div>
+        <van-button
+          class="btn-confirm fs-14"
+          type="primary"
+        >确认投递</van-button>
+          <!-- @click="deliveryJob(options.positionId)" -->
+      </div>
+      <div class="sheet-content" v-show="resumeInfo.completion == 0">
+        <div class="just-center flex">
+          <p class="fs-14 c-747474">
+            还未填写简历，点击
+            <a @click="to('/createResume')" class="c-2979ff">去填写</a>
+          </p>
+        </div>
+      </div>
+    </van-action-sheet>
   </div>
 </template>
 <script lang="ts" setup>
@@ -74,6 +105,8 @@ import { Toast } from 'vant';
 const use = useResumeStore();
 const router = useRouter();
 const loginStatus = ref(false);
+const resumeInfo:any = ref({});
+const showResume=ref(false);
 loginStatus.value = sessionStorage.getItem("token") ? true : false;
 const showPopup = ref(!loginStatus.value);
 const to = function (path: any) {
@@ -81,6 +114,14 @@ const to = function (path: any) {
 };
 let newsList:any = ref([]);
 let perfectionNum = ref(0);
+let averageScore=ref(0);
+let getResumeInfo = async function () {
+  let res = await use.selectCompletion({});
+  if (res.code == 200) {
+    console.log(res);
+    resumeInfo.value=res.data;
+  }
+};
 const getNewsList = async () => {
   let res = await use.selectInvitation({
     // userId: 10000,
@@ -96,11 +137,13 @@ const getPerfectionNum = async () => {
   });
   if (res.code == 200) {
     perfectionNum.value = res.data.completion;
+    averageScore.value=res.data.averageScore;
   }
 };
 onMounted(() => {
   getNewsList();
-  getPerfectionNum()
+  getPerfectionNum();
+  getResumeInfo();
 });
 
 
@@ -213,6 +256,28 @@ const wxLogin = ()=>{
     }
   }
 }
+
+.sheet-content {
+  padding: 2rem;
+
+  .flex {
+    height: 61vh;
+    gap: 1rem;
+
+    .title {
+      line-height: 2.5rem;
+    }
+  }
+
+  .btn-confirm {
+    width: 100%;
+  }
+
+  .to-resume {
+    min-height: 55vh;
+  }
+}
+
 .h-50 {
   width: 100%;
   height: 5rem;

@@ -17,8 +17,8 @@
             class="fs-12"><span>{{ userInfo.userSchoolName }}/{{ userInfo.userEducation }}/{{ userInfo.userProfessionalName }}</span></span>
         </div>
         <div class="upload flex-ja-center">
-          <img v-if="!token || !isUserInfoData" class="icon-camera" src="@/assets/images/icon-camera.png" alt="">
-          <img v-else class="icon-camera" :src="userInfo.userLogoUrl" alt="">
+          <img v-if="!token||!isUserInfoData" class="icon-camera" src="@/assets/images/icon-camera.png" alt="">
+          <img v-else class="icon-user" :src="userInfo.userLogoUrl" alt="">
         </div>
       </div>
     </header>
@@ -273,6 +273,9 @@ const logOut = () => {
 const isLogin = (item: any) => {
   if (item.isLogin) {
     router.push({ path: item.link })
+  }else if(item.id==1&&isUserInfoData.value){
+    router.push({ path: '/personalInfo' })
+
   } else {
     if (token) {
       item.ispopup = true;
@@ -354,6 +357,11 @@ const jump = (src: string) => {
 
     .icon-camera {
       width: 2.6rem;
+    }
+    .icon-user{
+      width: $size;
+      height: $size;
+      border-radius: $size;
     }
   }
 }

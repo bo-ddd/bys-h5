@@ -1,5 +1,5 @@
 <template>
-      <van-popup v-model:show="showPopup" closeable round :style="{ height: '25%', width: '80%' }">
+      <van-popup v-model:show="show" v-if="showPopup"  closeable round :style="{ height: '25%', width: '80%' }">
         <div class="show-count_box">
         <div class="show-wrap">
             <div>
@@ -72,7 +72,7 @@
             <div :class="['btn','cl-fff','fs-14',positionDetail?.isDelivery ? 'bg-low' : 'bg-hight']" @click="showResume">{{positionDetail?.isDelivery ? '已投递' : '投递简历'}}</div>
         </div>
         <!-- 弹出框 -->
-        <van-popup v-model:show="show" round position="bottom" v-if="!positionDetail?.isDelivery">
+        <van-popup v-model:show="show" round position="bottom" v-if="!positionDetail?.isDelivery && loginStatus">
             <div class="pop">
                 <div class="container-resume">
                     <h3 class="pd-10_0">确认投递简历</h3>

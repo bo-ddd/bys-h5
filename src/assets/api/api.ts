@@ -11,12 +11,12 @@ export default {
     },
 
     //feedback     
-    feedback: (params: { userId: number, opinion: string }) => {
+    feedback: (params: { opinion: string,phone?:string }) => {
         return axios.post('/phone/feedback', params, postConfig)
     },
 
     //查询投递反馈
-    selectDelivery: (params: { deliveryStatus: number, userId: number }) => {
+    selectDelivery: (params: { deliveryStatus: number }) => {
         return axios.post("/phone/selectDelivery", params, postConfig)
     },
     getStage: (params: {}) => {

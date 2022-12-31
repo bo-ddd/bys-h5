@@ -5,7 +5,7 @@ let router = useRouter();
 let checked = ref(1);
 
 watch(checked,()=>{
-    console.log(checked.value);
+
 })
 
 let toQuestion = ()=>{

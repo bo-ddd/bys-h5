@@ -159,7 +159,6 @@ let getResumeList = async function () {
 };
 const getNewsList = async () => {
   let res = await use.selectInvitation({});
-  console.log(res);
   if (res.code == 200) {
     newsList.value = res.data;
   }

@@ -146,7 +146,6 @@ let jumpPosition = (url: string, positionId: number) => {
 let getResumeInfo = async function () {
   let res = await use.selectCompletion({});
   if (res.code == 200) {
-    console.log(res);
     resumeInfo.value=res.data;
   }
 };

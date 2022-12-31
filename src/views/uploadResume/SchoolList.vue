@@ -25,18 +25,12 @@ const onClickLeft = () => history.back();
 //搜索学校-------------------
 const schoolName = ref("");
 const search = async function (value:string) {
-  console.log(88);
-  // console.log(schoolName.value);
   
   let res = await use.searchSchool({
     str: value,
   });
   if (res.code == 200) {
-    console.log(res.data);
-    
     schoolList.value = res.data;
-    console.log(schoolList.value);
-    
   }
 };
 
@@ -51,7 +45,6 @@ const onLoad = async () => {
   loading.value = false;
   let res = await getSchoolList();
   if (res.code == 200) {
-    console.log(res);
     finished.value = true;
     schoolList.value = res.data;
   }

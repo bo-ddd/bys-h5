@@ -68,13 +68,13 @@
         </template>
 
         <!-- 动态修改求职状态value -->
-        <template #value v-if="item.ispopup">
+        <template #value v-else-if="item.ispopup">
           <span @click="showPopup">{{ userStatusName }}</span>
         </template>
         <!-- 求职状态结束------------------------- -->
 
         <!-- 动态修改 站点设置的value -->
-        <template #value v-if="item.title == '站点设置'">
+        <template #value v-else-if="item.title == '站点设置'">
           <span>{{ userSite }}</span>
         </template>
         <!-- 求职状态结束------------------------- -->

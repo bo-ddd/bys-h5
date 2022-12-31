@@ -32,7 +32,7 @@
         <!-- <span v-else>建议您主动出击，寻找合适机会</span> -->
         </div>
       <div class="btn-box mt-20">
-        <van-button class="btn2" type="primary" @click="to('/createResume')">
+        <van-button class="btn2" type="primary" @click="to('/personalInfo')">
         <span v-if="perfectionNum==0">去填写</span>
         <span v-else>完善简历</span>
         </van-button>
@@ -95,7 +95,7 @@ const getPerfectionNum = async () => {
   let res = await use.selectCompletion({
   });
   if (res.code == 200) {
-    perfectionNum.value = res.data;
+    perfectionNum.value = res.data.completion;
   }
 };
 onMounted(() => {

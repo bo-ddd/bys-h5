@@ -129,6 +129,10 @@ a {
   font-weight: 600;
 }
 
+.cl-blue{
+  color: #81aefc;
+}
+
 .c-ffffff {
   color: #ffffff;
 }
@@ -199,6 +203,10 @@ a {
 
 .ml-23 {
   margin-left: 2.3rem;
+}
+
+.ml-10 {
+  margin-left: 1rem;
 }
 
 .pl-10 {

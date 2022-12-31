@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
-import { ref, provide, reactive,type Ref } from "vue";
+import { ref, provide, reactive,type Ref ,watch} from "vue";
 import Drop from "@/components/dropMenu/index";
 import { areaList } from '@vant/area-data';
 import { useCompanyListStore } from "@/stores/companyList";
@@ -121,32 +121,43 @@ const handleCompanyChange = (item: any) => {
     company.value = item.value;
     console.log(company);
     cmopanyPayload.companyNature = item.value;
+    getCompanyList();
 }
 // 公司规模的选择
 const handleGuiMoChange = (item: any) => {
     guimo.label = item.label;
     guimo.value = item.value;
     cmopanyPayload.companySize = item.value;
+    getCompanyList();
 }
 // 选中地址
 const handleAreaChange = (e: any[]) => {
     let targetArr = e;
-    console.log(targetArr);
+    console.log('--------我是选中地址----------');
     area.label = targetArr[e.length - 1].name;
     area.value = targetArr[e.length - 1].code;
     cmopanyPayload.companyAddr = targetArr[e.length - 1].name;
+        console.log(cmopanyPayload);
+    getCompanyList();
 }
 
 // 选中右侧职位
 const handlePositionChange = (item: any) => {
+    console.log(item);
     position.label = item.label;
     position.value = item.value;
+    let res;
+    for(let i = 0 ; i < positoinList.length; i++){
+        let resValue = positoinList[i].children.find(child=>{
+            return child.label == item.label;
+        })
+        if(resValue){
+            cmopanyPayload.companyIndustryLeft = positoinList[i].value;
+            break;
+        };
+    }    
     cmopanyPayload.companyIndustryRight = item.value;
-}
-// 点击左侧选中
-const handlePositionLeft = (item:any) =>{
-    cmopanyPayload.companyIndustryLeft = positoinList[item].value;
-    console.log(positoinList[item]);
+    getCompanyList();
 }
 
 
@@ -205,6 +216,7 @@ const getCompanyIndustry = async () => {
 getCompanyIndustry();
 // 这个是获取企业的列表
 const getCompanyList =async ()=>{
+    console.log(cmopanyPayload);
     let res:Res<{data:CompanyDate[]}> = await Company.getCompanyList(cmopanyPayload);
     if(res.code == 200){
         console.log(res);
@@ -214,6 +226,13 @@ const getCompanyList =async ()=>{
     }
 }
 getCompanyList();
+//监听公司名称的改变
+watch(
+  () => cmopanyPayload.companyName,
+  (companyName) => {
+    getCompanyList();
+  }
+)
 </script>
 <template>
     <div class="enterprise">
@@ -224,14 +243,14 @@ getCompanyList();
         <div class="search-wrap">
             <div class="search">
                 <img src="@/assets/images/icon-search.png" class="icon-16 mr-5">
-                <input type="text" v-model="cmopanyPayload.companyName"  placeholder="搜索企业">
+                <input type="text" v-model.lazy="cmopanyPayload.companyName"  placeholder="搜索企业">
             </div>
         </div>
         <!-- 这个是模糊查询企业 -->
         <Drop.Wrap class="option-wrap">
             <!-- 行业的列表 -->
             <Drop.Item :title="position.label">
-                <van-tree-select v-model:active-id="activeId" v-model:main-active-index="activeIndex" @click-nav="handlePositionLeft" :items="positoinList" @click-item="handlePositionChange" />
+                <van-tree-select v-model:active-id="activeId" v-model:main-active-index="activeIndex" :items="positoinList" @click-item="handlePositionChange" />
             </Drop.Item>
             <!-- 地址的列表 -->
             <Drop.Item :title="area.label">

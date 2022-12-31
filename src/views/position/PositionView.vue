@@ -21,14 +21,33 @@
           src="@/assets/images/icon-fillin.png"></p>
     </header>
     <main class="container">
-      <Card.Wrap class="card-bg">
+      <Card.Wrap class="card-bg" v-if="cardList.length">
         <Card.Item :class="index ? 'mt-5' : ''" v-for="item, index in cardList" :key="item.companyId" :options="item"
-          :resumeInfo="resumeInfo" @click="jump('/positionDetail', item.positionId)"></Card.Item>
+          @click="jump('/positionDetail', item.positionId)"></Card.Item>
       </Card.Wrap>
-      <div class=" text">
-        <p class="c-5d5d5d fs-14  just-center">没有更多数据了</p>
+      <div v-show="!cardList.length">
+        <div class="just-center mt-150">
+          <img class="icon-position" src="@/assets/images/icon-positionjob.png" alt="">
+        </div>
+        <p class="just-center fs-16 c-747474 mt-20">暂无适合您的职位</p>
+        <div class="just-center">
+          <van-button class="btn mt-30" type="primary" size="normal" @click="jump('/jobIntention')">调整求职意向</van-button>
+        </div>
       </div>
     </main>
+    <van-popup v-model:show="showCount" closeable round :style="{ height: '25%', width: '80%' }">
+      <div class="show-count_box">
+        <div class="show-wrap">
+          <div>
+            <h1>登录毕业申</h1>
+          </div>
+          <div>
+            <van-button type="primary" class="ft" @click="jump('login')">手机号码验证登录</van-button>
+          </div>
+          <div class="c-747474" @click="wxLogin()">微信账号快捷登录</div>
+        </div>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -40,16 +59,31 @@ import { useRouter } from 'vue-router';
 import { useJobStore } from "@/stores/job";//接口
 import type { JobInfo } from './types/jobInfo';
 import type { CardItem } from './types/card';
+import { Toast } from 'vant';
 const router = useRouter();
 const useJob = useJobStore();
 
+const showCount = ref(false);
+// 登录失效
+const wxLogin = () => {
+  Toast({
+    message: '微信登录暂不支持,请用手机号码验证码登录。',
+    position: 'top',
+  });
+}
+
 
 const jump = (src: string, params?: number) => {
-  if (params) {
-    router.push({ path: src, query: { positionId: params } })
-  } else {
-    router.push({ path: src })
+  if(src=='/jobIntention' && intention.value){
+    showCount.value = true;
+  }else{
+    if (params) {
+      router.push({ path: src, query: { positionId: params } })
+    } else {
+      router.push({ path: src })
+    };
   }
+
 }
 
 let isShow = ref(false)
@@ -57,28 +91,27 @@ let area: any = ref();//地区
 let wishPositionRight = ref('');//职业右
 let salary = ref('');//薪资
 
-if(localStorage.getItem('jobIndustry')){
+if (localStorage.getItem('jobIndustry')) {
   isShow.value = true;
 }
 
 // 获取求职意向
+let intention = ref(false);
 const getJobIntent = async () => {
   let res: any = await useJob.getJobIntentList({});
-  console.log(res)
   if (res.code == 200) {
-    if (res.data!='[]') {
+    if (res.data != "[]") {
       if (res.data.wishAddr.length) {
-        isShow.value = true
+        isShow.value = true;
       }
       // 地区
       area.value = (res.data.wishAddr);
-      console.log(area.value)
       // 职位
       res.data.wishPosition.forEach((item: any) => {
-        wishPositionRight.value += item.positionNameDown + '、'
+        wishPositionRight.value += item.positionNameDown + '、';
       });
       // 薪资
-      salary.value = res.data.wishMoney.replace(/000/g, 'k').replace(/,/, '-').replace(/k/, '')
+      salary.value = res.data.wishMoney.replace(/000/g, 'k').replace(/,/, '-').replace(/k/, '');
       // 职位
       let jobId = 0;
       let modifyjobInfo = { activeId: [], columnsJob: [], job: [] } as JobInfo;
@@ -105,49 +138,46 @@ const getJobIntent = async () => {
       });
       localStorage.setItem('industryInfo', JSON.stringify(modifyindustry));
 
-      localStorage.setItem('modifyIndustryInfo',JSON.stringify({
-        wishIndustryLeft:res.data.wishIndustryLeft,
-        wishIndustryRight:res.data.wishIndustryRight,
+      localStorage.setItem('modifyIndustryInfo', JSON.stringify({
+        wishIndustryLeft: res.data.wishIndustryLeft,
+        wishIndustryRight: res.data.wishIndustryRight,
       }))
-      localStorage.setItem('modifyJobInfo',JSON.stringify({
-        wishPositionLeft:res.data.wishPositionTypeLeft,
-        wishPositionRight:res.data.wishPositionTypeRight,
-      }))
+      localStorage.setItem('modifyJobInfo', JSON.stringify({
+        wishPositionLeft: res.data.wishPositionTypeLeft,
+        wishPositionRight: res.data.wishPositionTypeRight,
+      }));
+      // 处理获取推荐职位的入参
+      let wishAddr = '';
+      area.value.forEach((item: any) => {
+        wishAddr += item.replace(/\S+-/, '') + ',';
+      });
+      getSelectPosition({
+        wishAddr: wishAddr,
+        wishIndustryLeft: res.data.wishIndustryLeft,
+        wishMoneyLeft: res.data.wishMoney.replace(/,\d+/, ''),
+        wishMoneyRight: res.data.wishMoney.replace(/\d+,/, ''),
+        wishPositionLeft: res.data.wishPositionTypeLeft,
+      });
+    } else {
+      isShow.value = false
+      getSelectPosition({});
     }
+  } else {
+    isShow.value = false;
+    intention.value = true;
+    getSelectPosition({});
+
   }
 }
-getJobIntent()
-
+getJobIntent();
 // 获取推荐职位列表
 let cardList = ref([]) as Ref<CardItem[]>;
-const getSelectPosition = async () => {
-  let res: any = await useJob.getSelectPositionList({
-  });
+const getSelectPosition = async (params: any) => {
+  let res: any = await useJob.getSelectPositionList(params);
   if (res.code == 200) {
     cardList.value = cardList.value.concat(res.data);
   }
 }
-getSelectPosition();
-interface ResumeInfo {
-  completion: number,
-  modifyTime: string
-}
-let resumeInfo = ref() as Ref<ResumeInfo>;
-// 查询简历完成度
-const getSelectCompletion = async () => {
-  let res: any = await useJob.getSelectCompletion();
-  if (res.code == 200) {
-    if (res.data.completion != null) {
-      resumeInfo.value = res.data;
-    } else {
-      resumeInfo.value = {
-        completion: 0,
-        modifyTime: ''
-      }
-    }
-  }
-}
-getSelectCompletion()
 </script>
 
 <style lang="scss" scoped>
@@ -222,6 +252,36 @@ getSelectCompletion()
       background-color: #f5f5f5;
 
     }
+
+    .icon-position {
+      width: 13rem;
+      height: 13rem;
+    }
+
+    .btn {
+      padding: 0 5rem !important;
+    }
   }
 }
+.show-count_box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+
+        .show-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+
+            h1 {
+                font-weight: 500;
+            }
+
+            .ft {
+                font-size: 1.8rem;
+            }
+        }
+    }
 </style>

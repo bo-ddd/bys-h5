@@ -12,14 +12,6 @@
                             placeholder="请输入留言" show-word-limit />
                     </van-cell-group>
                 </div>
-
-                <div class="pt2-l3">
-                    相关截图
-                </div>
-                <div class="proposal-item">
-                    <van-uploader class="ml-30" v-model="fileList" multiple />
-                </div>
-
                 
                 <div class="proposal-item ">
                     <van-cell-group inset>
@@ -30,8 +22,7 @@
         </div>
         <div>
             <div class="footer">
-                <van-checkbox v-model="checked" checked-color="#24ff80" icon-size="1.4rem">允许开发者在48小时内通过客服消息联系我
-                </van-checkbox>
+             
             </div>
             <div class="submit-btn_box">
                 <van-button class="submit-btn" type="success" @click="feedBack()">提交</van-button>

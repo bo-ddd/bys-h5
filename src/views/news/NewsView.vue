@@ -63,40 +63,11 @@
         </van-cell>
       </van-cell-group>
     </div>
-
-    <!-- <van-action-sheet @click.prevent.stop v-model:show="showResume" title="确认投递简历">
-      <div class="sheet-content" v-show="!(resumeInfo.completion ==0)">
-        <div class="flex">
-          <van-icon name="checked" size="2.5rem" color="#2979ff" />
-          <div class="title">
-            <p class="fs-16">在线投递简历</p>
-            <span class="fs-12 c-747474">{{ resumeInfo.modifyTime }}更新</span>
-          </div>
-          <p class="fs-14 c-747474">
-            完成度：
-            <span class="c-2979ff">{{ Number(resumeInfo.completion) * 100 }}%</span>
-          </p>
-        </div>
-        <van-button
-          class="btn-confirm fs-14"
-          type="primary"
-        >确认投递</van-button>
-    @click="deliveryJob(options.positionId)"-->
-    <!-- </div>
-      <div class="sheet-content" v-show="resumeInfo.completion == 0">
-        <div class="just-center flex">
-          <p class="fs-14 c-747474">
-            还未填写简历，点击
-            <a @click="to('/createResume')" class="c-2979ff">去填写</a>
-          </p>
-        </div>
-      </div>
-    </van-action-sheet>-->
     <van-action-sheet @click.prevent.stop v-model:show="showResume" title="确认投递简历">
       <div class="sheet-content" v-show="!(resumeList.length == 0)">
         <div class="pop">
           <div class="container-resume">
-            <van-radio-group v-model="checked">
+            <van-radio-group v-model="checkedResume">
               <div class="resume-item mt-5 pd-20_0" v-for="item in resumeList" :key="item.resumeId">
                 <van-radio :name="item.resumeId" icon-size="2rem">
                   <img class="icon-30 ml-15" src="@/assets/images/icon-resume.png" />
@@ -107,7 +78,7 @@
                       >{{ /在线简历/.test(item.resumeName) ? '在线简历' : item.resumeName }}</div>
                       <div class="fs-12 ml-40" v-if="item.isOnline">
                         <span class="c-5d5d5d">完成度:</span>
-                        <span class="c-2979ff">{{ onlineResume ? onlineResume * 100 :''}}%</span>
+                        <!-- <span class="c-2979ff">{{ onlineResume ? onlineResume * 100 :''}}%</span> -->
                       </div>
                     </div>
                     <div class="btm fs-12 c-5d5d5d">{{ item.modifyTime }}{{item.isOnline?'更新':'上传'}}</div>
@@ -117,7 +88,7 @@
             </van-radio-group>
           </div>
           <div class="btn-wrap">
-            <div class="btn c-ffffff just-center fs-14" @click="delivery(options.positionId)">确认投递</div>
+            <!-- <div class="btn c-ffffff just-center fs-14" @click="delivery(options.positionId)">确认投递</div> -->
           </div>
         </div>
       </div>
@@ -125,7 +96,7 @@
         <div class="just-center flex">
           <p class="fs-14 c-747474">
             还未填写简历，点击
-            <a href @click="jump('/createResume')" class="c-2979ff">去填写</a>
+            <a @click="to('/createResume')" class="c-2979ff">去填写</a>
           </p>
         </div>
       </div>
@@ -143,6 +114,7 @@ const router = useRouter();
 const loginStatus = ref(false);
 const resumeList: any = ref({});
 const showResume = ref(false);
+const checkedResume = ref(null);
 loginStatus.value = sessionStorage.getItem("token") ? true : false;
 const showPopup = ref(!loginStatus.value);
 const to = function (path: any) {
@@ -153,13 +125,15 @@ let perfectionNum = ref(0);
 let averageScore = ref(0);
 let getResumeList = async function () {
   let res = await use.selectResume({});
-  if (res.code == 200) {
-    resumeList.value = res.data;
+  if (res.code == 200 && res.data.length > 0) {
+    resumeList.value = res.data.sort((a: any, b: any) => {
+      return b.isOnline - a.isOnline;
+    });
+    checkedResume.value = resumeList.value[0].resumeId;
   }
 };
 const getNewsList = async () => {
   let res = await use.selectInvitation({});
-  console.log(res);
   if (res.code == 200) {
     newsList.value = res.data;
   }

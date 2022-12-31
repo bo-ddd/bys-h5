@@ -1,6 +1,5 @@
 <template>
   <div class="com-page">
-    <!-- <Card.Item></Card.Item> -->
     <van-nav-bar class title="公司主页" left-arrow @click-left="onClickLeft1" />
     <div class="content">
       <div class="info-head just-between">
@@ -88,25 +87,35 @@
     </div>
 
     <van-action-sheet @click.prevent.stop v-model:show="showResume" title="确认投递简历">
-      <div class="sheet-content" v-show="!(resumeInfo.completion ==0)">
-        <div class="flex">
-          <van-icon name="checked" size="2.5rem" color="#2979ff" />
-          <div class="title">
-            <p class="fs-16">在线投递简历</p>
-            <span class="fs-12 c-747474">{{ resumeInfo.modifyTime }}更新</span>
+      <div class="sheet-content" v-show="!(resumeList.length == 0)">
+        <div class="pop">
+          <div class="container-resume">
+            <van-radio-group v-model="checkedResume">
+              <div class="resume-item mt-5 pd-20_0" v-for="item in resumeList" :key="item.resumeId">
+                <van-radio :name="item.resumeId" icon-size="2rem">
+                  <img class="icon-30 ml-15" src="@/assets/images/icon-resume.png" />
+                  <div class="resume ml-10">
+                    <div class="top just-between mt-5">
+                      <div
+                        class="fs-14"
+                      >{{ /在线简历/.test(item.resumeName) ? '在线简历' : item.resumeName }}</div>
+                      <div class="fs-12 ml-40" v-if="item.isOnline">
+                        <span class="c-5d5d5d">完成度:</span>
+                        <!-- <span class="c-2979ff">{{ onlineResume ? onlineResume * 100 :''}}%</span> -->
+                      </div>
+                    </div>
+                    <div class="btm fs-12 c-5d5d5d">{{ item.modifyTime }}{{item.isOnline?'更新':'上传'}}</div>
+                  </div>
+                </van-radio>
+              </div>
+            </van-radio-group>
           </div>
-          <p class="fs-14 c-747474">
-            完成度：
-            <span class="c-2979ff">{{ Number(resumeInfo.completion) * 100 }}%</span>
-          </p>
+          <div class="btn-wrap">
+          </div>
+            <!-- <div class="btn c-ffffff just-center fs-14" @click="(options.positionId)">确认投递</div> -->
         </div>
-        <van-button
-          class="btn-confirm fs-14"
-          type="primary"
-        >确认投递</van-button>
-          <!-- @click="deliveryJob(options.positionId)" -->
       </div>
-      <div class="sheet-content" v-show="resumeInfo.completion == 0">
+      <div class="sheet-content" v-show="resumeList.length == 0">
         <div class="just-center flex">
           <p class="fs-14 c-747474">
             还未填写简历，点击
@@ -125,10 +134,11 @@ import { useRouter, useRoute } from "vue-router";
 import { useResumeStore } from "@/stores/resume"; //接口
 import Card from "@/components/card";
 let onClickLeft1 = () => history.back();
-const resumeInfo:any = ref({});
 const active = ref(0);
 const container = ref(null);
 const showResume = ref(false);
+const resumeList: any = ref({});
+const checkedResume = ref(null);
 const use = useResumeStore();
 let router = useRouter();
 let route = useRoute();
@@ -143,11 +153,13 @@ let jumpPosition = (url: string, positionId: number) => {
     },
   });
 };
-let getResumeInfo = async function () {
-  let res = await use.selectCompletion({});
-  if (res.code == 200) {
-    console.log(res);
-    resumeInfo.value=res.data;
+let getResumeList = async function () {
+  let res = await use.selectResume({});
+  if (res.code == 200 && res.data.length > 0) {
+    resumeList.value = res.data.sort((a: any, b: any) => {
+      return b.isOnline - a.isOnline;
+    });
+    checkedResume.value = resumeList.value[0].resumeId;
   }
 };
 const share=function(){
@@ -194,7 +206,7 @@ let positionLength = ref(0); //企业在招职位数量
 let position = ref(true);
 onMounted(() => {
   getComInfo();
-  getResumeInfo();
+  getResumeList();
 });
 
 const starPosition = async () => {
@@ -370,8 +382,6 @@ const apply = function (event:any) {
       display: block;
     }
   }
-  // .foot-right {
-  // }
 }
 .mb-10 {
   margin-bottom: 1rem;
@@ -389,6 +399,38 @@ const apply = function (event:any) {
   height: 5rem;
 }
 
+.pop {
+  height: 44rem;
+  padding: 0 2rem;
+
+  & > .container-resume {
+    height: calc(42rem - 7rem);
+    overflow-y: scroll;
+
+    .resume-item {
+      display: flex;
+      align-items: center;
+      border-bottom: 0.2px solid #d8dbe3;
+
+      :deep(.van-radio__label) {
+        display: flex;
+        align-items: center;
+      }
+
+      .resume {
+        flex: 1;
+        height: 5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        .top {
+          width: 20rem;
+          display: flex;
+        }
+      }
+    }
+  }
+}
 .sheet-content {
   padding: 2rem;
 
@@ -410,4 +452,12 @@ const apply = function (event:any) {
   }
 }
 
+.icon-30 {
+  width: 3rem;
+  height: 3rem;
+}
+
+.pd-20_0 {
+  padding: 2rem 0;
+}
 </style>

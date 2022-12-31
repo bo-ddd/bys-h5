@@ -5,7 +5,7 @@ const currentRate = ref(0);
 
 
 watch(checked, () => {
-    console.log(checked.value);
+  
 })
 
 let text = computed(()=>{

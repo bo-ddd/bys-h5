@@ -468,7 +468,6 @@ const updateUserInfo = async () => {
     userProfessional: Number(userProfessional.value.value),
     userYear: Number(userYear.value),
   });
-  console.log(res);
   if (res.code == 200) {
     Toast.success("更新成功");
     to("/resumeDetails");

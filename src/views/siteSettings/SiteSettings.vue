@@ -80,16 +80,15 @@ const showPopup = () => {
 const hindPopup = () => {
     popupShow.value = false;
     // 调用修改站点接口
-    setSite({ site: fieldText.value, userId: 10000 })
+    setSite({ site: fieldText.value })
 }
 
 // 修改站点接口
 interface setSiteType {
     site: string,
-    userId: Number,
 }
-let setSite = async function (payload: setSiteType) {
-    let res: any = await use.setSite(payload)
+const setSite = async function (payload: setSiteType) {
+    const res: any = await use.setSite(payload)
     if (res.code == 200) {
         popupValue.value = fieldText.value;
     }

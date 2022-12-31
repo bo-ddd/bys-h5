@@ -226,10 +226,11 @@ onActivated(() => {
   getScrollValue();
 });
 onBeforeRouteLeave((to, from, next) => {
-  if (to.name == "resumeDetails") {
-    clearKeep();
-  } else {
+  if (to.name == "schoolList" || to.name == "majorList") {
     setScrollValue();
+  } else {
+    clearKeep();
+    clearUserInfo();
   }
   next();
 });
@@ -245,12 +246,10 @@ const customFieldName = {
 const gerNationList = async function () {
   let res = await use.getNationalDrop({});
   if (res.code == 200) {
-    console.log(res);
     nationList.value = res.data;
   }
 };
 const setNation = (item: any, index: number) => {
-  console.log(value);
   userNational.value = item.label;
   nationValue.value = item.value;
   nationDefault.value = index;
@@ -282,29 +281,28 @@ const getInfo = async function () {
     userYear.value = res.data.userYear;
   }
 };
-const clearUserInfo=function(){
-    userName.value = '';
-    userEmail.value = '';
-    userSex.value = '';
-    sexValue.value = '';
-    avaterImg.value = '';
-    userBirthday.value = '';
-    userNational.value = '';
-    nationValue.value = '';
-    userEducation.value = '';
-    educationValue.value = '';
-    userAddr.value = '';
-    userSchool.value = {
-      name: '',
-      value: '',
-    };
-    userProfessional.value = {
-      name: '',
-      value: '',
-    };
-    userYear.value = '';
-
-}
+const clearUserInfo = function () {
+  userName.value = "";
+  userEmail.value = "";
+  userSex.value = "";
+  sexValue.value = "";
+  avaterImg.value = "";
+  userBirthday.value = "";
+  userNational.value = "";
+  nationValue.value = "";
+  userEducation.value = "";
+  educationValue.value = "";
+  userAddr.value = "";
+  userSchool.value = {
+    name: "",
+    value: "",
+  };
+  userProfessional.value = {
+    name: "",
+    value: "",
+  };
+  userYear.value = "";
+};
 
 const upload: any = ref(null);
 
@@ -326,7 +324,6 @@ const clearKeep = function () {
   scrollTop.value = 0;
   //重新获取用户信息
   // getInfo();
-  clearUserInfo()
   //清空stores
   clearSchool();
   clearMajor();
@@ -436,11 +433,9 @@ const yearList = [
   2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027,
   2028, 2029, 2030,
 ];
-const aa = ref("");
 const selectYear = (value: any) => {
   show8.value = false;
   userYear.value = value;
-  console.log(aa);
 };
 //学校和专业
 const userSchool: any = ref("");

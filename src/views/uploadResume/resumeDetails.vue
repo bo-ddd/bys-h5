@@ -108,8 +108,7 @@ const onClickLeft1 = () =>
   );
 const router = useRouter();
 const to = function (path: any) {
-  // router.push(path);
-  console.log(path);
+  router.push(path);
 };
 const onClickLeft = () => {
   router.push({
@@ -182,13 +181,10 @@ const getExperience = async () => {
     userHobby.value = res.data.userHobby;
   }
   let res1 = await use.getEducation({
-    userId: 10000,
   });
   let res2 = await use.getInternShip({
-    userId: 10000,
   });
   let res3 = await use.getProject({
-    userId: 10000,
   });
   if (res1.code == 200) {
     educationData.value = res1.data;

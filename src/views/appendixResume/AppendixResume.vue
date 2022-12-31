@@ -88,7 +88,6 @@ const deleteRemuseApi = async function () {
   let res = await use.delResume({
     resumeId: resumeId.value,
   });
-  console.log(res);
   if (res.code == 200) {
     Toast.success("删除成功");
     getResumeList()

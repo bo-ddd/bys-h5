@@ -40,7 +40,6 @@ interface sex{
 
 const { dataList,placeholder } = props;
 const select = toRef(props, "select");
-console.log(props);
 const emit  = defineEmits(['onSelect']);
 
 const onSelect = (item:sex) => {

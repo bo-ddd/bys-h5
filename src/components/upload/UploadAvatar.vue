@@ -33,9 +33,7 @@ const afterRead = (file: any) => {
 };
 const uploadAvater = async function (file: any) {
   let formData = new FormData();
-  formData.append("userId", "10000");
   formData.append("userLogo", file);
-  console.log(formData);
 
   const res = await use.updateLogo(formData);
   if (res.code == 200) {

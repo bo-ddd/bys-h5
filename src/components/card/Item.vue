@@ -119,8 +119,6 @@ const wxLogin = () => {
         position: 'top',
     });
 }
-
-
 // 申请职位接口
 const deliveryJob = async (params: number) => {
     let res: any = await useJob.deliveryPosition({ positionId: params });
@@ -128,12 +126,18 @@ const deliveryJob = async (params: number) => {
         isShow.value = false;
     }
 }
+const emit = defineEmits(["refresh"]); //声明 emits
 // 确认投递
+let reload:any = inject('reload')
 const delivery = function (id: number) {
     deliveryJob(id);
-    window.location.href = '/position'
+    // window.location.href = '/position'
+    setTimeout(()=>{
+        Toast('投递成功')
+        reload();
+    },1000)
 }
-
+ 
 
 interface Resume {
     createTime: string,

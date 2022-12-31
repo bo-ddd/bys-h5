@@ -103,11 +103,11 @@ interface ResInfo {
 
 let props = defineProps<{
     options: CardItem,
-    resume: ResInfo,
-    onlineResumeInfo: ResInfo
+    resume?: ResInfo,
+    onlineResumeInfo?: ResInfo
 }>();
 
-let { options, resume,onlineResumeInfo } = toRefs(props);
+let { options, resume, onlineResumeInfo } = toRefs(props);
 
 const token = sessionStorage.getItem("token");
 let isShow = ref(false);
@@ -162,25 +162,28 @@ let checked: Ref<number | null> = ref(null);//这个是选中简历id
 let resumeList: Ref<Resume[]> = ref([]);
 
 // 获取在线简历的接口
-if (resume.value.code == 200) {
-    resumeList.value = resume.value.data;
-    let check = resumeList.value.find((item) => {
-        return item.isOnline == true;
-    })
-    if (check) {
-        checked.value = check.resumeId;
-    } else {
-        if (resumeList.value.length) {
-            checked.value = resumeList.value[0].resumeId;
+if (resume?.value) {
+    if (resume.value.code == 200) {
+        resumeList.value = resume.value.data;
+        let check = resumeList.value.find((item) => {
+            return item.isOnline == true;
+        })
+        if (check) {
+            checked.value = check.resumeId;
+        } else {
+            if (resumeList.value.length) {
+                checked.value = resumeList.value[0].resumeId;
+            }
         }
+        resumeList.value.sort((a: any, b: any) => {
+            return b.isOnline - a.isOnline;
+        });
     }
-    resumeList.value.sort((a: any, b: any) => {
-        return b.isOnline - a.isOnline;
-    });
 }
 
 //获取在线信息完成度
 let onlineResume = ref() as Ref<number>;
+if (onlineResumeInfo?.value) {
     if (onlineResumeInfo.value.code == 200) {
         let check = resumeList.value.find((item) => {
             return item.isOnline == true;
@@ -191,6 +194,7 @@ let onlineResume = ref() as Ref<number>;
         onlineResume.value = onlineResumeInfo.value.data.completion
     }
 
+}
 //申请职位 
 const apply = function () {
     if (!token) {

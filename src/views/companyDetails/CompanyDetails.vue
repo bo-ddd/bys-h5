@@ -57,7 +57,7 @@
                       <span v-else>{{item.positionMonth.split(',').join('-')}}元/天</span>
                     </div>
                     <div class="btn mt-20">
-                      <van-button type="primary" size="small" @click="k">申请</van-button>
+                      <van-button type="primary" size="small" @click="apply">申请</van-button>
                     </div>
                   </div>
                 </div>
@@ -161,7 +161,6 @@ const share=function(){
 // 申请职位接口
 const deliveryJob = async (positionId: number) => {
     let res: any = await use.deliveryPosition({ positionId  });
-    console.log(res);
     if (res.code == 200) {
         showResume.value = false;
         Toast('投递成功')
@@ -186,8 +185,6 @@ const getComInfo = async function () {
   let res = await use.getCompany({
     companyId,
   });
-  console.log(res);
-
   if (res.code == 200 && res.data) {
     Object.assign(companyInfo, res.data);
     positionLength.value = res.data.positionList.length;
@@ -220,8 +217,7 @@ const delStarPosition = async () => {
     Toast.fail("取消失败");
   }
 };
-const k = function (event:any) {
-  console.log("btn");
+const apply = function (event:any) {
   event.cancelBubble = true;
   showResume.value = true;
 };

@@ -120,7 +120,6 @@ const cmopanyPayload : CompanyPayload = reactive({
 const handleCompanyChange = (item: any) => {
     company.label = item.label;
     company.value = item.value;
-    console.log(company);
     cmopanyPayload.companyNature = item.value;
     getCompanyList();
 }
@@ -134,17 +133,14 @@ const handleGuiMoChange = (item: any) => {
 // 选中地址
 const handleAreaChange = (e: any[]) => {
     let targetArr = e;
-    console.log('--------我是选中地址----------');
     area.label = targetArr[e.length - 1].name;
     area.value = targetArr[e.length - 1].code;
     cmopanyPayload.companyAddr = targetArr[e.length - 1].name;
-        console.log(cmopanyPayload);
     getCompanyList();
 }
 
 // 选中右侧职位
 const handlePositionChange = (item: any) => {
-    console.log(item);
     position.label = item.label;
     position.value = item.value;
     let res;
@@ -178,10 +174,7 @@ provide('checkItemFn', checkFn);
 const getGuiMoList = async () => {
     const res: Res<GuiMo[]> = await Company.getCompanySize();
     if (res.code !== 200) return;
-    console.log('--------这个是获取企业规模的接口---------');
-    console.log(res);
     guiMo.push(...(res.data));
-    console.log('--------这个是获取企业规模的接口结束---------');
 }
 getGuiMoList();
 
@@ -189,19 +182,13 @@ getGuiMoList();
 const getCompanyNature = async () => {
     const res:Res<TypeCompany[]> = await Company.getCompanyNature();
     if (res.code !== 200) return;
-    console.log('--------这个是获取企业性质的接口-----------');
-    console.log(res);
     companyType.push(...(res.data));
-    console.log('--------这个是获取企业性质的接口结束-----------');
 }
 getCompanyNature();
 
 const getCompanyIndustry = async () => {
     const res: Res<Position[]> = await Company.getCompanyIndustry();
     if (res.code !== 200) return;
-    console.log('------------这个是获取职位的接口---------------');
-    console.log(res.data);
-    console.log(res);
     let targetArr: Position[] = (res.data).slice();
     targetArr.forEach(item => {
         item.id = item.value;
@@ -212,12 +199,10 @@ const getCompanyIndustry = async () => {
         });
     });
     positoinList.push(...(targetArr));
-    console.log('------------这个是获取职位的接口结束---------------');
 }
 getCompanyIndustry();
 // 这个是获取企业的列表
 const getCompanyList =async ()=>{
-    console.log(cmopanyPayload);
     let obj:{[propName : string] : any} = {};
     let key : keyof CompanyPayload;
     for (key in cmopanyPayload) {
@@ -234,14 +219,10 @@ const getCompanyList =async ()=>{
         maxCount:number,
     }> = await Company.getCompanyList(obj);
     if(res.code == 200){
-        console.log(res);
-        console.log('---------------这个是获取企业列表---------------')
         CompanyList.value = [];
         CompanyList.value.push(...res.data.data as any);
         CompanyList.value = [...new Set(CompanyList.value.map(t=>JSON.stringify(t)))].map(s=>JSON.parse(s));
         maxCount.value = res.data.maxCount;
-        console.log(maxCount.value);
-        console.log(CompanyList.value);
     }
 }
 getCompanyList();
@@ -275,7 +256,6 @@ onMounted(()=>{
                 getCompanyList();
             }
           //写后台加载数据的函数
-          console.log("距顶部"+scrollTop+"可视区高度"+windowHeight+"滚动条总高度"+scrollHeight);
         }  
       }
     })

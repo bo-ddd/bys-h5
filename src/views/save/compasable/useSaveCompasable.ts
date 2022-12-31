@@ -37,12 +37,12 @@ export default function () {
     }
     const positionPayload:PositionPayload= reactive({ 
         bool:false,
-        pageSize:1,
+        pageSize:3,
         pageIndex:1,
     })
     const companyPayload:PositionPayload = reactive({
         bool:true,
-        pageSize:1,
+        pageSize:3,
         pageIndex:1,
     })
     let SaveStore: any = useSaveStore();
@@ -50,7 +50,7 @@ export default function () {
     let count = ref(1);
     const loading = ref(false);
     const companyLoading = ref(false);
-    let companyList :Company[]= reactive([]);//公司列表
+    let companyList :Ref<Company[]>= ref([]);//公司列表
     let positionList: Ref<Position[]> = ref([]);//职位列表
     let companyCount : Ref<number> =ref() as Ref<number>;//公司总条数
     let positionCount : Ref<number> = ref() as Ref<number>;//职位总条数
@@ -60,8 +60,8 @@ export default function () {
         console.log(positionCount.value)
         if(positionPayload.pageIndex*positionPayload.pageSize < positionCount.value){
             positionPayload.pageIndex++;
+            getSaveList();
         }
-        getSaveList();
     }
     const onRefreshCompany = async () => {
         Toast('刷新成功');
@@ -69,8 +69,8 @@ export default function () {
         console.log(companyCount.value)
         if(companyPayload.pageIndex*companyPayload.pageSize < companyCount.value){
             companyPayload.pageIndex++;
+            getCompanyList();
         }
-        getCompanyList();
     }
     //获取职位的列表
     const getSaveList = async () => {
@@ -89,9 +89,9 @@ export default function () {
         if(res.code == 200){
             console.log('--------------我是收藏企业的列表---------------');
             console.log(res);
-            companyList.push(...((res.data).data));
+            companyList.value.push(...((res.data).data));
             companyCount.value = res.data.maxCount;
-            companyList = [...new Set(...[companyList])];
+            companyList.value = [...new Set(...[companyList.value])];
         }
     }
     const parseStr:(str:string)=>string=(str:string)=>{

@@ -34,8 +34,8 @@
                 </van-cell>
                 <van-action-sheet v-model:show="showSalary" title="">
                     <div class="content">
-                        <van-picker title="" :default-index="Number(salary.replace(/-\w+/,''))-1" :columns="columnsSalary"
-                            @confirm="onConfirmSalary" @cancel="onCancelSalary" />
+                        <van-picker title=""
+                            :columns="columnsSalary" @confirm="onConfirmSalary" @cancel="onCancelSalary" />
                     </div>
                 </van-action-sheet>
 
@@ -136,7 +136,7 @@ const wxLogin = () => {
 
 
 // 返回
-const onClickLeft = () => { router.push({ path: '/position' })};
+const onClickLeft = () => { router.push({ path: '/position' }) };
 // 期望职位
 let columnsJob: any[] = reactive([]);
 let columnJob: any[] = reactive([]);
@@ -191,15 +191,17 @@ let showSalary = ref(false);
 let salary: Ref<string> = ref('');
 let defaultIndex: Ref<number> = ref(0); //默认选中
 const getWishMoney = async () => {
-    let res = await useJob.getWishMoneyList({});
-    res.data.wishMoenyLeftList.forEach((item: any, index: number) => {
-        let right = res.data.wishMoenyRightList.slice(index + 1, res.data.wishMoenyRightList.length)
-        right = right.map((item: any) => { return { text: item.label } })
-        columnsSalary.push({
-            text: item.label,
-            children: right,
+    let res: any = await useJob.getWishMoneyList({});
+    if (res.code == 200) {
+        res.data.wishMoenyLeftList.forEach((item: any, index: number) => {
+            let right = res.data.wishMoenyRightList.slice(index + 1, res.data.wishMoenyRightList.length)
+            right = right.map((item: any) => { return { text: item.label } })
+            columnsSalary.push({
+                text: item.label,
+                children: right,
+            })
         })
-    })
+    }
 }
 getWishMoney();
 
@@ -532,24 +534,24 @@ getJobIntent()
 }
 
 .show-count_box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-
-  .show-wrap {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 2rem;
+    height: 100%;
 
-    h1 {
-      font-weight: 500;
-    }
+    .show-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
 
-    .ft {
-      font-size: 1.8rem;
+        h1 {
+            font-weight: 500;
+        }
+
+        .ft {
+            font-size: 1.8rem;
+        }
     }
-  }
 }
 </style>

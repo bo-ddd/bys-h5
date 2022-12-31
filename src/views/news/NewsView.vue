@@ -118,17 +118,14 @@ let averageScore=ref(0);
 let getResumeInfo = async function () {
   let res = await use.selectCompletion({});
   if (res.code == 200) {
-    console.log(res);
     resumeInfo.value=res.data;
   }
 };
 const getNewsList = async () => {
   let res = await use.selectInvitation({
-    // userId: 10000,
   });
   console.log(res);
   if (res.code == 200) {
-    console.log(newsList.value);
     newsList.value = res.data;
   }
 };

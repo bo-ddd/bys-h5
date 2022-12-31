@@ -2,7 +2,7 @@
 
     <div class="layout" v-if="isLoding">
         <div class="router-view">
-            <RouterView></RouterView>
+            <RouterView v-if="isRouterAlive"></RouterView>
         </div>
 
         <div class="nav">
@@ -23,8 +23,19 @@
 
 <script setup lang="ts">
 import { useRouter,useRoute } from 'vue-router';
-import { ref,onMounted } from 'vue'
+import { ref,onMounted,nextTick,provide } from 'vue'
 import { parseAssetFile } from '@/assets/util';
+
+// 刷新页面不闪烁
+let isRouterAlive = ref(true);
+const reload = ()=>{
+    isRouterAlive.value= false;
+    nextTick(()=>{
+        isRouterAlive.value = true
+    })
+}
+provide('reload',reload)
+
 let active = ref("/jobfairs");
 let router = useRouter();
 let route = useRoute();

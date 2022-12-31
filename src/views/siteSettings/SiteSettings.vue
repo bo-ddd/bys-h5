@@ -22,6 +22,9 @@
                         <span class="placeholder">请输入</span>
                     </div>
                 </van-cell>
+                <div class="mt-25 plr-16">
+                    <van-button @click="navJobfairs" type="primary" class="van-button_ok">确定</van-button>
+                </div>
                 <van-popup position="bottom" :style="{ height: '75%' }" v-model:show="popupShow">
                     <div class="popup-header just-between">
                         <div class="dialog">
@@ -39,6 +42,12 @@
         <div class="footer">
             <div class="footer-test">
                 十万企业 | 百万岗位 | 职等你来
+            </div>
+        </div>
+        <div class="message just-center">
+            <div class="message-child" v-if="messageIsshow">
+                <van-icon name="fail" class="icon-fail" />
+                {{ messageValue }}
             </div>
         </div>
     </div>
@@ -59,6 +68,9 @@ getUnsrInfo()
 // popupShow 弹层打开与否
 const popupShow = ref(false);
 const popupValue = ref('');
+// 消息提示
+const messageValue = ref('');
+const messageIsshow = ref(false)
 let fieldText = ref('');
 // showPopup 打开遮罩层
 const showPopup = () => {
@@ -105,11 +117,58 @@ async function getUnsrInfo() {
         popupValue.value = res.data.userSite;
     }
 }
+function navJobfairs() {
+    if (popupValue.value == '') {
+        messageIsshow.value = true;
+        messageValue.value = '请先输入您的学校！'
+        setTimeout(() => {
+            messageIsshow.value = false;
+        }, 1500)
+        return;
+    } else {
+        router.push('/jobfairs');
+    }
+}
 </script>
 
 <style lang="scss" scoped>
+.message-child {
+    width: 29rem;
+    padding: 1rem;
+    border: .1rem solid #faecd8;
+    background-color: #fdf6ec;
+    color: #e6a23c;
+    font-size: 1.4rem;
+    border-radius: .5rem;
+    position: absolute;
+    top: 1rem;
+    z-index: 999;
+
+    .icon-fail {
+        display: inline-block;
+        padding: .5rem;
+        background: #e6a23c;
+        color: #fff;
+        border-radius: 50%;
+        margin-right: 1rem;
+    }
+}
+
+.mt-25 {
+    margin-top: 2.5rem;
+}
+
+.van-button_ok {
+    width: 100%;
+    color: #fff;
+}
+
 .mt-16 {
     margin-top: 1.6rem;
+}
+
+.plr-16 {
+    padding: 0 1.6rem;
 }
 
 .mt-18 {
@@ -215,7 +274,7 @@ async function getUnsrInfo() {
                 width: 91%;
                 display: block;
                 margin: 0 auto;
-                border-bottom: 1px solid #f0f1f2;
+                border-bottom: 1px solid #eaebed;
             }
 
             .placeholder {

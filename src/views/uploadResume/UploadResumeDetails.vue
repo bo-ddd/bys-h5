@@ -50,6 +50,8 @@ const afterRead = async (file: any) => {
     if (res.code == 200) {
       Toast.success("上传成功");
       to("/appendixResume");
+    }else{
+      Toast.fail(res.msg);
     }
   } else {
     Toast("文件格式不正确");

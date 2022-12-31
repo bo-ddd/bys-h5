@@ -16,7 +16,7 @@
                     <p class="fs-14">{{ options.companyName }}</p>
                     <span class="fs-12 c-747474">{{ options.companySize }}人</span>
                     <span class=" gang c-747474">|</span>
-                    <span class="fs-12 c-747474">{{ options.companyIndustry }}</span>
+                    <span class="fs-12 c-747474">{{ options.companyIndustry ? options.companyIndustry : '不限' }}</span>
                 </div>
             </div>
         </div>
@@ -28,20 +28,36 @@
             <van-button v-if="!options.isDelivery" class="mt-20 btn fw-600" size="mini" type="primary"
                 @click.stop="apply()">申请</van-button>
             <van-action-sheet @click.prevent.stop="" v-model:show="isShow" title="确认投递简历">
-                <div class="content" v-show="!(resumeInfo.completion ==0)">
-                    <div class="flex">
-                        <van-icon name="checked" size="2.5rem" color="#2979ff" />
-                        <div class="title">
-                            <p class="fs-16">在线投递简历</p>
-                            <span class="fs-12 c-747474">{{ resumeInfo.modifyTime }}更新</span>
+                <div class="content" v-show="!(resumeList.length == 0)">
+                    <div class="pop">
+                        <div class="container-resume">
+                            <van-radio-group v-model="checked">
+                                <div class="resume-item mt-5 pd-20_0" v-for="item in resumeList" :key="item.resumeId">
+                                    <van-radio :name="item.resumeId" icon-size="2rem">
+                                        <img class="icon-30 ml-15" src="@/assets/images/icon-resume.png">
+                                        <div class="resume ml-10">
+                                            <div class="top just-between mt-5">
+                                                <div class="fs-14">
+                                                    {{ /在线简历/.test(item.resumeName) ? '在线简历' : item.resumeName }}</div>
+                                                <div class="fs-12 ml-40" v-if="item.isOnline">
+                                                    <span class="c-5d5d5d">完成度:</span>
+                                                    <span class="c-2979ff">{{ onlineResume ? onlineResume * 100 :''}}%</span>
+                                                </div>
+                                            </div>
+                                            <div class="btm fs-12 c-5d5d5d">
+                                                {{ item.modifyTime }}{{item.isOnline?'更新':'上传'}}
+                                            </div>
+                                        </div>
+                                    </van-radio>
+                                </div>
+                            </van-radio-group>
                         </div>
-                        <p class="fs-14 c-747474">完成度：<span class="c-2979ff">{{ Number(resumeInfo.completion) * 100
-}}%</span></p>
+                        <div class="btn-wrap">
+                            <div class="btn c-ffffff just-center fs-14" @click="delivery(options.positionId)">确认投递</div>
+                        </div>
                     </div>
-                    <van-button class="btn-confirm fs-14" type="primary"
-                        @click="delivery(options.positionId)">确认投递</van-button>
                 </div>
-                <div class="content" v-show="resumeInfo.completion == 0">
+                <div class="content" v-show="resumeList.length == 0">
                     <div class="just-center flex">
                         <p class="fs-14 c-747474">还未填写简历，点击<a href="" @click="jump('/createResume')"
                                 class="c-2979ff">去填写</a></p>
@@ -73,15 +89,16 @@ import type { CardItem } from '../../views/position/types/card';
 import { useJobStore } from "@/stores/job";//接口
 import { useRouter } from 'vue-router';
 import { Toast } from 'vant';
+import { usePositionDetailStore } from "@/stores/positonDetail";
+const positionDetailStore = usePositionDetailStore();
 const router = useRouter();
 const useJob = useJobStore();
 
 let props = defineProps<{
     options: CardItem,
-    resumeInfo: ResumeInfo
 }>();
 
-let { options, resumeInfo = {} } = toRefs(props);
+let { options, } = toRefs(props);
 
 const token = sessionStorage.getItem("token");
 let isShow = ref(false);
@@ -107,7 +124,6 @@ const wxLogin = () => {
 // 申请职位接口
 const deliveryJob = async (params: number) => {
     let res: any = await useJob.deliveryPosition({ positionId: params });
-    console.log(res);
     if (res.code == 200) {
         isShow.value = false;
     }
@@ -118,10 +134,61 @@ const delivery = function (id: number) {
     window.location.href = '/position'
 }
 
-interface ResumeInfo {
-    completion: number,
-    modifyTime: string
+
+interface Resume {
+    createTime: string,
+    modifyTime: string,
+    resumeId: number,
+    resumeName: string,
+    resumeUrl: string,
+    isOnline: boolean,
+    completion?: number,
 }
+interface Res<T> {
+    code: number,
+    msg: string,
+    data: T,
+}
+let checked: Ref<number | null> = ref(null);//这个是选中简历id
+let resumeList: Ref<Resume[]> = ref([]);
+
+// 获取在线简历的接口
+async function getOnlineResume() {
+    let res: Res<Resume[]> = await positionDetailStore.getOnlineResume({});
+    if (res.code == 200) {
+        resumeList.value = res.data;
+        let check = resumeList.value.find((item) => {
+            return item.isOnline == true;
+        })
+        if (check) {
+            checked.value = check.resumeId;
+        } else {
+            if (resumeList.value.length) {
+                checked.value = resumeList.value[0].resumeId;
+            }
+        }
+        resumeList.value.sort((a: any, b: any) => {
+            return b.isOnline - a.isOnline;
+        });
+    }
+}
+getOnlineResume();
+
+//获取在线信息完成度
+let onlineResume =ref() as Ref<number>; 
+const selectCompletion = async () => {
+    let res: Res<any> = await positionDetailStore.selectCompletion({});
+    if (res.code == 200) {
+        let check = resumeList.value.find((item) => {
+            return item.isOnline == true;
+        })
+        if (check) {
+            check.completion = res.data.completion;
+        }
+        onlineResume.value=res.data.completion
+    }
+}
+selectCompletion();
 
 //申请职位 
 const apply = function () {
@@ -129,16 +196,55 @@ const apply = function () {
         showCount.value = true
     } else {
         isShow.value = true;
-        if ((resumeInfo as ResumeInfo).modifyTime == 'null') {
+        if (resumeList.value.length == 0) {
             show.value = true;
         }
     }
 }
-
-
 </script>
 
 <style lang="scss" scoped>
+.pop {
+    height: 44rem;
+    padding: 0 2rem;
+
+    &>.container-resume {
+        height: calc(42rem - 7rem);
+        overflow-y: scroll;
+
+         .resume-item {
+            display: flex;
+            align-items: center;
+            border-bottom: .2px solid #d8dbe3;
+
+             :deep(.van-radio__label) {
+                display: flex;
+                align-items: center;
+            }
+
+            .resume {
+                flex: 1;
+                    height: 5rem;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                .top {
+                    width: 20rem;
+                    display: flex;
+                }
+            }
+        }
+    }
+}
+.pd-20_0{
+        padding: 2rem 0;
+    }
+
+.icon-30 {
+    width: 3rem;
+    height: 3rem;
+}
+
 .item {
     justify-content: space-between;
     background-color: #ffffff;

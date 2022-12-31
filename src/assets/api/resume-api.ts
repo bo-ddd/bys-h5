@@ -228,4 +228,11 @@ export default {
      deliveryPosition: (params: {}) => {
         return axios.post('/phone/deliveryPosition', params, postConfig)
     },
+    /**
+    * 删除简历
+    * @returns 
+    */
+     delResume: (params: {}) => {
+        return axios.post('/phone/delResume', params, postConfig)
+    },
 }

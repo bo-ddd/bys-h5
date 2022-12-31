@@ -70,7 +70,7 @@
       <div class="h-70"></div>
     </div>
     <div class="foot-box">
-      <div class="foot-left">
+      <div class="foot-left" @click="share">
         <img :src="parseAssetFile('icon-share.png')" />
         <div>分享</div>
       </div>
@@ -118,7 +118,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Toast } from "vant";
+import {Toast,Dialog } from "vant";
 import { onMounted, reactive, ref } from "vue";
 import { parseAssetFile } from "@/assets/util";
 import { useRouter, useRoute } from "vue-router";
@@ -150,13 +150,21 @@ let getResumeInfo = async function () {
     resumeInfo.value=res.data;
   }
 };
+const share=function(){
+    Dialog.alert({
+      title: "提示",
+      message: "该功能暂不支持",
+      confirmButtonColor: "#3b81fb",
+    }).then(() => {});
 
+}
 // 申请职位接口
 const deliveryJob = async (positionId: number) => {
-    let res: any = await use.deliveryPosition({ positionId   });
+    let res: any = await use.deliveryPosition({ positionId  });
     console.log(res);
     if (res.code == 200) {
         showResume.value = false;
+        Toast('投递成功')
     }
 }
 interface CompanyInfo {

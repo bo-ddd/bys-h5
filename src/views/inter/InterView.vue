@@ -33,7 +33,9 @@
 
                 <div class="brief_introduction align-center">
                     <div>{{ item.positionName }}</div>
-                    <div class="ml-5">{{ item.positionMoney }}</div>
+                    <div class="ml-5">
+                        {{ item.positionMoney }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -73,7 +75,7 @@ interface interviewDataType {
 const axios = useMineStore();
 const router = useRouter();
 // isok 是切换是否展示空状态的
-let isok = ref(true);
+let isok = ref(false);
 let interviewData = reactive([]) as interviewDataType[]
 
 getUserInterview();
@@ -87,7 +89,7 @@ async function getUserInterview() {
     const res: Res | any = await axios.getUserInterviewApi({
         userId: 10000,
     });
-    if (res.data) {
+    if (res.data != null && res.data.length != 0) {
         isok.value = true;
         Object.assign(interviewData, res.data);
     } else {

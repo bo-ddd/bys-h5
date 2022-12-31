@@ -239,7 +239,6 @@ const onConfirm = async (value: any) => {
   // 修改求职状态接口
   let res: any = await use.ModifyJobWantedStatus({
     status: status,
-    userId: 10000,
   })
   if (res.code == 200) {
     Toast('求职状态修改成功');

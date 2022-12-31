@@ -1,5 +1,6 @@
 <template>
   <div class="com-page">
+    <!-- <Card.Item></Card.Item> -->
     <van-nav-bar class title="公司主页" left-arrow @click-left="onClickLeft1" />
     <div class="content">
       <div class="info-head just-between">
@@ -35,7 +36,10 @@
             </template>
             <div class="info-list">
               <div v-for="item in companyInfo.positionList" :key="item.positionId ">
-                <div class="item just-between" @click="jump('/positionDetail')">
+                <div
+                  class="item just-between"
+                  @click="jumpPosition('/positionDetail',item.positionId)"
+                >
                   <div class="item-left">
                     <div class="title">{{item.positionName}}</div>
                     <div class="info mt-5">
@@ -47,11 +51,13 @@
                   </div>
                   <div class="item-right">
                     <div class="num">
-                      <span v-if="item.positionMonthMoney">{{item.positionMonthMoney.split(',')[0].slice(0,-3)+'-'+item.positionMonthMoney.split(',')[1].slice(0,-3)}}k</span>
+                      <span
+                        v-if="item.positionMonthMoney"
+                      >{{item.positionMonthMoney.split(',')[0].slice(0,-3)+'-'+item.positionMonthMoney.split(',')[1].slice(0,-3)}}k</span>
                       <span v-else>{{item.positionMonth.split(',').join('-')}}元/天</span>
                     </div>
                     <div class="btn mt-20">
-                      <van-button type="primary" size="small">申请</van-button>
+                      <van-button type="primary" size="small" @click="k">申请</van-button>
                     </div>
                   </div>
                 </div>
@@ -80,6 +86,35 @@
         <van-button v-else type="primary" block @click="starPosition">收藏</van-button>
       </div>
     </div>
+
+    <van-action-sheet @click.prevent.stop v-model:show="showResume" title="确认投递简历">
+      <div class="sheet-content" v-show="!(resumeInfo.completion ==0)">
+        <div class="flex">
+          <van-icon name="checked" size="2.5rem" color="#2979ff" />
+          <div class="title">
+            <p class="fs-16">在线投递简历</p>
+            <span class="fs-12 c-747474">{{ resumeInfo.modifyTime }}更新</span>
+          </div>
+          <p class="fs-14 c-747474">
+            完成度：
+            <span class="c-2979ff">{{ Number(resumeInfo.completion) * 100 }}%</span>
+          </p>
+        </div>
+        <van-button
+          class="btn-confirm fs-14"
+          type="primary"
+        >确认投递</van-button>
+          <!-- @click="deliveryJob(options.positionId)" -->
+      </div>
+      <div class="sheet-content" v-show="resumeInfo.completion == 0">
+        <div class="just-center flex">
+          <p class="fs-14 c-747474">
+            还未填写简历，点击
+            <a @click="jump('/createResume')" class="c-2979ff">去填写</a>
+          </p>
+        </div>
+      </div>
+    </van-action-sheet>
   </div>
 </template>
 <script lang="ts" setup>
@@ -88,15 +123,42 @@ import { onMounted, reactive, ref } from "vue";
 import { parseAssetFile } from "@/assets/util";
 import { useRouter, useRoute } from "vue-router";
 import { useResumeStore } from "@/stores/resume"; //接口
+import Card from "@/components/card";
 let onClickLeft1 = () => history.back();
+const resumeInfo:any = ref({});
 const active = ref(0);
 const container = ref(null);
+const showResume = ref(false);
 const use = useResumeStore();
 let router = useRouter();
 let route = useRoute();
 let jump = (url: string) => {
   router.push({ path: url });
 };
+let jumpPosition = (url: string, positionId: number) => {
+  router.push({
+    path: url,
+    query: {
+      positionId,
+    },
+  });
+};
+let getResumeInfo = async function () {
+  let res = await use.selectCompletion({});
+  if (res.code == 200) {
+    console.log(res);
+    resumeInfo.value=res.data;
+  }
+};
+
+// 申请职位接口
+const deliveryJob = async (positionId: number) => {
+    let res: any = await use.deliveryPosition({ positionId   });
+    console.log(res);
+    if (res.code == 200) {
+        showResume.value = false;
+    }
+}
 interface CompanyInfo {
   companyAddr: string;
   companyFullName: string;
@@ -110,15 +172,14 @@ interface CompanyInfo {
   companyUrl: string;
   isStar: boolean;
 }
-let companyInfo:any = reactive({}) as CompanyInfo;
+let companyInfo: any = reactive({}) as CompanyInfo;
 const getComInfo = async function () {
   let companyId = Number(route.query.componyId);
   let res = await use.getCompany({
     companyId,
-    userId:10000
   });
   console.log(res);
-  
+
   if (res.code == 200 && res.data) {
     Object.assign(companyInfo, res.data);
     positionLength.value = res.data.positionList.length;
@@ -128,11 +189,12 @@ let positionLength = ref(0); //企业在招职位数量
 let position = ref(true);
 onMounted(() => {
   getComInfo();
+  getResumeInfo();
 });
 
 const starPosition = async () => {
   let companyId = Number(route.query.componyId);
-  let res = await use.starPosition({ companyId, userId: 10000 });
+  let res = await use.starPosition({ companyId });
   if (res.code == 200) {
     Toast.success("收藏成功");
     companyInfo.isStar = true;
@@ -142,13 +204,18 @@ const starPosition = async () => {
 };
 const delStarPosition = async () => {
   let companyId = Number(route.query.componyId);
-  let res = await use.delStarPosition({ companyId, userId: 10000 });
+  let res = await use.starPosition({ companyId });
   if (res.code == 200) {
     Toast.success("取消收藏");
     companyInfo.isStar = false;
   } else {
     Toast.fail("取消失败");
   }
+};
+const k = function (event:any) {
+  console.log("btn");
+  event.cancelBubble = true;
+  showResume.value = true;
 };
 </script>
 <style lang="scss" scoped>
@@ -317,4 +384,26 @@ const delStarPosition = async () => {
 .h-50 {
   height: 5rem;
 }
+
+.sheet-content {
+  padding: 2rem;
+
+  .flex {
+    height: 61vh;
+    gap: 1rem;
+
+    .title {
+      line-height: 2.5rem;
+    }
+  }
+
+  .btn-confirm {
+    width: 100%;
+  }
+
+  .to-resume {
+    min-height: 55vh;
+  }
+}
+
 </style>

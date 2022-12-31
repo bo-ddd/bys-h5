@@ -12,6 +12,16 @@ interface DeliveryPosition {
     resumeId: number,
 }
 export const usePositionDetailStore = defineStore('positionDetail', () => {
+    interface CompanyPayload {
+        companyAddr: string,
+        companyIndustryLeft: string,
+        companyIndustryRight: string,
+        companyName: string,
+        companyNature: number,
+        companySize: number,
+        pageIndex: number,
+        pageSize: number,
+      }
     // 收藏职位
     let setStarPosition = (payload: Save) => {
         return Api.setStarPosition(payload) as any;
@@ -29,7 +39,7 @@ export const usePositionDetailStore = defineStore('positionDetail', () => {
         return Api.getOnlineResume(payload) as any;
     }
     //获取在线简历信息完成度
-    let selectCompletion = (payload?:any)=>{
+    let selectCompletion = (payload?:CompanyPayload | {})=>{
         return Api.selectCompletion(payload) as any;
     }
     return { setStarPosition, getPositionDetail, deliveryPosition ,getOnlineResume,selectCompletion}

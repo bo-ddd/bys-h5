@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Card from '@/components/card'
 import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router';
+import { useRouter,useRoute } from 'vue-router';
 import { areaList } from '@vant/area-data';
 import { useJobStore } from "@/stores/job";
 import { useFeedbackStore } from "@/stores/feedBack";
@@ -9,6 +9,9 @@ const useJob = useJobStore();
 const feedbackStore = useFeedbackStore();
 
 let router = useRouter();
+let route = useRoute();
+
+
 const jump = (src: string, params?: number) => {
     if (params) {
         router.push({ path: src, query: { positionId: params } })
@@ -23,7 +26,6 @@ let cardList = ref();
 let resumeInfo = ref();
 const getSelectCompletion = async () => {
     let res: any = await useJob.getSelectCompletion();
-    console.log(res);
     if (res.code == 200) {
         if (res.data.companyId != null) {
             resumeInfo.value = res.data;
@@ -35,40 +37,8 @@ const getSelectCompletion = async () => {
         }
     }
 }
-getSelectCompletion()
+getSelectCompletion();
 
-
-/**
- * 职位
- */
-const activeId = ref(0);  //右侧的id
-const activeIndex = ref(0); //左侧的索引
-
-let item3 = ref();
-let posttionTitle = ref("职位");
-
-////////职位params
-let wishIndustry = reactive({});
-let wishPosition = reactive({});
-const positionSelect = async () => {
-    wishIndustry = items[activeIndex.value];
-    wishPosition = items[activeIndex.value].children.find((item: any) => item.id == activeId.value);
-    posttionTitle.value = (wishPosition as {text:string}).text;
-    let res: any = await useJob.selectPositionList({
-        wishNature: checkNatur?.label,
-        wishEducation: eduation.value,
-        wishMoneyLeft:wishMoneyLeft.value,
-        wishMoneyRight:wishMoneyRight.value,
-
-        wishIndustryLeft: (wishIndustry as {text:string}).text || "不限",
-        wishPositionLeft: (wishPosition as {text:string}).text || "不限",
-        wishAddr: wishAddrStr.value || "不限",
-    })
-    if (res.code == 200) {
-        cardList.value = res.data;
-    }
-    item3.value.toggle();
-}
 
 let items: any[] = reactive([]);
 const getPositionList = async () => {
@@ -91,12 +61,82 @@ const getPositionList = async () => {
 }
 getPositionList();
 
+
+/**
+ * 职位
+ */
+const activeId:any = ref(0);  //右侧的id
+const activeIndex = ref(0); //左侧的索引
+
+let item3 = ref();
+let posttionTitle = ref("职位");
+
+////////职位params
+let checkNatur:any = reactive({});
+let wishIndustry:any = reactive({});
+let wishPosition = reactive({});
+
+let eduation = ref();
+let wishMoneyLeft = ref();
+let wishMoneyRight = ref();
+let wishAddrStr = ref();
+const positionSelect = async () => {
+    if(items.length !== 0){
+        wishIndustry = items[activeIndex.value];
+        wishPosition = items[activeIndex.value].children.find((item: any) => item.id == activeId.value);
+        posttionTitle.value = (wishPosition as {text:string}).text;
+    }
+    let res: any = await useJob.selectPositionList({
+        wishNature: checkNatur?.label,
+        wishEducation: eduation.value,
+        wishMoneyLeft:wishMoneyLeft.value,
+        wishMoneyRight:wishMoneyRight.value,
+
+        wishIndustryLeft: Number((wishIndustry as {id:number}).id),
+        wishPositionLeft:activeId.value || "",
+        wishAddr: wishAddrStr.value || "不限",
+    })
+    if (res.code == 200) {
+        cardList.value = res.data;
+    }
+    item3.value.toggle();
+}
+
+
+
+/*****
+ * 
+ * 跳过来查询
+ * 
+ */
+ const position = async(positionId:number)=>{
+    console.log(positionId);
+    
+    let res: any = await useJob.selectPositionList({
+        wishIndustryLeft: Number(positionId)
+    })
+    if (res.code == 200) {
+        cardList.value = res.data;
+    }
+ }
+  
+
+if(route.query.positionId){
+    wishIndustry.id = route.query.positionId;
+    posttionTitle.value = route.query.positionName as string;
+    position(route.query.positionId as any);
+}
+
+
+
+
+
 /***
  * 地区
  */
+
 const item = ref();
 let addressTitle = ref("地区");
-let wishAddrStr = ref();
 const onConfirm = async (e: { name: string, code: string }[]) => {
     let wishAddress: { name: string; code: string; }[] = [];
     e.forEach((item, index) => {
@@ -116,8 +156,8 @@ const onConfirm = async (e: { name: string, code: string }[]) => {
         wishMoneyLeft:wishMoneyLeft.value,
         wishMoneyRight:wishMoneyRight.value,
 
-        wishIndustryLeft: (wishIndustry as {text:string}).text || "不限",
-        wishPositionLeft: (wishPosition as {text:string}).text || "不限",
+        wishIndustryLeft: Number((wishIndustry as {id:number}).id),
+        wishPositionLeft:activeId.value || "",
         wishAddr: wishAddrStr.value || "不限",
     })
     if (res.code == 200) {
@@ -206,10 +246,8 @@ const resetFilter = () => {
 }
 
 
-let checkNatur:any = reactive({});
-let eduation = ref();
-let wishMoneyLeft = ref();
-let wishMoneyRight = ref();
+
+
 const submitFilter = async () => {
      checkNatur = natureArr.find((item: Item) => item.isClass == true);
     let checkEduation = educationSeleArr.value.filter((item: Item) => item.isClass == true);
@@ -236,8 +274,8 @@ const submitFilter = async () => {
         wishMoneyLeft:wishMoneyLeft.value,
         wishMoneyRight:wishMoneyRight.value,
 
-        wishIndustryLeft: (wishIndustry as {text:string}).text || "不限",
-        wishPositionLeft: (wishPosition as {text:string}).text || "不限",
+        wishIndustryLeft: Number((wishIndustry as {id:number}).id),
+        wishPositionLeft:activeId.value || "",
         wishAddr: wishAddrStr.value || "不限",
     })
 
@@ -249,20 +287,7 @@ const submitFilter = async () => {
 }
 
 
-/***
- * 
- * 职位列表
- * 
- */
 
-const selectPositionList = async () => {
-    let res: any = await useJob.selectPositionList({});
-    if (res.code == 200) {
-        cardList.value = res.data;
-    }
-}
-
-selectPositionList();
 
 
 const onClickLeft = () => history.back();

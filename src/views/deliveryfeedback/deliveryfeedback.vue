@@ -5,20 +5,20 @@
             <van-tab  v-for="item in stageTitl"  :title="item.label" @click="selectDelivery()">
                 <van-empty v-if="!list.length" image="error" description="空空如也" />
               <div v-else>
-               <div class="cord-box">
+               <div class="cord-box" v-for="item in list">
                   <div class="header">
-                     <div class=""><h3>Java开发工程师</h3></div>
-                     <div class="red-ft">8-15k</div>
+                     <div class=""><h3>{{ item.companyName }}</h3></div>
+                     <div class="red-ft">{{ item.positionMoney.split(",")[0] }}-{{item.positionMoney.split(",")[1]  }}</div>
                   </div>
                   <div class="count">
                      <div class="count-gs">
-                        <div><img src="@/assets/images/icon-file.png" alt=""></div>
+                        <div><img :src="item.companyLogoUrl" alt=""></div>
                         <div> 
-                           中科百谷
-                         <br>北京-北京市
+                           {{ item.companyName }}
+                         <br>{{ item.companyAddr }}
                         </div>
                        </div>
-                     <div class="d0-ft">17:41</div>
+                     <div class="d0-ft">{{ item.interviewTime }}</div>
                   </div>
               </div>
             </div>
@@ -35,7 +35,7 @@ const onClickLeft = () => history.back();
 let useFeedBack = useFeedbackStore();
 let stageTitl:any = ref([]);
 
-let list = ref([]);
+let list:any = ref([]);
 
  let getStage = async ()=>{
     let res = await useFeedBack.getStage({});
@@ -46,8 +46,6 @@ let list = ref([]);
  let selectDelivery = async ()=>{
     let res:any = await useFeedBack.selectDelivery({deliveryStatus:active.value,userId:10000});
     if(res.code == 200){
-      console.log(res.data);
-      
        list.value = res.data;
     }
  }

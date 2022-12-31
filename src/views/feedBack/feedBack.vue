@@ -67,15 +67,6 @@ let useFeedBack = useFeedbackStore();
      router.push({path:params.path,query:params.params})
  }
 
-  let feedBack = async ()=>{
-     let res = await useFeedBack.feedback({
-        userId:10000,
-        opinion:"意见反馈1"
-     })
-     console.log(res);
-  }
-
-//   feedBack()
 
 </script>
     

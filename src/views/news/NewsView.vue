@@ -28,13 +28,15 @@
       <div class="text-title mt-20">暂无企业的邀请</div>
       <div class="text-tip mt-10">
         <span v-if="perfectionNum==0">请先填写个人基本信息，企业才能向您抛出橄榄枝</span>
-        <span v-else-if="perfectionNum<averageScore">您的在线简历完善度只有{{perfectionNum*100}}分，低于平均分{{averageScore*100}}。在线简历完善后，就能吸引更多企业</span>
+        <span
+          v-else-if="perfectionNum<averageScore"
+        >您的在线简历完善度只有{{perfectionNum*100}}分，低于平均分{{averageScore*100}}。在线简历完善后，就能吸引更多企业</span>
         <span v-else>建议您主动出击，寻找合适机会</span>
-        </div>
+      </div>
       <div class="btn-box mt-20">
         <van-button class="btn2" type="primary" @click="to('/personalInfo')">
-        <span v-if="perfectionNum==0">去填写</span>
-        <span v-else>完善简历</span>
+          <span v-if="perfectionNum==0">去填写</span>
+          <span v-else>完善简历</span>
         </van-button>
       </div>
     </div>
@@ -50,11 +52,7 @@
                 <img class="com-img" :src="item.companyLogoUrl" />
                 <div>
                   <div class="new-title">{{item.companyName}}</div>
-                  <div
-                    class="new-desc"
-                  >
-                  {{item.positionName}} | {{item.positionMoney}}K
-                  </div>
+                  <div class="new-desc">{{item.positionName}} | {{item.positionMoney}}K</div>
                 </div>
               </div>
             </div>
@@ -65,8 +63,8 @@
         </van-cell>
       </van-cell-group>
     </div>
-    
-    <van-action-sheet @click.prevent.stop v-model:show="showResume" title="确认投递简历">
+
+    <!-- <van-action-sheet @click.prevent.stop v-model:show="showResume" title="确认投递简历">
       <div class="sheet-content" v-show="!(resumeInfo.completion ==0)">
         <div class="flex">
           <van-icon name="checked" size="2.5rem" color="#2979ff" />
@@ -83,13 +81,51 @@
           class="btn-confirm fs-14"
           type="primary"
         >确认投递</van-button>
-          <!-- @click="deliveryJob(options.positionId)" -->
-      </div>
+    @click="deliveryJob(options.positionId)"-->
+    <!-- </div>
       <div class="sheet-content" v-show="resumeInfo.completion == 0">
         <div class="just-center flex">
           <p class="fs-14 c-747474">
             还未填写简历，点击
             <a @click="to('/createResume')" class="c-2979ff">去填写</a>
+          </p>
+        </div>
+      </div>
+    </van-action-sheet>-->
+    <van-action-sheet @click.prevent.stop v-model:show="showResume" title="确认投递简历">
+      <div class="sheet-content" v-show="!(resumeList.length == 0)">
+        <div class="pop">
+          <div class="container-resume">
+            <van-radio-group v-model="checked">
+              <div class="resume-item mt-5 pd-20_0" v-for="item in resumeList" :key="item.resumeId">
+                <van-radio :name="item.resumeId" icon-size="2rem">
+                  <img class="icon-30 ml-15" src="@/assets/images/icon-resume.png" />
+                  <div class="resume ml-10">
+                    <div class="top just-between mt-5">
+                      <div
+                        class="fs-14"
+                      >{{ /在线简历/.test(item.resumeName) ? '在线简历' : item.resumeName }}</div>
+                      <div class="fs-12 ml-40" v-if="item.isOnline">
+                        <span class="c-5d5d5d">完成度:</span>
+                        <span class="c-2979ff">{{ onlineResume ? onlineResume * 100 :''}}%</span>
+                      </div>
+                    </div>
+                    <div class="btm fs-12 c-5d5d5d">{{ item.modifyTime }}{{item.isOnline?'更新':'上传'}}</div>
+                  </div>
+                </van-radio>
+              </div>
+            </van-radio-group>
+          </div>
+          <div class="btn-wrap">
+            <div class="btn c-ffffff just-center fs-14" @click="delivery(options.positionId)">确认投递</div>
+          </div>
+        </div>
+      </div>
+      <div class="sheet-content" v-show="resumeList.length == 0">
+        <div class="just-center flex">
+          <p class="fs-14 c-747474">
+            还未填写简历，点击
+            <a href @click="jump('/createResume')" class="c-2979ff">去填写</a>
           </p>
         </div>
       </div>
@@ -101,61 +137,55 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { parseAssetFile } from "@/assets/util";
 import { useResumeStore } from "@/stores/resume";
-import { Toast } from 'vant';
+import { Toast } from "vant";
 const use = useResumeStore();
 const router = useRouter();
 const loginStatus = ref(false);
-const resumeInfo:any = ref({});
-const showResume=ref(false);
+const resumeList: any = ref({});
+const showResume = ref(false);
 loginStatus.value = sessionStorage.getItem("token") ? true : false;
 const showPopup = ref(!loginStatus.value);
 const to = function (path: any) {
   router.push(path);
 };
-let newsList:any = ref([]);
+let newsList: any = ref([]);
 let perfectionNum = ref(0);
-let averageScore=ref(0);
-let getResumeInfo = async function () {
-  let res = await use.selectCompletion({});
+let averageScore = ref(0);
+let getResumeList = async function () {
+  let res = await use.selectResume({});
   if (res.code == 200) {
-    console.log(res);
-    resumeInfo.value=res.data;
+    resumeList.value = res.data;
   }
 };
 const getNewsList = async () => {
-  let res = await use.selectInvitation({
-    // userId: 10000,
-  });
+  let res = await use.selectInvitation({});
   console.log(res);
   if (res.code == 200) {
-    console.log(newsList.value);
     newsList.value = res.data;
   }
 };
 const getPerfectionNum = async () => {
-  let res = await use.selectCompletion({
-  });
+  let res = await use.selectCompletion({});
   if (res.code == 200) {
     perfectionNum.value = res.data.completion;
-    averageScore.value=res.data.averageScore;
+    averageScore.value = res.data.averageScore;
   }
 };
 onMounted(() => {
   getNewsList();
   getPerfectionNum();
-  getResumeInfo();
+  getResumeList();
 });
-
 
 /***
  * 微信登录的提示信息
  */
-const wxLogin = ()=>{
+const wxLogin = () => {
   Toast({
-    message: '微信登录暂不支持,请用手机号码验证码登录。',
-    position: 'top',
+    message: "微信登录暂不支持,请用手机号码验证码登录。",
+    position: "top",
   });
-}
+};
 </script>
 <style lang="scss" scoped>
 .back-gray {
@@ -278,9 +308,55 @@ const wxLogin = ()=>{
   }
 }
 
+.pop {
+  height: 44rem;
+  padding: 0 2rem;
+
+  & > .container-resume {
+    height: calc(42rem - 7rem);
+    overflow-y: scroll;
+
+    .resume-item {
+      display: flex;
+      align-items: center;
+      border-bottom: 0.2px solid #d8dbe3;
+
+      :deep(.van-radio__label) {
+        display: flex;
+        align-items: center;
+      }
+
+      .resume {
+        flex: 1;
+        height: 5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        .top {
+          width: 20rem;
+          display: flex;
+        }
+      }
+    }
+  }
+}
+.btn {
+  margin-top: 3rem;
+  border-radius: 0.5rem;
+  padding: 1.4rem 1rem;
+  background-color: #3b7dff;
+}
 .h-50 {
   width: 100%;
   height: 5rem;
+}
+.icon-30 {
+  width: 3rem;
+  height: 3rem;
+}
+
+.pd-20_0 {
+  padding: 2rem 0;
 }
 </style>
   

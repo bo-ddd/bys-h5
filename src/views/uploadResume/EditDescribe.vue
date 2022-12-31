@@ -43,14 +43,12 @@ const userProfessionalSkill: any = ref(""); //用户专业技能 ,
 const userSchoolPractice: any = ref(""); //用户校园实践 ,
 const userStar: any = ref(""); //用户获奖情况
 onMounted(async () => {
-  console.log(route);
   let res = await getDescInfo();
   infoData.value = res.data;
   let res2 = await getTitle();
 });
 const getTitle = function () {
   const routeName = route.query.editName;
-  console.log(infoData);
   if (routeName == "campus") {
     titleName.value = "校园实践";
     message.value = infoData.value.userSchoolPractice;
@@ -79,13 +77,11 @@ const getTitle = function () {
 };
 const getDescInfo = function () {
   return use.getOnlineResume({
-    userId: 10000,
   });
 };
 const reviseDesc = async function () {
   let res = await use.modifyUserStar({
     userHobby: userHobby.value.value,
-    userId: 10000,
     userProfessionalSkill: userProfessionalSkill.value.value,
     userSchool: userSchoolPractice.value.value,
     userStar: userStar.value.value,

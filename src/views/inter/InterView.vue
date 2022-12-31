@@ -86,9 +86,7 @@ getUserInterview();
 
 // 获取用户面试
 async function getUserInterview() {
-    const res: Res | any = await axios.getUserInterviewApi({
-        userId: 10000,
-    });
+    const res: Res | any = await axios.getUserInterviewApi({});
     if (res.data != null && res.data.length != 0) {
         isok.value = true;
         Object.assign(interviewData, res.data);

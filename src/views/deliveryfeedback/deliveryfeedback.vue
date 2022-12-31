@@ -44,7 +44,7 @@ let list:any = ref([]);
     getStage();
   
  let selectDelivery = async ()=>{
-    let res:any = await useFeedBack.selectDelivery({deliveryStatus:active.value,userId:10000});
+    let res:any = await useFeedBack.selectDelivery({deliveryStatus:active.value});
     if(res.code == 200){
        list.value = res.data;
     }

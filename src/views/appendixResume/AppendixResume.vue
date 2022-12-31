@@ -17,9 +17,9 @@
           >
             <div class="align-center gap-10">
               <div>
-                <!-- <img v-if="item." src="@/assets/images/icon-pdf.png" =""> -->
-                <img src="@/assets/images/icon-pdf.png" />
-                <!-- <img v-else src="@/assets/images/icon-pdf.png" =""> -->
+                <img v-if="item.resumeType=='pdf'" src="@/assets/images/icon-pdf.png" />
+                <img v-else-if="item.resumeType=='doc'" src="@/assets/images/icon-doc.png" />
+                <img v-else-if="item.resumeType=='docx'" src="@/assets/images/icon-doc.png" />
               </div>
               <div>
                 <div class="title fs-16">{{item.resumeName}}</div>
@@ -41,7 +41,6 @@
       close-on-click-action
       @select="deleteRemuse"
     />
-    <!-- @cancel="onCancel" -->
   </div>
 </template>
 <script lang="ts" setup>
@@ -65,8 +64,6 @@ const to = function (path: any) {
 };
 const getResumeList = async function () {
   let res = await use.selectResume({});
-  console.log(res);
-
   if (res.code == 200) {
     resumeList.value = res.data.filter((item: any) => item.isOnline == false);
   }
@@ -82,18 +79,15 @@ const deleteRemuse = function () {
     confirmButtonColor: "#3b81fb",
   })
     .then(async () => {
-      // on confirm
       deleteRemuseApi();
     })
     .catch(() => {
-      // on cancel
     });
 };
 const deleteRemuseApi = async function () {
   let res = await use.delResume({
     resumeId: resumeId.value,
   });
-  console.log(res);
   if (res.code == 200) {
     Toast.success("删除成功");
     getResumeList()

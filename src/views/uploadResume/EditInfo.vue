@@ -226,25 +226,22 @@ const deleteInfo = () => {
       if (routeName.value == "education") {
         deleteApi = use.delEducation;
         res = await deleteApi({
-          userId: 10000,
           userEducationId: Number(route.query.infoId),
         });
       } else if (routeName.value == "internship") {
         deleteApi = use.delInternShip;
         res = await deleteApi({
-          userId: 10000,
           internShipId: Number(route.query.infoId),
         });
       } else if (routeName.value == "project") {
         deleteApi = use.delProject;
         res = await deleteApi({
-          userId: 10000,
           projectId: Number(route.query.infoId),
         });
       }
       if (res.code == 200) {
         Toast.success({
-          message: "更新成功666!",
+          message: "更新成功!",
           duration: 500,
         });
         router.push("/resumeDetails");
@@ -258,7 +255,6 @@ const getEditInfo = async (id: number) => {
   if (routeName.value == "education") {
     let res = await use.getEducation({
       educationId: Number(id),
-      userId: 10000,
     });
     if (res.code == 200) {
       let infoData = res.data[0];
@@ -280,7 +276,6 @@ const getEditInfo = async (id: number) => {
   } else if (routeName.value == "internship") {
     let res = await use.getInternShip({
       internShipId: Number(id),
-      userId: 10000,
     });
     if (res.code == 200) {
       let infoData = res.data[0];
@@ -293,7 +288,6 @@ const getEditInfo = async (id: number) => {
   } else if (routeName.value == "project") {
     let res = await use.getProject({
       projectId: Number(id),
-      userId: 10000,
     });
     if (res.code == 200) {
       let infoData = res.data[0];
@@ -318,7 +312,6 @@ const editInfo = async () => {
       schoolId: school.value.value, //学校id ,
       startTime: beginTime.value, //用户教育经历开始时间 ,
       userEducationId: route.query.infoId, //用户教育经历id ,
-      userId: 10000,
     });
   } else if (routeName.value == "internship") {
     res = await use.modifyInternShip({
@@ -327,7 +320,6 @@ const editInfo = async () => {
       internShipDes: positonDesc.value, // 职位描述 ,
       positionName: positionName.value, //职位名称 ,
       startTime: beginTime.value, //开始时间 ,
-      userId: 10000, //用户id
       internShipId: route.query.infoId, //用户教育经历id ,
     });
   } else if (routeName.value == "project") {
@@ -338,7 +330,6 @@ const editInfo = async () => {
       projectName: companyName.value,
       projectStar: projectStar.value,
       startTime: beginTime.value,
-      userId: 10000,
       projectId: route.query.infoId,
     });
   }
@@ -447,7 +438,6 @@ const addEducationApi = async function () {
     schoolId: school.value.value, //学校id ,
     startTime: overTime.value, //用户教育经历开始时间 ,
     educationId: educationValue.value, //用户教育经历id ,
-    userId: 10000, //用户id
   });
   if (res.code == 200) {
     clearData();
@@ -461,7 +451,6 @@ const addInternShipApi = async function () {
     internShipDes: positonDesc.value, // 职位描述 ,
     positionName: positionName.value, //职位名称 ,
     startTime: beginTime.value, //开始时间 ,
-    userId: 10000, //用户id
   });
   if (res.code == 200) {
     clearData();
@@ -476,7 +465,6 @@ const addProjectApi = async function () {
     projectName: companyName.value,
     projectStar: projectStar.value,
     startTime: beginTime.value,
-    userId: 10000,
   });
   if (res.code == 200) {
     clearData();

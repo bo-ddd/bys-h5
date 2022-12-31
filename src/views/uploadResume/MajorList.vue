@@ -25,7 +25,6 @@ const search = async function (value:string) {
     str: value,
   });
   if (res.code == 200) {
-    console.log(res.data);
     majorList.value = res.data;
     
   }
@@ -41,7 +40,6 @@ const onLoad = async() => {
   loading.value = false;
   const res = await getMajorList();
   if (res.code == 200) {
-    console.log(res);
     finished.value = true;
     majorList.value=res.data;
   }

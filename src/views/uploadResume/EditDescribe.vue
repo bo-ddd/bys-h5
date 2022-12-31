@@ -79,13 +79,11 @@ const getTitle = function () {
 };
 const getDescInfo = function () {
   return use.getOnlineResume({
-    userId: 10000,
   });
 };
 const reviseDesc = async function () {
   let res = await use.modifyUserStar({
     userHobby: userHobby.value.value,
-    userId: 10000,
     userProfessionalSkill: userProfessionalSkill.value.value,
     userSchool: userSchoolPractice.value.value,
     userStar: userStar.value.value,

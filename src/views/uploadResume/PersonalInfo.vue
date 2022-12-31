@@ -226,10 +226,12 @@ onActivated(() => {
   getScrollValue();
 });
 onBeforeRouteLeave((to, from, next) => {
-  if (to.name == "resumeDetails") {
-    clearKeep();
-  } else {
+  if (to.name == "schoolList" || to.name == "majorList") {
     setScrollValue();
+  } else {
+    clearKeep();
+    clearUserInfo();
+    console.log("清空用户信息啊");
   }
   next();
 });
@@ -282,29 +284,28 @@ const getInfo = async function () {
     userYear.value = res.data.userYear;
   }
 };
-const clearUserInfo=function(){
-    userName.value = '';
-    userEmail.value = '';
-    userSex.value = '';
-    sexValue.value = '';
-    avaterImg.value = '';
-    userBirthday.value = '';
-    userNational.value = '';
-    nationValue.value = '';
-    userEducation.value = '';
-    educationValue.value = '';
-    userAddr.value = '';
-    userSchool.value = {
-      name: '',
-      value: '',
-    };
-    userProfessional.value = {
-      name: '',
-      value: '',
-    };
-    userYear.value = '';
-
-}
+const clearUserInfo = function () {
+  userName.value = "";
+  userEmail.value = "";
+  userSex.value = "";
+  sexValue.value = "";
+  avaterImg.value = "";
+  userBirthday.value = "";
+  userNational.value = "";
+  nationValue.value = "";
+  userEducation.value = "";
+  educationValue.value = "";
+  userAddr.value = "";
+  userSchool.value = {
+    name: "",
+    value: "",
+  };
+  userProfessional.value = {
+    name: "",
+    value: "",
+  };
+  userYear.value = "";
+};
 
 const upload: any = ref(null);
 
@@ -326,7 +327,6 @@ const clearKeep = function () {
   scrollTop.value = 0;
   //重新获取用户信息
   // getInfo();
-  clearUserInfo()
   //清空stores
   clearSchool();
   clearMajor();

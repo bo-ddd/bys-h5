@@ -21,14 +21,11 @@
           src="@/assets/images/icon-fillin.png"></p>
     </header>
     <main class="container">
-      <van-list v-show="cardList.length" v-model:loading="loading" :finished="finished" finished-text="没有更多职位了"
-        @load="onLoad">
-        <Card.Wrap class="card-bg" v-if="cardList.length">
-          <Card.Item :class="index ? 'mt-5' : ''" v-for="item, index in cardList" :key="item.companyId" :options="item"
-             @click="jump('/positionDetail', item.positionId)"></Card.Item>
-        </Card.Wrap>
-      </van-list>
-      <div  v-show="!cardList.length">
+      <Card.Wrap class="card-bg" v-if="cardList.length">
+        <Card.Item :class="index ? 'mt-5' : ''" v-for="item, index in cardList" :key="item.companyId" :options="item"
+          @click="jump('/positionDetail', item.positionId)"></Card.Item>
+      </Card.Wrap>
+      <div v-show="!cardList.length">
         <div class="just-center mt-150">
           <img class="icon-position" src="@/assets/images/icon-positionjob.png" alt="">
         </div>
@@ -77,11 +74,16 @@ const wxLogin = () => {
 
 
 const jump = (src: string, params?: number) => {
-  if (params) {
-    router.push({ path: src, query: { positionId: params } })
-  } else {
-    router.push({ path: src })
+  if(src=='/jobIntention' && intention.value){
+    showCount.value = true;
+  }else{
+    if (params) {
+      router.push({ path: src, query: { positionId: params } })
+    } else {
+      router.push({ path: src })
+    };
   }
+
 }
 
 let isShow = ref(false)
@@ -94,9 +96,9 @@ if (localStorage.getItem('jobIndustry')) {
 }
 
 // 获取求职意向
+let intention = ref(false);
 const getJobIntent = async () => {
   let res: any = await useJob.getJobIntentList({});
-  console.log(res)
   if (res.code == 200) {
     if (res.data != "[]") {
       if (res.data.wishAddr.length) {
@@ -104,7 +106,6 @@ const getJobIntent = async () => {
       }
       // 地区
       area.value = (res.data.wishAddr);
-      console.log(area.value);
       // 职位
       res.data.wishPosition.forEach((item: any) => {
         wishPositionRight.value += item.positionNameDown + '、';
@@ -163,6 +164,9 @@ const getJobIntent = async () => {
     }
   } else {
     isShow.value = false;
+    intention.value = true;
+    getSelectPosition({});
+
   }
 }
 getJobIntent();
@@ -170,56 +174,10 @@ getJobIntent();
 let cardList = ref([]) as Ref<CardItem[]>;
 const getSelectPosition = async (params: any) => {
   let res: any = await useJob.getSelectPositionList(params);
-  console.log(res)
   if (res.code == 200) {
     cardList.value = cardList.value.concat(res.data);
-
   }
 }
-
-
-const loading: Ref<boolean> = ref(false);
-const finished: Ref<boolean> = ref(false);
-const renderCard: Ref<any[]> = ref([]);
-// 拉到底部继续加载 直到全部数据加载完毕 
-const onLoad = () => {
-  // 异步更新数据
-  // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-  setTimeout(() => {
-    for (let i = 0; i < 3; i++) {
-      renderCard.value.push(cardList.value.length + 1);
-    }
-
-    // 加载状态结束
-    loading.value = false;
-
-    // 数据全部加载完成
-    if (renderCard.value.length >= cardList.value.length) {
-      finished.value = true;
-    }
-  }, 1000);
-};
-
-interface ResumeInfo {
-  completion: number,
-  modifyTime: string
-}
-// let resumeInfo = ref({}) as Ref<ResumeInfo>;
-// // 查询简历完成度
-// const getSelectCompletion = async () => {
-//   let res: any = await useJob.getSelectCompletion();
-//   if (res.code == 200) {
-//     if (res.data.completion != null) {
-//       resumeInfo.value = res.data;
-//     } else {
-//       resumeInfo.value = {
-//         completion: 0,
-//         modifyTime: ''
-//       }
-//     }
-//   }
-// }
-// getSelectCompletion()
 </script>
 
 <style lang="scss" scoped>
@@ -305,4 +263,25 @@ interface ResumeInfo {
     }
   }
 }
+.show-count_box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+
+        .show-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+
+            h1 {
+                font-weight: 500;
+            }
+
+            .ft {
+                font-size: 1.8rem;
+            }
+        }
+    }
 </style>

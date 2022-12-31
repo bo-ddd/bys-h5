@@ -98,9 +98,7 @@ let companyId = ref(Number(route.query.companyId))
 
 // 获取用户面试
 async function getUserInterview() {
-    const res: Res | any = await axios.getUserInterviewApi({
-        userId: 10000,
-    });
+    const res: Res | any = await axios.getUserInterviewApi({});
     if (res.data) {
         res.data.forEach((item: any) => {
             if (item.companyId == companyId.value) {

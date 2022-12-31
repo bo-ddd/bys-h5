@@ -4,11 +4,11 @@ import Api from "@/assets/api/z-api";
 interface PositionParams{
     wishAddr?:string,
     wishEducation?:string,
-    wishIndustryLeft?:number,
+    wishIndustryLeft?:string,
     wishMoneyLeft?:string,
     wishMoneyRight?:string,
     wishNature?:string,
-    wishPositionLeft?:number
+    wishPositionLeft?:string
 }
 interface DeliveryPosition{
     positionId:number 
@@ -51,7 +51,6 @@ export const useJobStore = defineStore('job', () => {
         return Api.selectCompletion(payload);
     };
     
-
     return {
         getWishMoneyList,
         getCompanyIndustryList,
@@ -63,4 +62,5 @@ export const useJobStore = defineStore('job', () => {
         deliveryPosition,
         getSelectCompletion
     }
-})
+});
+

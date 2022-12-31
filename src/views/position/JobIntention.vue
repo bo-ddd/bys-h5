@@ -136,7 +136,7 @@ const wxLogin = () => {
 
 
 // 返回
-const onClickLeft = () => history.back();
+const onClickLeft = () => { router.push({ path: '/position' })};
 // 期望职位
 let columnsJob: any[] = reactive([]);
 let columnJob: any[] = reactive([]);

@@ -17,7 +17,7 @@
         </div>
         <div class="upload flex-ja-center">
           <img v-if="!token||!isUserInfoData" class="icon-camera" src="@/assets/images/icon-camera.png" alt="">
-          <img v-else class="icon-camera" :src="userInfo.userLogoUrl" alt="">
+          <img v-else class="icon-user" :src="userInfo.userLogoUrl" alt="">
         </div>
       </div>
     </header>
@@ -348,6 +348,11 @@ const jump = (src: string) => {
 
     .icon-camera {
       width: 2.6rem;
+    }
+    .icon-user{
+      width: $size;
+      height: $size;
+      border-radius: $size;
     }
   }
 }

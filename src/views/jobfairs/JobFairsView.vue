@@ -144,7 +144,7 @@ let selectLogo = async () => {
     positionList.value = formatData(data.value.positionList, 4);
     // positionNameList.value = formatData(data.value.positionNameList, 8);
     companyList.value = formatData(data.value.companyList, 8);
-    specialList.value = formatData(data.value.specialList, 8)
+    specialList.value = formatData(data.value.specialList, 8);
   }
 }
 selectLogo();
@@ -174,7 +174,7 @@ let formatData = (data: any[], pageSize: number): any[] => {
     padding-top: .6rem;
   }
 
-                                  .filx-column_center {
+  .filx-column_center {
     display: flex;
     justify-content: center;
     align-items: center;

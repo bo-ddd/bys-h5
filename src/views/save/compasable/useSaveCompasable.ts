@@ -57,7 +57,6 @@ export default function () {
     const onRefresh = async () => {
         Toast('刷新成功');
         loading.value = false;
-        console.log(positionCount.value)
         if(positionPayload.pageIndex*positionPayload.pageSize < positionCount.value){
             positionPayload.pageIndex++;
             getSaveList();
@@ -66,7 +65,6 @@ export default function () {
     const onRefreshCompany = async () => {
         Toast('刷新成功');
         companyLoading.value = false;
-        console.log(companyCount.value)
         if(companyPayload.pageIndex*companyPayload.pageSize < companyCount.value){
             companyPayload.pageIndex++;
             getCompanyList();
@@ -76,8 +74,6 @@ export default function () {
     const getSaveList = async () => {
         const res:Res<{data:any,maxCount:number}> = await SaveStore.getSaveList(positionPayload);
         if (res.code == 200) {
-            console.log('-----------------我是收藏职位的列表-----------------');
-            console.log(res);
             positionList.value.push(...((res.data).data));
             positionCount.value = res.data.maxCount;
             positionList.value = [...new Set(...[positionList.value])];
@@ -87,8 +83,6 @@ export default function () {
     const getCompanyList = async () => {
         const res:Res<{data:any,maxCount:number}> = await SaveStore.getSaveList(companyPayload);
         if(res.code == 200){
-            console.log('--------------我是收藏企业的列表---------------');
-            console.log(res);
             companyList.value.push(...((res.data).data));
             companyCount.value = res.data.maxCount;
             companyList.value = [...new Set(...[companyList.value])];

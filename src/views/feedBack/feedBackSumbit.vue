@@ -15,7 +15,7 @@
                 
                 <div class="proposal-item ">
                     <van-cell-group inset>
-                        <van-field label="联系方式" placeholder="请输入用户名" />
+                        <van-field v-model="phone" label="联系方式" placeholder="请输入用户名" />
                     </van-cell-group>
                 </div>
             </div>
@@ -35,29 +35,25 @@
 import { ref } from "vue";
 import { useFeedbackStore } from "@/stores/feedBack";
 import { useRoute } from 'vue-router';
+import { Toast } from 'vant';
 let route = useRoute();
 let useFeedBack = useFeedbackStore();
-
+let phone  = ref("");
 let message = ref("")
 let feedBack = async ()=>{
      let res:any = await useFeedBack.feedback({
-        userId:10000,
-        opinion:message.value
+        opinion:message.value,
+        phone:phone.value
      })
      if(res.code = 200){
-        console.log(res);
-        
+        Toast({
+            message: "提交成功,会尽快处理",
+            position: 'top',
+        });
      }
   }
 
 const onClickLeft = () => history.back();
-const checked = ref('');
-const fileList = ref([
-    { url: 'https://unpkg.com/@vant/assets/leaf.jpeg' },
-    // Uploader 根据文件后缀来判断是否为图片文件
-    // 如果图片 URL 中不包含类型信息，可以添加 isImage 标记来声明
-    { url: '', isImage: true },
-]);
 </script>
 
 <style lang="scss" scoped>

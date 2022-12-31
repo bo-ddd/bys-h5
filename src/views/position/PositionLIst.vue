@@ -110,7 +110,6 @@ const positionSelect = async () => {
  * 
  */
  const position = async(positionId:number)=>{
-    console.log(positionId);
     
     let res: any = await useJob.selectPositionList({
         wishIndustryLeft: Number(positionId)

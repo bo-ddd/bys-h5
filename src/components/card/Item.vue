@@ -41,11 +41,13 @@
                                                     {{ /在线简历/.test(item.resumeName) ? '在线简历' : item.resumeName }}</div>
                                                 <div class="fs-12 ml-40" v-if="item.isOnline">
                                                     <span class="c-5d5d5d">完成度:</span>
-                                                    <span class="c-2979ff">{{ onlineResume ? onlineResume * 100 :''}}%</span>
+                                                    <span class="c-2979ff">{{ onlineResume ? onlineResume * 100
+        : ''
+}}%</span>
                                                 </div>
                                             </div>
                                             <div class="btm fs-12 c-5d5d5d">
-                                                {{ item.modifyTime }}{{item.isOnline?'更新':'上传'}}
+                                                {{ item.modifyTime }}{{ item.isOnline ? '更新' : '上传' }}
                                             </div>
                                         </div>
                                     </van-radio>
@@ -93,12 +95,19 @@ import { usePositionDetailStore } from "@/stores/positonDetail";
 const positionDetailStore = usePositionDetailStore();
 const router = useRouter();
 const useJob = useJobStore();
+interface ResInfo {
+    code: number,
+    msg: string,
+    data: any
+}
 
 let props = defineProps<{
     options: CardItem,
+    resume: ResInfo,
+    onlineResumeInfo: ResInfo
 }>();
 
-let { options, } = toRefs(props);
+let { options, resume,onlineResumeInfo } = toRefs(props);
 
 const token = sessionStorage.getItem("token");
 let isShow = ref(false);
@@ -128,16 +137,16 @@ const deliveryJob = async (params: number) => {
 }
 const emit = defineEmits(["refresh"]); //声明 emits
 // 确认投递
-let reload:any = inject('reload')
+let reload: any = inject('reload')
 const delivery = function (id: number) {
     deliveryJob(id);
     // window.location.href = '/position'
-    setTimeout(()=>{
+    setTimeout(() => {
         Toast('投递成功')
         reload();
-    },1000)
+    }, 1000)
 }
- 
+
 
 interface Resume {
     createTime: string,
@@ -148,51 +157,39 @@ interface Resume {
     isOnline: boolean,
     completion?: number,
 }
-interface Res<T> {
-    code: number,
-    msg: string,
-    data: T,
-}
+
 let checked: Ref<number | null> = ref(null);//这个是选中简历id
 let resumeList: Ref<Resume[]> = ref([]);
 
 // 获取在线简历的接口
-async function getOnlineResume() {
-    let res: Res<Resume[]> = await positionDetailStore.getOnlineResume({});
-    if (res.code == 200) {
-        resumeList.value = res.data;
-        let check = resumeList.value.find((item) => {
-            return item.isOnline == true;
-        })
-        if (check) {
-            checked.value = check.resumeId;
-        } else {
-            if (resumeList.value.length) {
-                checked.value = resumeList.value[0].resumeId;
-            }
+if (resume.value.code == 200) {
+    resumeList.value = resume.value.data;
+    let check = resumeList.value.find((item) => {
+        return item.isOnline == true;
+    })
+    if (check) {
+        checked.value = check.resumeId;
+    } else {
+        if (resumeList.value.length) {
+            checked.value = resumeList.value[0].resumeId;
         }
-        resumeList.value.sort((a: any, b: any) => {
-            return b.isOnline - a.isOnline;
-        });
     }
+    resumeList.value.sort((a: any, b: any) => {
+        return b.isOnline - a.isOnline;
+    });
 }
-getOnlineResume();
 
 //获取在线信息完成度
-let onlineResume =ref() as Ref<number>; 
-const selectCompletion = async () => {
-    let res: Res<any> = await positionDetailStore.selectCompletion({});
-    if (res.code == 200) {
+let onlineResume = ref() as Ref<number>;
+    if (onlineResumeInfo.value.code == 200) {
         let check = resumeList.value.find((item) => {
             return item.isOnline == true;
         })
         if (check) {
-            check.completion = res.data.completion;
+            check.completion = onlineResumeInfo.value.data.completion;
         }
-        onlineResume.value=res.data.completion
+        onlineResume.value = onlineResumeInfo.value.data.completion
     }
-}
-selectCompletion();
 
 //申请职位 
 const apply = function () {
@@ -216,22 +213,23 @@ const apply = function () {
         height: calc(42rem - 7rem);
         overflow-y: scroll;
 
-         .resume-item {
+        .resume-item {
             display: flex;
             align-items: center;
             border-bottom: .2px solid #d8dbe3;
 
-             :deep(.van-radio__label) {
+            :deep(.van-radio__label) {
                 display: flex;
                 align-items: center;
             }
 
             .resume {
                 flex: 1;
-                    height: 5rem;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between;
+                height: 5rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+
                 .top {
                     width: 20rem;
                     display: flex;
@@ -240,9 +238,10 @@ const apply = function () {
         }
     }
 }
-.pd-20_0{
-        padding: 2rem 0;
-    }
+
+.pd-20_0 {
+    padding: 2rem 0;
+}
 
 .icon-30 {
     width: 3rem;

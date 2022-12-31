@@ -21,10 +21,12 @@
           src="@/assets/images/icon-fillin.png"></p>
     </header>
     <main class="container">
+
       <Card.Wrap class="card-bg" v-if="cardList.length">
-        <Card.Item :class="index ? 'mt-5' : ''" v-for="item, index in cardList" :key="item.companyId" :options="item"
-          @click="jump('/positionDetail', item.positionId)"></Card.Item>
+        <Card.Item :resume="resInfo" :onlineResumeInfo="onlineResume" :class="index ? 'mt-5' : ''" v-for="item, index in cardList" :key="item.companyId"
+          :options="item" @click="jump('/positionDetail', item.positionId)"></Card.Item>
       </Card.Wrap>
+
       <div v-show="!cardList.length">
         <div class="just-center mt-150">
           <img class="icon-position" src="@/assets/images/icon-positionjob.png" alt="">
@@ -60,6 +62,8 @@ import { useJobStore } from "@/stores/job";//接口
 import type { JobInfo } from './types/jobInfo';
 import type { CardItem } from './types/card';
 import { Toast } from 'vant';
+import { usePositionDetailStore } from "@/stores/positonDetail";
+const positionDetailStore = usePositionDetailStore();
 const router = useRouter();
 const useJob = useJobStore();
 
@@ -74,9 +78,9 @@ const wxLogin = () => {
 
 
 const jump = (src: string, params?: number) => {
-  if(src=='/jobIntention' && intention.value){
+  if (src == '/jobIntention' && intention.value) {
     showCount.value = true;
-  }else{
+  } else {
     if (params) {
       router.push({ path: src, query: { positionId: params } })
     } else {
@@ -178,6 +182,24 @@ const getSelectPosition = async (params: any) => {
     cardList.value = cardList.value.concat(res.data);
   }
 }
+
+// 获取在线简历的接口
+let resInfo: any = ref();
+async function getOnlineResume() {
+  let res: any = await positionDetailStore.getOnlineResume({});
+  resInfo.value = res
+}
+getOnlineResume();
+
+//获取在线信息完成度
+let onlineResume: any = ref();
+const selectCompletion = async () => {
+  let res: any = await positionDetailStore.selectCompletion({});
+  onlineResume.value = res
+
+}
+selectCompletion();
+
 </script>
 
 <style lang="scss" scoped>
@@ -205,9 +227,6 @@ const getSelectPosition = async (params: any) => {
       width: 5rem;
     }
 
-    // .money {
-    //   font-family: STLiti !important;
-    // }
 
     .container {
       padding: 1.6rem 0;
@@ -263,25 +282,26 @@ const getSelectPosition = async (params: any) => {
     }
   }
 }
+
 .show-count_box {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 
-        .show-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2rem;
+  .show-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
 
-            h1 {
-                font-weight: 500;
-            }
-
-            .ft {
-                font-size: 1.8rem;
-            }
-        }
+    h1 {
+      font-weight: 500;
     }
+
+    .ft {
+      font-size: 1.8rem;
+    }
+  }
+}
 </style>

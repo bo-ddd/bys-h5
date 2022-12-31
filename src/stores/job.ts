@@ -1,15 +1,6 @@
 import { defineStore } from 'pinia'
 import Api from "@/assets/api/z-api";
 
-interface PositionParams{
-    wishAddr?:string,
-    wishEducation?:string,
-    wishIndustryLeft?:string,
-    wishMoneyLeft?:string,
-    wishMoneyRight?:string,
-    wishNature?:string,
-    wishPositionLeft?:string
-}
 interface DeliveryPosition{
     positionId:number 
 }
@@ -39,7 +30,7 @@ export const useJobStore = defineStore('job', () => {
         return Api.setModifyJobIntent(payload);
     };
     // 职位列表
-    const selectPositionList = (payload:PositionParams)=>{
+    const selectPositionList = (payload:any)=>{
         return Api.selectPositionList(payload);
     };
     // 申请职位

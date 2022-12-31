@@ -80,7 +80,7 @@
           <template #content>
             <div class="position-box">
               <div :class="isOpen ? 'is-item-box' : 'item-box'">
-                <div class="item" v-for="item in data.positionNameList" @click="jump('/positionLIst',item)">{{ item }}</div>
+                <div class="item" v-for="item in data.positionNameList" @click="jump('/positionLIst',item.positionId,item.positionName)">{{ item }}</div>
               </div>
               <div class="is-open">
                 <span @click="isOpenFn">{{ isOpen ? 'close' : "open" }}</span>

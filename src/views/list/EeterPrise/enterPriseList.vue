@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
-import { ref, provide, reactive,type Ref } from "vue";
+import { ref, provide, reactive,type Ref ,watch} from "vue";
 import Drop from "@/components/dropMenu/index";
 import { areaList } from '@vant/area-data';
 import { useCompanyListStore } from "@/stores/companyList";
@@ -44,18 +44,18 @@ interface Position {
     value: string;
 }
 interface CompanyDate{
-    companyAddr: string,
-    companyFullName:string,
-    companyId: number,
-    companyIndustry: string,
-    companyIntroducation:string,
-    companyLogoUrl: string,
-    companyName:string,
-    companyNature: string,
-    companySize: string,
-    companyUrl: string,
-    isStar: boolean,
-    positionList:Array<{
+    companyAddr?: string,
+    companyFullName?:string,
+    companyId?: number,
+    companyIndustry?: string,
+    companyIntroducation?:string,
+    companyLogoUrl?: string,
+    companyName?:string,
+    companyNature?: string,
+    companySize?: string,
+    companyUrl?: string,
+    isStar?: boolean,
+    positionList?:Array<{
         positionDay: any
         positionDayMoeny:string,
         positionEducation: string,
@@ -65,6 +65,16 @@ interface CompanyDate{
         positionName: string,
         positionPositive: any,
     }>
+}
+interface CompanyPayload {
+  companyAddr: string,
+  companyIndustryLeft: string,
+  companyIndustryRight: string,
+  companyName: string,
+  companyNature: number,
+  companySize: number,
+  pageIndex: number,
+  pageSize: number,
 }
 let jump = (url: string,companyId:number) => {
     router.push({
@@ -100,26 +110,57 @@ let guimo: Form = reactive({
     label: '规模',
     value: null,
 })
+const cmopanyPayload : CompanyPayload = reactive({
+    pageSize:1,
+    pageIndex:10,
+    companyName:'',
+}) as CompanyPayload;
+// 公司性质的选择
 const handleCompanyChange = (item: any) => {
     company.label = item.label;
     company.value = item.value;
     console.log(company);
+    cmopanyPayload.companyNature = item.value;
+    getCompanyList();
 }
+// 公司规模的选择
 const handleGuiMoChange = (item: any) => {
     guimo.label = item.label;
     guimo.value = item.value;
-    console.log(guimo);
+    cmopanyPayload.companySize = item.value;
+    getCompanyList();
 }
+// 选中地址
 const handleAreaChange = (e: any[]) => {
     let targetArr = e;
+    console.log('--------我是选中地址----------');
     area.label = targetArr[e.length - 1].name;
     area.value = targetArr[e.length - 1].code;
+    cmopanyPayload.companyAddr = targetArr[e.length - 1].name;
+        console.log(cmopanyPayload);
+    getCompanyList();
 }
 
+// 选中右侧职位
 const handlePositionChange = (item: any) => {
+    console.log(item);
     position.label = item.label;
     position.value = item.value;
+    let res;
+    for(let i = 0 ; i < positoinList.length; i++){
+        let resValue = positoinList[i].children.find(child=>{
+            return child.label == item.label;
+        })
+        if(resValue){
+            cmopanyPayload.companyIndustryLeft = positoinList[i].value;
+            break;
+        };
+    }    
+    cmopanyPayload.companyIndustryRight = item.value;
+    getCompanyList();
 }
+
+
 const activeId = ref(1);
 const activeIndex = ref(0);
 const positoinList:Position[] = reactive([]);
@@ -175,14 +216,23 @@ const getCompanyIndustry = async () => {
 getCompanyIndustry();
 // 这个是获取企业的列表
 const getCompanyList =async ()=>{
-    let res:Res<CompanyDate[]> = await Company.getCompanyList({});
+    console.log(cmopanyPayload);
+    let res:Res<{data:CompanyDate[]}> = await Company.getCompanyList(cmopanyPayload);
     if(res.code == 200){
         console.log(res);
-        CompanyList.value = res.data;
+        console.log('---------------这个是获取企业列表---------------')
+        CompanyList.value = res.data.data;
         console.log(CompanyList.value);
     }
 }
 getCompanyList();
+//监听公司名称的改变
+watch(
+  () => cmopanyPayload.companyName,
+  (companyName) => {
+    getCompanyList();
+  }
+)
 </script>
 <template>
     <div class="enterprise">
@@ -193,15 +243,14 @@ getCompanyList();
         <div class="search-wrap">
             <div class="search">
                 <img src="@/assets/images/icon-search.png" class="icon-16 mr-5">
-                <input type="text" placeholder="搜索企业">
+                <input type="text" v-model.lazy="cmopanyPayload.companyName"  placeholder="搜索企业">
             </div>
         </div>
         <!-- 这个是模糊查询企业 -->
         <Drop.Wrap class="option-wrap">
             <!-- 行业的列表 -->
             <Drop.Item :title="position.label">
-                <van-tree-select v-model:active-id="activeId" v-model:main-active-index="activeIndex"
-                    :items="positoinList" @click-item="handlePositionChange" />
+                <van-tree-select v-model:active-id="activeId" v-model:main-active-index="activeIndex" :items="positoinList" @click-item="handlePositionChange" />
             </Drop.Item>
             <!-- 地址的列表 -->
             <Drop.Item :title="area.label">
@@ -223,26 +272,26 @@ getCompanyList();
         </Drop.Wrap>
         <!-- 这个是企业的数据 -->
         <div class="list mask">
-            <div class="item mb-5" @click="jump('/companyDetails',item.companyId)" v-for="item in CompanyList" :key="item.companyId">
+            <div class="item mb-5" @click="jump('/companyDetails',item?.companyId as number)" v-for="item in CompanyList" :key="item?.companyId">
                 <div class="left">
-                    <img :src="item.companyLogoUrl" class="icon-40">
+                    <img :src="item?.companyLogoUrl" class="icon-40">
                 </div>
                 <div class="right">
                     <div class="top">
-                        <p class="fs-16">{{item.companyFullName}}</p>
+                        <p class="fs-16">{{item?.companyFullName}}</p>
                         <div class="desc fs-14">
-                            <p>{{item.companyAddr}}</p>
+                            <p>{{item?.companyAddr}}</p>
                             <div class="line mg-0_5"></div>
-                            <p>{{item.companySize}}人以上</p>
+                            <p>{{item?.companySize}}人以上</p>
                             <div class="line mg-0_5"></div>
-                            <p>{{item.companyIndustry}}</p>
+                            <p>{{item?.companyIndustry}}</p>
                         </div>
                     </div>
                     <div class="btm just-between">
                         <div class="desc align-center fs-12">
                             <p>热招</p>
-                            <p class="mg-0_5 cl-blue">{{item.positionList.length ? item.positionList[0].positionName : ''}}</p>
-                            <p>等{{item.positionList.length}}个职位</p>
+                            <p class="mg-0_5 cl-blue">{{ item?.positionList?.length ? item.positionList[0].positionName : '' }}</p>
+                            <p>等{{item?.positionList ? item.positionList.length : ''}}个职位</p>
                         </div>
                         <img src="@/assets/images/icon-arrow_right.png" class="icon-16">
                     </div>

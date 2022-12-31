@@ -16,7 +16,7 @@
                     <p class="fs-14">{{ options.companyName }}</p>
                     <span class="fs-12 c-747474">{{ options.companySize }}人</span>
                     <span class=" gang c-747474">|</span>
-                    <span class="fs-12 c-747474">{{ options.companyIndustry }}</span>
+                    <span class="fs-12 c-747474">{{ options.companyIndustry?options.companyIndustry:'不限' }}</span>
                 </div>
             </div>
         </div>
@@ -28,20 +28,36 @@
             <van-button v-if="!options.isDelivery" class="mt-20 btn fw-600" size="mini" type="primary"
                 @click.stop="apply()">申请</van-button>
             <van-action-sheet @click.prevent.stop="" v-model:show="isShow" title="确认投递简历">
-                <div class="content" v-show="!(resumeInfo.completion ==0)">
-                    <div class="flex">
-                        <van-icon name="checked" size="2.5rem" color="#2979ff" />
-                        <div class="title">
-                            <p class="fs-16">在线投递简历</p>
-                            <span class="fs-12 c-747474">{{ resumeInfo.modifyTime }}更新</span>
+                <div class="content" v-show="!(resumeList.length ==0)">
+                    <div class="pop">
+                <div class="container-resume">
+                    <h3 class="pd-10_0">确认投递简历</h3>
+                    <van-radio-group v-model="checked">
+                        <div class="resume-item mt-5 pd-20_0" v-for="item in resumeList" :key="item.resumeId">
+                            <van-radio :name="item.resumeId" icon-size="2rem">
+                                <img class="icon-30 ml-15" src="@/assets/images/icon-resume.png">
+                                <div class="resume ml-10">
+                                    <div class="top">
+                                        <div class="fs-14">{{item.resumeName}}</div>
+                                        <div class="fs-12 ml-40" v-if="item.isOnline">
+                                            完成度:
+                                            <span class="cl-blue">{{item.completion ? item.completion * 100 : ''}}%</span>
+                                        </div>
+                                    </div> 
+                                    <div class="btm fs-12">
+                                        {{item.modifyTime}}更新
+                                    </div>
+                                </div>
+                            </van-radio>
                         </div>
-                        <p class="fs-14 c-747474">完成度：<span class="c-2979ff">{{ Number(resumeInfo.completion) * 100
-}}%</span></p>
-                    </div>
-                    <van-button class="btn-confirm fs-14" type="primary"
-                        @click="delivery(options.positionId)">确认投递</van-button>
+                    </van-radio-group>
                 </div>
-                <div class="content" v-show="resumeInfo.completion == 0">
+                <div class="btn-wrap">
+                    <div class="btn cl-fff flex-center fs-14" @click="delivery(options.positionId)">确认投递</div>
+                </div>
+            </div>
+                </div>
+                <div class="content" v-show="resumeList.length == 0">
                     <div class="just-center flex">
                         <p class="fs-14 c-747474">还未填写简历，点击<a href="" @click="jump('/createResume')"
                                 class="c-2979ff">去填写</a></p>
@@ -73,15 +89,16 @@ import type { CardItem } from '../../views/position/types/card';
 import { useJobStore } from "@/stores/job";//接口
 import { useRouter } from 'vue-router';
 import { Toast } from 'vant';
+import { usePositionDetailStore } from "@/stores/positonDetail";
+const positionDetailStore = usePositionDetailStore();
 const router = useRouter();
 const useJob = useJobStore();
 
 let props = defineProps<{
     options: CardItem,
-    resumeInfo: ResumeInfo
 }>();
 
-let { options, resumeInfo = {} } = toRefs(props);
+let { options, } = toRefs(props);
 
 const token = sessionStorage.getItem("token");
 let isShow = ref(false);
@@ -118,10 +135,46 @@ const delivery = function (id: number) {
     window.location.href = '/position'
 }
 
-interface ResumeInfo {
-    completion: number,
-    modifyTime: string
+
+interface Resume{
+    createTime: string,
+    modifyTime: string,
+    resumeId: number,
+    resumeName: string,
+    resumeUrl:string,
+    isOnline:boolean,
+    completion?:number,
 }
+interface Res<T> {
+    code: number,
+    msg: string,
+    data: T,
+}
+let checked:Ref<number | null> = ref(null);//这个是选中简历id
+let resumeList:Ref<Resume[]> = ref([]);
+
+// 获取在线简历的接口
+async function getOnlineResume() {
+    let res: Res<Resume[]> = await positionDetailStore.getOnlineResume({});
+    console.log(res)
+    if (res.code == 200) { 
+        resumeList.value = res.data;
+        let check = resumeList.value.find((item)=>{
+            return item.isOnline == true;
+        })
+        if(check){
+            checked.value = check.resumeId;
+        }else{
+            if(resumeList.value.length){
+                checked.value = resumeList.value[0].resumeId;
+            }
+        }
+        resumeList.value.sort((a : any,b :any)=>{
+            return b.isOnline - a.isOnline;
+        });
+    }
+}
+getOnlineResume();
 
 //申请职位 
 const apply = function () {
@@ -129,16 +182,57 @@ const apply = function () {
         showCount.value = true
     } else {
         isShow.value = true;
-        if ((resumeInfo as ResumeInfo).modifyTime == 'null') {
+        if (resumeList.value.length == 0) {
             show.value = true;
         }
     }
 }
-
-
 </script>
 
 <style lang="scss" scoped>
+ .pop {
+        height: 50rem;
+        padding: 0 2rem;
+
+        &>.container-resume {
+            height: calc(50rem - 7rem);
+            overflow-y: scroll;
+
+            &>h3 {
+                font-size: 1.6rem;
+            }
+
+            & .resume-item {
+                display: flex;
+                align-items: center;
+                border-bottom: .2px solid #d8dbe3;
+                & :deep(.van-radio__label){
+                    display: flex;
+                    align-items: center;
+                }
+                & .resume{
+                    flex: 1;
+                    height: 5rem;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    &>.top{
+                        display: flex;
+                    }
+                }
+            }
+        }
+        &>.btn-wrap {
+            &>.btn {
+                padding: 1.5rem 0;
+                background: #1989fa;
+            }
+        }
+    }
+    .icon-30{
+        width: 3rem;
+        height: 3rem;
+    }
 .item {
     justify-content: space-between;
     background-color: #ffffff;

@@ -34,7 +34,7 @@
                 </van-cell>
                 <van-action-sheet v-model:show="showSalary" title="">
                     <div class="content">
-                        <van-picker title="" :default-index="defaultIndex" :columns="columnsSalary"
+                        <van-picker title="" :default-index="Number(salary.replace(/-\w+/,''))-1" :columns="columnsSalary"
                             @confirm="onConfirmSalary" @cancel="onCancelSalary" />
                     </div>
                 </van-action-sheet>
@@ -77,6 +77,19 @@
                     </div>
                 </van-action-sheet>
             </main>
+            <van-popup v-model:show="showCount" closeable round :style="{ height: '25%', width: '80%' }">
+                <div class="show-count_box">
+                    <div class="show-wrap">
+                        <div>
+                            <h1>登录毕业申</h1>
+                        </div>
+                        <div>
+                            <van-button type="primary" class="ft" @click="jump('login')">手机号码验证登录</van-button>
+                        </div>
+                        <div class="c-747474" @click="wxLogin()">微信账号快捷登录</div>
+                    </div>
+                </div>
+            </van-popup>
             <van-button type="primary" class="btn mt-150" @click="submit()">保存</van-button>
         </div>
     </div>
@@ -101,6 +114,26 @@ let wishPositionRight: string = '';
 let wishMoneyLeft: string = '';
 let wishMoneyRight: string = '';
 let wishNature: Ref<string> = ref('');
+
+
+const jump = (src: string, params?: number) => {
+    if (params) {
+        router.push({ path: src, query: { positionId: params } })
+    } else {
+        router.push({ path: src })
+    }
+}
+
+const showCount = ref(false);
+const token = ref(false);
+// 登录失效
+const wxLogin = () => {
+    Toast({
+        message: '微信登录暂不支持,请用手机号码验证码登录。',
+        position: 'top',
+    });
+}
+
 
 // 返回
 const onClickLeft = () => history.back();
@@ -191,11 +224,11 @@ const onConfirmWorkNature = (value: string) => {//确认
     showWorkNature.value = false;
     workNature.value = value;
 
-    if(value == '全职'){
+    if (value == '全职') {
         wishNature.value = '0';
-    }else if(value == '实习'){
+    } else if (value == '实习') {
         wishNature.value = '1';
-    }else if(value =  '全职和实习'){
+    } else if (value = '全职和实习') {
         wishNature.value = '2';
     }
 
@@ -299,15 +332,18 @@ const submit = (): void => {
         Toast('请选择期望工作地');
     }
     else {
-        Toast({
-            message: '更新成功！',
-            icon: 'success',
-        });
-
-        router.push({ path: "/position" });
         // 修改
         const setModifyJobIntent = async (params: JobInfo) => {
-            let res = await useJob.setModifyJobIntentInfo(params);
+            let res: any = await useJob.setModifyJobIntentInfo(params);
+            if (res.code == 200) {
+                Toast({
+                    message: '更新成功！',
+                    icon: 'success',
+                });
+                router.push({ path: "/position" });
+            } else if (res.code == 401) {
+                showCount.value = true
+            }
         }
         setModifyJobIntent({
             wishAddr: [...new Set(showArea.value)].join(','),
@@ -493,5 +529,27 @@ getJobIntent()
         width: 100%;
 
     }
+}
+
+.show-count_box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  .show-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+
+    h1 {
+      font-weight: 500;
+    }
+
+    .ft {
+      font-size: 1.8rem;
+    }
+  }
 }
 </style>

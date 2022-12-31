@@ -111,15 +111,15 @@
             </van-radio-group>
           </div>
           <div class="btn-wrap">
-            <div class="btn c-ffffff just-center fs-14" @click="delivery(options.positionId)">确认投递</div>
           </div>
+            <!-- <div class="btn c-ffffff just-center fs-14" @click="(options.positionId)">确认投递</div> -->
         </div>
       </div>
       <div class="sheet-content" v-show="resumeList.length == 0">
         <div class="just-center flex">
           <p class="fs-14 c-747474">
             还未填写简历，点击
-            <a href @click="jump('/createResume')" class="c-2979ff">去填写</a>
+            <a @click="jump('/createResume')" class="c-2979ff">去填写</a>
           </p>
         </div>
       </div>

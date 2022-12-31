@@ -31,21 +31,18 @@ export default function () {
         companyLogoUrl:string,
     }
     interface PositionPayload{
-        userId:number;
         bool?:boolean;
         pageSize:number;
         pageIndex:number;
     }
     const positionPayload:PositionPayload= reactive({ 
-        userId: 10000,
         bool:false,
-        pageSize:10,
+        pageSize:1,
         pageIndex:1,
     })
     const companyPayload:PositionPayload = reactive({
-        userId: 10000,
         bool:true,
-        pageSize:10,
+        pageSize:1,
         pageIndex:1,
     })
     let SaveStore: any = useSaveStore();
@@ -54,12 +51,13 @@ export default function () {
     const loading = ref(false);
     const companyLoading = ref(false);
     let companyList :Company[]= reactive([]);//公司列表
-    let positionList: Position[] = reactive([]);//职位列表
+    let positionList: Ref<Position[]> = ref([]);//职位列表
     let companyCount : Ref<number> =ref() as Ref<number>;//公司总条数
     let positionCount : Ref<number> = ref() as Ref<number>;//职位总条数
     const onRefresh = async () => {
         Toast('刷新成功');
         loading.value = false;
+        console.log(positionCount.value)
         if(positionPayload.pageIndex*positionPayload.pageSize < positionCount.value){
             positionPayload.pageIndex++;
         }
@@ -68,6 +66,7 @@ export default function () {
     const onRefreshCompany = async () => {
         Toast('刷新成功');
         companyLoading.value = false;
+        console.log(companyCount.value)
         if(companyPayload.pageIndex*companyPayload.pageSize < companyCount.value){
             companyPayload.pageIndex++;
         }
@@ -75,23 +74,23 @@ export default function () {
     }
     //获取职位的列表
     const getSaveList = async () => {
-        const res:Res<{data:any}> = await SaveStore.getSaveList(positionPayload);
+        const res:Res<{data:any,maxCount:number}> = await SaveStore.getSaveList(positionPayload);
         if (res.code == 200) {
             console.log('-----------------我是收藏职位的列表-----------------');
             console.log(res);
-            positionList.push(...((res.data).data));
-            positionCount.value = res.data.data.maxCount;
-            positionList = [...new Set(...[positionList])];
+            positionList.value.push(...((res.data).data));
+            positionCount.value = res.data.maxCount;
+            positionList.value = [...new Set(...[positionList.value])];
         }
     }
     //获取公司的列表
     const getCompanyList = async () => {
-        const res:Res<{data:any}> = await SaveStore.getSaveList(companyPayload);
+        const res:Res<{data:any,maxCount:number}> = await SaveStore.getSaveList(companyPayload);
         if(res.code == 200){
             console.log('--------------我是收藏企业的列表---------------');
             console.log(res);
             companyList.push(...((res.data).data));
-            companyCount.value = res.data.data.maxCount;
+            companyCount.value = res.data.maxCount;
             companyList = [...new Set(...[companyList])];
         }
     }

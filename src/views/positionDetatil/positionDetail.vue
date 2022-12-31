@@ -1,4 +1,17 @@
 <template>
+      <van-popup v-model:show="showPopup" closeable round :style="{ height: '25%', width: '80%' }">
+        <div class="show-count_box">
+        <div class="show-wrap">
+            <div>
+            <h1>登录毕业申</h1>
+            </div>
+            <div>
+            <van-button type="primary" class="ft" @click="to('/login')">手机号码验证登录</van-button>
+            </div>
+            <div class="c-747474" @click="wxLogin()">微信账号快捷登录</div>
+        </div>
+        </div>
+    </van-popup>
     <div class="position-detail">
         <van-nav-bar class="title" title="职位详情" left-arrow @click-left="back()" />
         <div class="container">
@@ -104,6 +117,9 @@ let positionId:Ref<any> = ref();
 if (route.query.positionId) {
     positionId.value = route.query.positionId;
 }
+const loginStatus = ref(false);
+loginStatus.value = sessionStorage.getItem("token") ? true : false;
+const showPopup = ref(!loginStatus.value);
 let back = () => {
     router.go(-1);
 }
@@ -245,8 +261,39 @@ const selectCompletion = async ()=>{
         }
 }
 selectCompletion();
+
+ const wxLogin = ()=>{
+  Toast({
+    message: '微信登录暂不支持,请用手机号码验证码登录。',
+    position: 'top',
+  });
+}
+const to = function (path: any) {
+  router.push(path);
+};
 </script>
 <style lang="scss" scoped>
+.show-count_box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  .show-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+
+    h1 {
+      font-weight: 500;
+    }
+
+    .ft {
+      font-size: 1.8rem;
+    }
+  }
+}
 .position-detail {
     :deep(.van-nav-bar__content) {
         height: 4rem;

@@ -39,7 +39,7 @@ export const usePositionDetailStore = defineStore('positionDetail', () => {
         return Api.getOnlineResume(payload) as any;
     }
     //获取在线简历信息完成度
-    let selectCompletion = (payload:CompanyPayload)=>{
+    let selectCompletion = (payload?:CompanyPayload)=>{
         return Api.selectCompletion(payload) as any;
     }
     return { setStarPosition, getPositionDetail, deliveryPosition ,getOnlineResume,selectCompletion}

@@ -15,7 +15,8 @@
                                 <div class="fs-14">{{ interviewData.companyName }}</div>
                                 <h2>{{ interviewData.positionName }}</h2>
                             </div>
-                            <div class="fs-1">{{ interviewData.interviewAddr }} | {{ interviewData.positionMoney }}
+                            <div class="fs-1">
+                                {{ interviewData.interviewAddr }} | {{ money }}
                             </div>
                         </div>
                         <div class="icon_arrow">
@@ -91,6 +92,8 @@ interface interviewDataType {
 const router = useRouter();
 const axios = useMineStore();
 const route = useRoute();
+// 薪资
+let money = ref('');
 let interviewData = reactive({}) as interviewDataType;
 getUserInterview();
 // 我的面试页面传过来的id
@@ -99,12 +102,16 @@ let companyId = ref(Number(route.query.companyId))
 // 获取用户面试
 async function getUserInterview() {
     const res: Res | any = await axios.getUserInterviewApi({});
-    if (res.data) {
+    if (res.data.length) {
         res.data.forEach((item: any) => {
             if (item.companyId == companyId.value) {
+                let positionMoney = item.positionMoney.split(',')
+                money.value = positionMoney[0] + ' - ' + positionMoney[1];
                 Object.assign(interviewData, item);
             }
         });
+    } else {
+        router.push('inter');
     }
 };
 function navPositionDetails() {

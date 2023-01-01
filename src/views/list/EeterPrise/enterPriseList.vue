@@ -143,7 +143,6 @@ const handleAreaChange = (e: any[]) => {
 const handlePositionChange = (item: any) => {
     position.label = item.label;
     position.value = item.value;
-    let res;
     for(let i = 0 ; i < positoinList.length; i++){
         let resValue = positoinList[i].children.find(child=>{
             return child.label == item.label;
@@ -225,7 +224,6 @@ const getCompanyList =async ()=>{
         maxCount.value = res.data.maxCount;
     }
 }
-getCompanyList();
 //监听公司名称的改变
 watch(
   () => cmopanyPayload.companyName,
@@ -241,6 +239,7 @@ const handleCancel = ()=>{
 }
 // 页面滚动到底部
 onMounted(()=>{
+    getCompanyList();
     nextTick(()=>{
         window.onscroll = function() {
         //变量scrollTop是滚动条滚动时，距离顶部的距离

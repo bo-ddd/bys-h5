@@ -22,7 +22,7 @@
     </header>
     <main class="container">
 
-      <Card.Wrap class="card-bg" v-if="cardList.length">
+      <Card.Wrap class="card-bg">
         <Card.Item :class="index ? 'mt-5' : ''" v-for="item, index in cardList" :key="item.companyId" :options="item"
           @click="jump('/positionDetail', item.positionId)">
           <!-- 按钮 -->
@@ -49,7 +49,7 @@
                                 <span class="c-5d5d5d">完成度:</span>
                                 <span class="c-2979ff">{{ onlineResume ? onlineResume * 100
     : ''
-}}%</span>                    
+}}%</span>
                               </div>
                             </div>
                             <div class="btm fs-12 c-5d5d5d">
@@ -62,12 +62,12 @@
                   </div>
                   <div class="btn-wrap">
                     <div class="btn c-ffffff just-center fs-14" @click="delivery(item.positionId)">
-                        确认投递</div>
+                      确认投递</div>
                   </div>
                 </div>
               </div>
               <div class="content" v-show="resumeInfo.length == 0">
-                <div class="just-center flex">
+                <div class="just-center flex sheet-content">
                   <p class="fs-14 c-747474">还未填写简历，点击<a href="" @click="jump('/createResume')" class="c-2979ff">去填写</a>
                   </p>
                 </div>
@@ -91,8 +91,10 @@
           </template>
         </Card.Item>
       </Card.Wrap>
-
-      <div v-if="!cardList.length && cardList[0]">
+      <div class="just-center fs-14 c-747474" v-if="!isCardList">
+        <p class="none">没有更多职位了</p>
+      </div>
+      <div v-if="isCardList">
         <div class="just-center mt-150">
           <img class="icon-position" src="@/assets/images/icon-positionjob.png" alt="">
         </div>
@@ -162,7 +164,7 @@ const wxLogin = () => {
 const token = sessionStorage.getItem("token");
 let show = ref(false);
 let isResumeShow = ref(false);
-const apply = function (id:number) {
+const apply = function (id: number) {
   positionId.value = id;
   if (!token) {
     showCount.value = true
@@ -181,7 +183,7 @@ const deliveryJob = async (params: any) => {
   }
 }
 // 确认投递
-const delivery = function (id :number) {
+const delivery = function (id: number) {
   deliveryJob({
     resumeId: checked.value as number,
     positionId: positionId.value
@@ -208,6 +210,7 @@ let intention = ref(false);
 const getJobIntent = async () => {
   let res: any = await useJob.getJobIntentList({});
   if (res.code == 200) {
+    console.log(res)
     if (res.data != "[]") {
       if (res.data.wishAddr.length) {
         isShow.value = true;
@@ -275,6 +278,7 @@ const getJobIntent = async () => {
       });
     } else {
       isShow.value = false
+      // isShow.value = true;
       getSelectPosition({});
     }
   } else {
@@ -286,13 +290,19 @@ const getJobIntent = async () => {
 }
 getJobIntent();
 // 获取推荐职位列表
-let cardList = ref([]) as Ref<CardItem[]>;
+let cardList = ref();
 
+
+let isCardList = ref(false);
 const getSelectPosition = async (params: any) => {
   let res: any = await useJob.getSelectPositionList(params);
-  console.log(res)
   if (res.code == 200) {
-    cardList.value = cardList.value.concat(res.data);
+    cardList.value = res.data;
+    if (res.data.length) {
+      isCardList.value = false;
+    } else {
+      isCardList.value = true;
+    }
   }
 }
 
@@ -411,6 +421,10 @@ selectCompletion();
     height: calc(100% - 7.2rem);
     overflow: auto;
 
+    .none {
+      padding: 2rem 0 6rem;
+    }
+
     .text {
       padding: 2rem 0 4rem;
       margin: 0;
@@ -452,6 +466,10 @@ selectCompletion();
       font-size: 1.8rem;
     }
   }
+}
+
+.sheet-content {
+  height: 44vh;
 }
 
 .pop {

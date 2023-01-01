@@ -299,11 +299,7 @@ const getInfo = async function () {
       value: res.data.userProfessionalId,
     };
     userYear.value = res.data.userYear;
-    console.log(userYear.value);
-    console.log(yearList);
-    
     defaultYear.value = yearList.indexOf(userYear.value);
-    console.log(defaultYear.value);
     
   }
 };

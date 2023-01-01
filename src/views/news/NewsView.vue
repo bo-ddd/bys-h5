@@ -94,7 +94,7 @@
             </van-radio-group>
           </div>
           <div class="btn-wrap">
-            <div class="btn c-ffffff just-center fs-14" @click="deliveryResume(checkedResume)">确认投递</div>
+            <div class="btn c-ffffff just-center fs-14" @click="deliveryResume">确认投递</div>
           </div>
         </div>
       </div>
@@ -121,7 +121,7 @@ const router = useRouter();
 const loginStatus = ref(false);
 const resumeList: any = ref({});
 const showResume = ref(false);
-const checkedResume = ref(null);
+const checkedResume:any = ref(null);
 const positionId: Ref<null | number> = ref(null);
 loginStatus.value = sessionStorage.getItem("token") ? true : false;
 const showPopup = ref(!loginStatus.value);
@@ -166,10 +166,10 @@ const applyPosition = (id: number) => {
   positionId.value = id;
   showResume.value = true;
 };
-const deliveryResume = async (id: number) => {
+const deliveryResume = async () => {
   let res = await use.deliveryPosition({
     positionId: positionId.value,
-    resumeId: id,
+    resumeId: checkedResume.value,
   });
   console.log(res);
   if (res.code == 200) {

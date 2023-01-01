@@ -185,11 +185,11 @@ let formatData = (data: any[], pageSize: number): any[] => {
   .header {
     display: flex;
     justify-content: center;
-    align-items: flex-end;
-    height: 6rem;
+    align-items: center;
+    height: 2rem;
     background: #F8F8F8;
     font-size: 1.8rem;
-    padding-bottom: 2rem;
+    padding: 1.5rem;
   }
 
   .main {

@@ -23,7 +23,7 @@
                 <div class="just-between">
                     <div class="title">
                         <h2>{{ item.companyName }}</h2>
-                        <span>线下面试</span>
+                        <span>{{ item.interviewType }}</span>
                     </div>
 
                     <div class="icon-head_portrait">
@@ -34,7 +34,7 @@
                 <div class="brief_introduction align-center">
                     <div>{{ item.positionName }}</div>
                     <div class="ml-5">
-                        {{ item.positionMoney }}
+                        {{ money }}
                     </div>
                 </div>
             </div>
@@ -67,6 +67,7 @@ interface interviewDataType {
     positionMoney: string,//: 职位薪资,
     positionName: string,//: 职位名称
     companyLogoUrl: string,// LOGOurl
+    interviewType: string,//面试方式
 }
 
 
@@ -76,6 +77,8 @@ const axios = useMineStore();
 const router = useRouter();
 // isok 是切换是否展示空状态的
 let isok = ref(false);
+// 薪资
+let money = ref('');
 let interviewData = reactive([]) as interviewDataType[]
 
 getUserInterview();
@@ -88,6 +91,10 @@ getUserInterview();
 async function getUserInterview() {
     const res: Res | any = await axios.getUserInterviewApi({});
     if (res.data != null && res.data.length != 0) {
+        res.data.forEach((e: any) => {
+            let positionMoney = e.positionMoney.split(',')
+            money.value = positionMoney[0] + ' - ' + positionMoney[1];
+        });
         isok.value = true;
         Object.assign(interviewData, res.data);
     } else {

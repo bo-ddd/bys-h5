@@ -105,7 +105,6 @@
 
     <van-action-sheet @click.prevent.stop v-model:show="showResume" title="确认投递简历">
       <div class="sheet-content" v-show="!(resumeList.length == 0)">
-        {{resumeList}}
         <div class="pop">
           <div class="container-resume">
             <van-radio-group v-model="checkedResume">

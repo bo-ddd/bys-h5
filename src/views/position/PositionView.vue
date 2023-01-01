@@ -61,7 +61,7 @@
                     </van-radio-group>
                   </div>
                   <div class="btn-wrap">
-                    <div class="btn c-ffffff just-center fs-14" @click="delivery()">
+                    <div class="btn c-ffffff just-center fs-14" @click="delivery(item.positionId)">
                       确认投递</div>
                   </div>
                 </div>
@@ -91,7 +91,9 @@
           </template>
         </Card.Item>
       </Card.Wrap>
-
+      <div class="just-center fs-14 c-747474" v-if="!isCardList">
+        <p class="none">没有更多职位了</p>
+      </div>
       <div v-if="isCardList">
         <div class="just-center mt-150">
           <img class="icon-position" src="@/assets/images/icon-positionjob.png" alt="">
@@ -177,12 +179,11 @@ const apply = function (id: number) {
 const deliveryJob = async (params: any) => {
   let res: any = await useJob.deliveryPosition(params);
   if (res.code == 200) {
-    getSelectPosition(getJobIndustry.value);
     isResumeShow.value = false;
   }
 }
 // 确认投递
-const delivery = function () {
+const delivery = function (id: number) {
   deliveryJob({
     resumeId: checked.value as number,
     positionId: positionId.value
@@ -420,6 +421,10 @@ selectCompletion();
     height: calc(100% - 7.2rem);
     overflow: auto;
 
+    .none {
+      padding: 2rem 0 6rem;
+    }
+
     .text {
       padding: 2rem 0 4rem;
       margin: 0;
@@ -462,9 +467,11 @@ selectCompletion();
     }
   }
 }
-.sheet-content{
+
+.sheet-content {
   height: 44vh;
 }
+
 .pop {
   height: 44rem;
   padding: 0 2rem;

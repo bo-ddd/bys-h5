@@ -8,7 +8,7 @@
         <div class="mt-10 text-center fs-14 color-gray">最多可上传3份简历</div>
       </div>
       <div v-else>
-        <div class="head-tip">最多可以上传3份简历</div>
+        <div class="head-tip">最多可以上传3份简历 ( pdf,doc,docx类型 )</div>
         <div class="list mt-10">
           <div
             class="item ptb-20 bord-bottom-gray just-between"
@@ -33,7 +33,11 @@
           </div>
         </div>
       </div>
-      <van-button class="upload-btn" type="primary" @click="updateResume">上传附件简历</van-button>
+      <van-uploader class="upload-btn" v-if="resumeList.length<3" :after-read="afterRead" accept=".pdf, .doc, .docx" >
+        <van-button type="primary">上传附件简历</van-button>
+      </van-uploader>
+      
+        <van-button class="upload-btn" @click="updateResume" v-else type="primary">上传附件简历</van-button>
     </div>
     <van-action-sheet
       v-model:show="deleteShow"
@@ -58,7 +62,7 @@ const deleteShow = ref(false);
 const actions = [{ name: "删除简历", color: "#ee0a24" }];
 
 const onClickLeft = () => {
-  to('/mine')
+  to("/mine");
 };
 const to = function (path: any) {
   router.push(path);
@@ -73,6 +77,29 @@ const showDeleteOption = function (id: number) {
   deleteShow.value = true;
   resumeId.value = id;
 };
+
+const afterRead = async (file: any) => {
+  if (
+    file.file.type == "application/pdf" ||
+    file.file.type == "application/msword" ||
+    file.file.type ==
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  ) {
+    let formData = new FormData();
+    formData.append("resumeName", file.file.name);
+    formData.append("resume", file.file);
+
+    let res = await use.addResume(formData);
+    if (res.code == 200) {
+      Toast.success("上传成功");
+      getResumeList()
+    } else {
+      Toast.fail(res.msg);
+    }
+  } else {
+    Toast("文件格式不正确");
+  }
+};
 const deleteRemuse = function () {
   Dialog.confirm({
     title: "提示",
@@ -82,8 +109,7 @@ const deleteRemuse = function () {
     .then(async () => {
       deleteRemuseApi();
     })
-    .catch(() => {
-    });
+    .catch(() => {});
 };
 const deleteRemuseApi = async function () {
   let res = await use.delResume({
@@ -91,21 +117,18 @@ const deleteRemuseApi = async function () {
   });
   if (res.code == 200) {
     Toast.success("删除成功");
-    getResumeList()
+    getResumeList();
   } else {
     Toast.fail("删除失败");
   }
 };
 const updateResume = function () {
-  if (resumeList.value.length < 3) {
-    to("/uploadResumeChoice");
-  } else {
     Dialog.alert({
       title: "提示",
       message: "最多只能保留3份附件简历。如需删除简历请点击右侧···",
       confirmButtonColor: "#3b81fb",
     }).then(() => {});
-  }
+    return false
 };
 getResumeList();
 </script>
@@ -189,9 +212,20 @@ getResumeList();
     text-align: center;
   }
   .upload-btn {
+    // width: 100%;
     position: absolute;
     bottom: 2rem;
-    width: calc(100% - 4rem);
+    width:calc(100% - 4rem);
+    .van-uploader__wrapper {
+      // display: block;
+      width: 100%;
+    }
+    :deep(.van-uploader__input-wrapper) {
+      width: 100%;
+    }
+    :deep(.van-button--normal) {
+      width: 100%;
+    }
   }
   .fs-14 {
     font-size: 1.4rem;

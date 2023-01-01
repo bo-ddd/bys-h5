@@ -33,7 +33,7 @@
         >您的在线简历完善度只有{{perfectionNum*100}}分，低于平均分{{averageScore*100}}。在线简历完善后，就能吸引更多企业</span>
         <span v-else>建议您主动出击，寻找合适机会</span>
       </div>
-      <div class="btn-box mt-20">
+      <div v-if="perfectionNum<averageScore" class="btn-box mt-20">
         <van-button class="btn2" type="primary" @click="to('/personalInfo')">
           <span v-if="perfectionNum==0">去填写</span>
           <span v-else>完善简历</span>
@@ -42,7 +42,7 @@
     </div>
     <div v-if="loginStatus&&newsList.length!=0" class="news-box2">
       <van-cell-group>
-        <van-cell class="just-between" v-for="item in newsList" :key="item.positionId">
+        <van-cell class="just-between" v-for="item in newsList" :key="item.positionId" @click="jumpPosition('/positionDetail',item.positionId)">
           <template #title>
             <div class="new-item">
               <div
@@ -58,7 +58,13 @@
             </div>
           </template>
           <template #value>
-            <van-button type="primary" size="small" @click="applyPosition(item.positionId)">投递</van-button>
+            <van-button
+              v-if="!item.isDelivery"
+              type="primary"
+              size="small"
+              @click.stop="applyPosition(item.positionId)"
+            >投递</van-button>
+            <van-button class="disabled-btn" v-else type="primary" size="small" @click.stop>已投递</van-button>
           </template>
         </van-cell>
       </van-cell-group>
@@ -147,6 +153,14 @@ const getPerfectionNum = async () => {
     averageScore.value = res.data.averageScore;
   }
 };
+let jumpPosition = (url: string, positionId: number) => {
+  router.push({
+    path: url,
+    query: {
+      positionId,
+    },
+  });
+};
 // 申请职位接口
 const applyPosition = (id: number) => {
   positionId.value = id;
@@ -160,11 +174,11 @@ const deliveryResume = async (id: number) => {
   console.log(res);
   if (res.code == 200) {
     Toast.success("投递成功");
-  }else{
+  } else {
     Toast.success("投递失败");
   }
-    showResume.value = false;
-    getNewsList();
+  showResume.value = false;
+  getNewsList();
 };
 
 onMounted(() => {
@@ -198,6 +212,11 @@ const wxLogin = () => {
     }
     :deep(.van-cell__value) {
       flex: none;
+    }
+
+    .disabled-btn {
+      cursor: not-allowed;
+      opacity: 0.5;
     }
   }
   .news-box {

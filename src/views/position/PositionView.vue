@@ -1,6 +1,6 @@
 <template>
   <div class="position">
-    <header class=" wrap just-between" v-if="!isShow">
+    <header class=" wrap just-between" v-if="!isShow && intention">
       <div class="container flex">
         <div class="icon">
           <img class="icon-invitation" src="@/assets/images/icon-invitation.png" alt="">
@@ -22,12 +22,77 @@
     </header>
     <main class="container">
 
-      <Card.Wrap class="card-bg" v-if="cardList.length ">
-        <Card.Item :resume="resInfo" :onlineResumeInfo="onlineResume" :class="index ? 'mt-5' : ''" v-for="item, index in cardList" :key="item.companyId"
-          :options="item" @click="jump('/positionDetail', item.positionId)"></Card.Item>
+      <Card.Wrap class="card-bg" v-if="cardList.length">
+        <Card.Item :class="index ? 'mt-5' : ''" v-for="item, index in cardList" :key="item.companyId" :options="item"
+          @click="jump('/positionDetail', item.positionId)">
+          <!-- 按钮 -->
+          <template #button>
+            <p class=" mt-14 c-fb5530 fs-14 fw-600 money">{{ !item.positionMoney ? '' :
+    item.positionMoney.replace(/,/g, '-').replace(/0/g, '') + 'k'
+}}</p>
+            <p v-if="item.isDelivery" class="mt-30 fs-12 c-a8a8a8">已申请</p>
+            <van-button v-if="!item.isDelivery" class="mt-20 btn fw-600 btn-apply" size="mini" type="primary"
+              @click.stop="apply(item.positionId)">申请</van-button>
+            <van-action-sheet @click.prevent.stop="" v-model:show="isResumeShow" title="确认投递简历">
+              <div class="content" v-show="!(resumeInfo.length == 0)">
+                <div class="pop">
+                  <div class="container-resume">
+                    <van-radio-group v-model="checked">
+                      <div class="resume-item mt-5 pd-20_0" v-for="item in resumeInfo" :key="item.resumeId">
+                        <van-radio :name="item.resumeId" icon-size="2rem">
+                          <img class="icon-30 ml-15" src="@/assets/images/icon-resume.png">
+                          <div class="resume ml-10">
+                            <div class="top just-between mt-5">
+                              <div class="fs-14">
+                                {{ /在线简历/.test(item.resumeName) ? '在线简历' : item.resumeName }}</div>
+                              <div class="fs-12 ml-40" v-if="item.isOnline">
+                                <span class="c-5d5d5d">完成度:</span>
+                                <span class="c-2979ff">{{ onlineResume ? onlineResume * 100
+    : ''
+}}%</span>                    
+                              </div>
+                            </div>
+                            <div class="btm fs-12 c-5d5d5d">
+                              {{ item.modifyTime }}{{ item.isOnline ? '更新' : '上传' }}
+                            </div>
+                          </div>
+                        </van-radio>
+                      </div>
+                    </van-radio-group>
+                  </div>
+                  <div class="btn-wrap">
+                    <div class="btn c-ffffff just-center fs-14" @click="delivery(item.positionId)">
+                        确认投递</div>
+                  </div>
+                </div>
+              </div>
+              <div class="content" v-show="resumeInfo.length == 0">
+                <div class="just-center flex">
+                  <p class="fs-14 c-747474">还未填写简历，点击<a href="" @click="jump('/createResume')" class="c-2979ff">去填写</a>
+                  </p>
+                </div>
+              </div>
+            </van-action-sheet>
+            <van-popup v-model:show="showCount" closeable round :style="{ height: '25%', width: '80%' }">
+              <div class="show-count_box">
+                <div class="show-wrap">
+                  <div>
+                    <h1>登录毕业申</h1>
+                  </div>
+                  <div>
+                    <van-button type="primary" class="ft" @click="jump('/login')">手机号码验证登录</van-button>
+                  </div>
+                  <div class="c-747474" @click="wxLogin()">微信账号快捷登录</div>
+                </div>
+              </div>
+            </van-popup>
+
+
+          </template>
+        </Card.Item>
       </Card.Wrap>
 
-      <div v-if="!cardList.length">
+      <div v-if="!cardList.length && cardList[0]">
         <div class="just-center mt-150">
           <img class="icon-position" src="@/assets/images/icon-positionjob.png" alt="">
         </div>
@@ -66,15 +131,12 @@ import { usePositionDetailStore } from "@/stores/positonDetail";
 const positionDetailStore = usePositionDetailStore();
 const router = useRouter();
 const useJob = useJobStore();
-
 const showCount = ref(false);
-// 登录失效
-const wxLogin = () => {
-  Toast({
-    message: '微信登录暂不支持,请用手机号码验证码登录。',
-    position: 'top',
-  });
-}
+
+
+
+let positionId = ref();
+
 
 
 const jump = (src: string, params?: number) => {
@@ -89,6 +151,47 @@ const jump = (src: string, params?: number) => {
   }
 
 }
+// 登录失效
+const wxLogin = () => {
+  Toast({
+    message: '微信登录暂不支持,请用手机号码验证码登录。',
+    position: 'top',
+  });
+}
+//申请职位 
+const token = sessionStorage.getItem("token");
+let show = ref(false);
+let isResumeShow = ref(false);
+const apply = function (id:number) {
+  positionId.value = id;
+  if (!token) {
+    showCount.value = true
+  } else {
+    isResumeShow.value = true;
+    if (resumeInfo.value.length == 0) {
+      show.value = true;
+    }
+  }
+}
+// 申请职位接口
+const deliveryJob = async (params: any) => {
+  let res: any = await useJob.deliveryPosition(params);
+  if (res.code == 200) {
+    isResumeShow.value = false;
+  }
+}
+// 确认投递
+const delivery = function (id :number) {
+  deliveryJob({
+    resumeId: checked.value as number,
+    positionId: positionId.value
+  });
+  isResumeShow.value = false;
+  Toast('投递成功')
+  getSelectPosition(getJobIndustry.value);
+}
+
+
 
 let isShow = ref(false)
 let area: any = ref();//地区
@@ -100,6 +203,7 @@ if (localStorage.getItem('jobIndustry')) {
 }
 
 // 获取求职意向
+let getJobIndustry: any = ref();
 let intention = ref(false);
 const getJobIntent = async () => {
   let res: any = await useJob.getJobIntentList({});
@@ -155,6 +259,13 @@ const getJobIntent = async () => {
       area.value.forEach((item: any) => {
         wishAddr += item.replace(/\S+-/, '') + ',';
       });
+      getJobIndustry.value = {
+        wishAddr: wishAddr,
+        wishIndustryLeft: res.data.wishIndustryLeft,
+        wishMoneyLeft: res.data.wishMoney.replace(/,\d+/, ''),
+        wishMoneyRight: res.data.wishMoney.replace(/\d+,/, ''),
+        wishPositionLeft: res.data.wishPositionTypeLeft,
+      }
       getSelectPosition({
         wishAddr: wishAddr,
         wishIndustryLeft: res.data.wishIndustryLeft,
@@ -176,18 +287,48 @@ const getJobIntent = async () => {
 getJobIntent();
 // 获取推荐职位列表
 let cardList = ref([]) as Ref<CardItem[]>;
+
 const getSelectPosition = async (params: any) => {
   let res: any = await useJob.getSelectPositionList(params);
+  console.log(res)
   if (res.code == 200) {
     cardList.value = cardList.value.concat(res.data);
   }
 }
 
 // 获取在线简历的接口
-let resInfo: any = ref();
+interface Resume {
+  createTime: string,
+  modifyTime: string,
+  resumeId: number,
+  resumeName: string,
+  resumeUrl: string,
+  isOnline: boolean,
+  completion?: number,
+}
+
+let checked: Ref<number | null> = ref(null);//这个是选中简历id
+let resumeList: Ref<Resume[]> = ref([]);
+
+let resumeInfo: any = ref();
 async function getOnlineResume() {
   let res: any = await positionDetailStore.getOnlineResume({});
-  resInfo.value = res
+  if (res.code == 200) {
+    resumeInfo.value = res.data;
+    let check = resumeInfo.value.find((item: any) => {
+      return item.isOnline == true;
+    })
+    if (check) {
+      checked.value = check.resumeId;
+    } else {
+      if (resumeInfo.value.length) {
+        checked.value = resumeInfo.value[0].resumeId;
+      }
+    }
+    resumeInfo.value.sort((a: any, b: any) => {
+      return b.isOnline - a.isOnline;
+    });
+  }
 }
 getOnlineResume();
 
@@ -195,7 +336,15 @@ getOnlineResume();
 let onlineResume: any = ref();
 const selectCompletion = async () => {
   let res: any = await positionDetailStore.selectCompletion({});
-  onlineResume.value = res
+  if (res.code == 200) {
+    let check = resumeList.value.find((item) => {
+      return item.isOnline == true;
+    })
+    if (check) {
+      check.completion = res.data.completion;
+    }
+    onlineResume.value = res.data.completion
+  }
 
 }
 selectCompletion();
@@ -277,9 +426,9 @@ selectCompletion();
       height: 13rem;
     }
 
-    .btn {
-      padding: 0 5rem !important;
-    }
+    // .btn {
+    //   padding: 0 5rem !important;
+    // }
   }
 }
 
@@ -303,5 +452,77 @@ selectCompletion();
       font-size: 1.8rem;
     }
   }
+}
+
+.pop {
+  height: 44rem;
+  padding: 0 2rem;
+
+  &>.container-resume {
+    height: calc(42rem - 7rem);
+    overflow-y: scroll;
+
+    .resume-item {
+      display: flex;
+      align-items: center;
+      border-bottom: .2px solid #d8dbe3;
+
+      :deep(.van-radio__label) {
+        display: flex;
+        align-items: center;
+      }
+
+      .resume {
+        flex: 1;
+        height: 5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .top {
+          width: 20rem;
+          display: flex;
+        }
+      }
+    }
+  }
+
+  &>.btn-wrap {
+    &>.btn {
+      padding: 1.5rem 0;
+      background: #1989fa;
+    }
+  }
+
+}
+
+.pd-20_0 {
+  padding: 2rem 0;
+}
+
+.icon-30 {
+  width: 3rem;
+  height: 3rem;
+}
+
+.btn-confirm {
+  width: 100%;
+}
+
+.to-resume {
+  min-height: 55vh;
+}
+
+.btn-apply {
+  margin-top: 3rem;
+  border-radius: .5rem;
+  padding: 1.4rem 1rem;
+  background-color: #3b7dff;
+
+}
+
+
+:deep(.van-overlay) {
+  background-color: #0000000e !important;
 }
 </style>

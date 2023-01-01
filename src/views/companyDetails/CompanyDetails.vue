@@ -1,4 +1,17 @@
 <template>
+  <van-popup v-model:show="showPopup" closeable round :style="{ height: '25%', width: '80%' }">
+    <div class="show-count_box">
+      <div class="show-wrap">
+        <div>
+          <h1>登录毕业申</h1>
+        </div>
+        <div>
+          <van-button type="primary" class="ft" @click="to('/login')">手机号码验证登录</van-button>
+        </div>
+        <div class="c-747474" @click="wxLogin()">微信账号快捷登录</div>
+      </div>
+    </div>
+  </van-popup>
   <div class="com-page">
     <van-nav-bar class title="公司主页" left-arrow @click-left="onClickLeft1" />
     <div class="content">
@@ -57,10 +70,18 @@
                     </div>
                     <div class="btn mt-20">
                       <van-button
+                        v-if="!item.isDelivery"
                         type="primary"
                         size="small"
-                        @click.stop="applyPosition(item.positionId)"
+                        @click.stop="checkToken(applyPosition,item.positionId)"
                       >申请</van-button>
+                      <van-button
+                        class="disabled-btn"
+                        v-else
+                        type="primary"
+                        size="small"
+                        @click.stop
+                      >已申请</van-button>
                     </div>
                   </div>
                 </div>
@@ -86,7 +107,7 @@
           <van-icon name="star-o" size="2.5rem" color="#666666" />
           <span>已收藏</span>
         </div>
-        <van-button v-else type="primary" block @click="starPosition">收藏</van-button>
+        <van-button v-else type="primary" block @click="checkToken(starPosition)">收藏</van-button>
       </div>
     </div>
 
@@ -140,10 +161,11 @@ import { useResumeStore } from "@/stores/resume"; //接口
 import Card from "@/components/card";
 let onClickLeft1 = () => history.back();
 const active = ref(0);
+const showPopup = ref(false);
 const positionId: Ref<null | number> = ref(null);
 const container = ref(null);
 const showResume = ref(false);
-const resumeList: any = ref({});
+const resumeList: any = ref([]);
 const checkedResume = ref(null);
 const use = useResumeStore();
 let router = useRouter();
@@ -175,7 +197,9 @@ const share = function () {
     confirmButtonColor: "#3b81fb",
   }).then(() => {});
 };
-
+const showPop = function () {
+  showPopup.value = true;
+};
 // 申请职位接口
 const applyPosition = (id: number) => {
   positionId.value = id;
@@ -192,7 +216,7 @@ const deliveryResume = async (id: number) => {
     Toast.success("投递失败");
   }
   showResume.value = false;
-  getComInfo()
+  getComInfo();
 };
 interface CompanyInfo {
   companyAddr: string;
@@ -224,7 +248,14 @@ onMounted(() => {
   getComInfo();
   getResumeList();
 });
-
+let token = sessionStorage.getItem("token");
+const checkToken = function (fun: Function, id: number) {
+  if (!token) {
+    showPop();
+  } else {
+    fun(id);
+  }
+};
 const starPosition = async () => {
   let companyId = Number(route.query.componyId);
   let res = await use.starPosition({ companyId });
@@ -356,6 +387,10 @@ const delStarPosition = async () => {
             padding: 0.6rem 1rem;
             font-weight: 700;
           }
+          .disabled-btn {
+            cursor: not-allowed;
+            opacity: 0.5;
+          }
         }
       }
     }
@@ -462,13 +497,13 @@ const delStarPosition = async () => {
   .to-resume {
     min-height: 55vh;
   }
-  
-.btn {
-  margin-top: 3rem;
-  border-radius: 0.5rem;
-  padding: 1.4rem 1rem;
-  background-color: #3b7dff;
-}
+
+  .btn {
+    margin-top: 3rem;
+    border-radius: 0.5rem;
+    padding: 1.4rem 1rem;
+    background-color: #3b7dff;
+  }
 }
 
 .icon-30 {
@@ -478,5 +513,27 @@ const delStarPosition = async () => {
 
 .pd-20_0 {
   padding: 2rem 0;
+}
+
+.show-count_box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  .show-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+
+    h1 {
+      font-weight: 500;
+    }
+
+    .ft {
+      font-size: 1.8rem;
+    }
+  }
 }
 </style>

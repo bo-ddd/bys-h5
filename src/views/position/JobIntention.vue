@@ -61,7 +61,7 @@
                                 class="fs-14">（最多可选择3个）</span></span>
                     </template>
                 </van-cell>
-                <van-action-sheet v-model:show="showWorkplace" title="期望工作地">
+                <van-action-sheet v-model:show="showWorkplace" title="期望工作地(最多三个)">
                     <div class="content content-workplace">
                         <!-- 地区 -->
                         <van-tree-select v-model:active-id="activeId" v-model:main-active-index="activeIndex"
@@ -212,7 +212,9 @@ const onConfirmSalary = (value: any) => {//确认
     wishMoneyRight = value[1].text;
 };
 const handleMoney = function (value: any): string {
-    return ((value[0].text) / 1000) + '-' + ((value[1].text) / 1000) + 'k';
+    console.log((value[1].text).replace(/\D+/,''))
+    console.log(((value[0].text) / 1000) + '-' + ((value[1].text).replace(/\D+/,'') / 1000) + 'k')
+    return ((value[0].text) / 1000) + '-' + ((value[1].text).replace(/\D+/,'')/ 1000) + 'k';
 }
 const onCancelSalary = () => {//取消
     showSalary.value = false;
@@ -277,18 +279,13 @@ let workplace: any[] = reactive([]);
 // 右侧
 let handlWorkplaceItem = function (item: any): void {
     // let index = workplace.indexOf(item);
+    
     let index = -1;
     for (let i = 0; i < workplace.length; i++) {
         if (item.text == workplace[i].text) {
             index = i;
         }
     }
-    // showArea.value.forEach((areaItem: any, index: number) => {
-    //     if (areaItem.split('-')[1] == item.text) {
-    //         workplace.splice(index, 1);
-    //         showArea.value.splice(index, 1);
-    //     }
-    // })
     if (index !== -1) {
         workplace.splice(index, 1);
         showArea.value.splice(index, 1);

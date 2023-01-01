@@ -57,7 +57,7 @@
         </template>
 
         <!-- 点击求职状态弹层的模板-------------------------- -->
-        <template #title v-if="item.id == 7">
+        <template #title v-show="item.id == 7">
           <div class="van-cell__title">
             <van-icon :name="parseAssetFile(item.icon)" />
             <span class="custom-title" @click="showPopup">{{ item.title }}</span>

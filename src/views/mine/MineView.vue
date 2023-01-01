@@ -199,7 +199,7 @@ let list = reactive([
     link: '/siteSettings',
     icon: 'icon-site.png',
     ispopup: false,
-    isLogin: true
+    isLogin: false
   },
 ])
 

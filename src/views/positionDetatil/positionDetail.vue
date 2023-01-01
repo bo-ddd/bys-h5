@@ -75,8 +75,9 @@
         <van-popup v-model:show="show" round position="bottom" v-if="!positionDetail?.isDelivery && loginStatus">
             <div class="pop">
                 <div class="container-resume">
-                    <h3 class="pd-10_0">确认投递简历</h3>
-                    <van-radio-group v-model="checked">
+                    <h3 class="pd-10_0 text-center">确认投递简历</h3>
+                    <p class="text-center" v-if="!resumeList.length">还未填写简历,点击<span class="cl-blue" @click="toPage('createResume')">去填写</span></p>
+                    <van-radio-group v-model="checked" v-if="resumeList.length">
                         <div class="resume-item mt-5 pd-20_0" v-for="item in resumeList" :key="item.resumeId">
                             <van-radio :name="item.resumeId" icon-size="2rem">
                                 <img class="icon-30 ml-15" src="@/assets/images/icon-resume.png">
@@ -97,7 +98,7 @@
                     </van-radio-group>
                 </div>
                 <div class="btn-wrap">
-                    <div class="btn cl-fff flex-center fs-14" @click="Delivery">确认投递</div>
+                    <div v-if="resumeList.length" class="btn cl-fff flex-center fs-14" @click="Delivery">确认投递</div>
                 </div>
             </div>
         </van-popup>
@@ -130,6 +131,9 @@ let jump = (url: string,componyId:number) => {
             componyId:componyId,
         }
     })
+}
+let toPage = (url:string)=>{
+    router.push(url);
 }
 interface Resume{
     createTime: string,
@@ -533,6 +537,9 @@ const to = function (path: any) {
     }
     .bg-hight{
         background: #1989fa;
+    }
+    .text-center{
+        text-align: center;
     }
 }
 </style>

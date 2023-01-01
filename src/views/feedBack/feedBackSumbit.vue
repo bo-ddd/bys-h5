@@ -46,6 +46,8 @@ let feedBack = async ()=>{
         phone:phone.value
      })
      if(res.code = 200){
+        message.value = "";
+        phone.value = "";
         Toast({
             message: "提交成功,会尽快处理",
             position: 'top',

@@ -21,64 +21,7 @@
             </div>
         </div>
         <div class="operation" @click.stop="">
-            <p class=" mt-14 c-fb5530 fs-14 fw-600 money">{{ !options.positionMoney ? '' :
-        options.positionMoney.replace(/,/g, '-').replace(/0/g, '') + 'k'
-}}</p>
-            <p v-if="options.isDelivery" class="mt-30 fs-12 c-a8a8a8">已申请</p>
-            <van-button v-if="!options.isDelivery" class="mt-20 btn fw-600" size="mini" type="primary"
-                @click.stop="apply()">申请</van-button>
-            <van-action-sheet @click.prevent.stop="" v-model:show="isShow" title="确认投递简历">
-                <div class="content" v-show="!(resumeList.length == 0)">
-                    <div class="pop">
-                        <div class="container-resume">
-                            <van-radio-group v-model="checked">
-                                <div class="resume-item mt-5 pd-20_0" v-for="item in resumeList" :key="item.resumeId">
-                                    <van-radio :name="item.resumeId" icon-size="2rem">
-                                        <img class="icon-30 ml-15" src="@/assets/images/icon-resume.png">
-                                        <div class="resume ml-10">
-                                            <div class="top just-between mt-5">
-                                                <div class="fs-14">
-                                                    {{ /在线简历/.test(item.resumeName) ? '在线简历' : item.resumeName }}</div>
-                                                <div class="fs-12 ml-40" v-if="item.isOnline">
-                                                    <span class="c-5d5d5d">完成度:</span>
-                                                    <span class="c-2979ff">{{ onlineResume ? onlineResume * 100
-        : ''
-}}%</span>
-                                                </div>
-                                            </div>
-                                            <div class="btm fs-12 c-5d5d5d">
-                                                {{ item.modifyTime }}{{ item.isOnline ? '更新' : '上传' }}
-                                            </div>
-                                        </div>
-                                    </van-radio>
-                                </div>
-                            </van-radio-group>
-                        </div>
-                        <div class="btn-wrap">
-                            <div class="btn c-ffffff just-center fs-14" @click="delivery(options.positionId)">确认投递</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="content" v-show="resumeList.length == 0">
-                    <div class="just-center flex">
-                        <p class="fs-14 c-747474">还未填写简历，点击<a href="" @click="jump('/createResume')"
-                                class="c-2979ff">去填写</a></p>
-                    </div>
-                </div>
-            </van-action-sheet>
-            <van-popup v-model:show="showCount" closeable round :style="{ height: '25%', width: '80%' }">
-                <div class="show-count_box">
-                    <div class="show-wrap">
-                        <div>
-                            <h1>登录毕业申</h1>
-                        </div>
-                        <div>
-                            <van-button type="primary" class="ft" @click="jump('/login')">手机号码验证登录</van-button>
-                        </div>
-                        <div class="c-747474" @click="wxLogin()">微信账号快捷登录</div>
-                    </div>
-                </div>
-            </van-popup>
+        <slot name="button" ></slot>
         </div>
     </div>
 </template>
@@ -128,84 +71,32 @@ const wxLogin = () => {
         position: 'top',
     });
 }
-// 申请职位接口
-const deliveryJob = async (params: number) => {
-    let res: any = await useJob.deliveryPosition({ positionId: params });
-    if (res.code == 200) {
-        isShow.value = false;
-    }
-}
-const emit = defineEmits(["refresh"]); //声明 emits
-// 确认投递
-let reload: any = inject('reload')
-const delivery = function (id: number) {
-    deliveryJob(id);
-    // window.location.href = '/position'
-    setTimeout(() => {
-        Toast('投递成功')
-        reload();
-    }, 1000)
-}
 
 
-interface Resume {
-    createTime: string,
-    modifyTime: string,
-    resumeId: number,
-    resumeName: string,
-    resumeUrl: string,
-    isOnline: boolean,
-    completion?: number,
-}
 
-let checked: Ref<number | null> = ref(null);//这个是选中简历id
-let resumeList: Ref<Resume[]> = ref([]);
 
-// 获取在线简历的接口
-if (resume?.value) {
-    if (resume.value.code == 200) {
-        resumeList.value = resume.value.data;
-        let check = resumeList.value.find((item) => {
-            return item.isOnline == true;
-        })
-        if (check) {
-            checked.value = check.resumeId;
-        } else {
-            if (resumeList.value.length) {
-                checked.value = resumeList.value[0].resumeId;
-            }
-        }
-        resumeList.value.sort((a: any, b: any) => {
-            return b.isOnline - a.isOnline;
-        });
-    }
-}
+// // 获取在线简历的接口
+// if (resume?.value) {
+   
+// }
 
-//获取在线信息完成度
-let onlineResume = ref() as Ref<number>;
-if (onlineResumeInfo?.value) {
-    if (onlineResumeInfo.value.code == 200) {
-        let check = resumeList.value.find((item) => {
-            return item.isOnline == true;
-        })
-        if (check) {
-            check.completion = onlineResumeInfo.value.data.completion;
-        }
-        onlineResume.value = onlineResumeInfo.value.data.completion
-    }
+// //获取在线信息完成度
+// let onlineResume = ref() as Ref<number>;
+// if (onlineResumeInfo?.value) {
+  
 
-}
-//申请职位 
-const apply = function () {
-    if (!token) {
-        showCount.value = true
-    } else {
-        isShow.value = true;
-        if (resumeList.value.length == 0) {
-            show.value = true;
-        }
-    }
-}
+// }
+// //申请职位 
+// const apply = function () {
+//     if (!token) {
+//         showCount.value = true
+//     } else {
+//         isShow.value = true;
+//         if (resumeList.value.length == 0) {
+//             show.value = true;
+//         }
+//     }
+// }
 </script>
 
 <style lang="scss" scoped>

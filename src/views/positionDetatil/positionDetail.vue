@@ -213,6 +213,9 @@ async function getOnlineResume() {
             return b.isOnline - a.isOnline;
         });
     }
+    if(res.code == 401){
+        Toast('请登录');
+    }
 }
 getOnlineResume();
 // 转换钱的方法

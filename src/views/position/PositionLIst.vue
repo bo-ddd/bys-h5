@@ -69,7 +69,7 @@ getPositionList();
 /**
  * 职位
  */
-const activeId:any = ref(0);  //右侧的id
+const activeId:any = ref("不限");  //右侧的id
 const activeIndex = ref(0); //左侧的索引
 
 let item3 = ref();
@@ -117,6 +117,22 @@ const positionSelect = async () => {
     
     let res: any = await useJob.selectPositionList({
         wishIndustryLeft: Number(positionId)
+    })
+    if (res.code == 200) {
+        cardList.value = res.data;
+    }
+ }
+
+ const selectPostitionList = async ()=>{
+  let res: any = await useJob.selectPositionList({
+        wishNature: checkNatur?.label,
+        wishEducation: eduation.value,
+        wishMoneyLeft:wishMoneyLeft.value,
+        wishMoneyRight:wishMoneyRight.value,
+
+        wishIndustryLeft: Number((wishIndustry as {id:number}).id),
+        wishPositionLeft:activeId.value || "",
+        wishAddr: wishAddrStr.value || "不限",
     })
     if (res.code == 200) {
         cardList.value = res.data;
@@ -278,7 +294,7 @@ const submitFilter = async () => {
         wishMoneyRight:wishMoneyRight.value,
 
         wishIndustryLeft: Number((wishIndustry as {id:number}).id),
-        wishPositionLeft:activeId.value || "",
+        wishPositionLeft:Number(activeId.value),
         wishAddr: wishAddrStr.value || "不限",
     })
 
@@ -312,10 +328,11 @@ const deliveryJob = async (params: any) => {
   let res: any = await useJob.deliveryPosition(params);
   if (res.code == 200) {
     isResumeShow.value = false;
+    selectPostitionList();
   }
 }
 // 确认投递
-const delivery = function (id: number) {
+const delivery = function () {
   deliveryJob({
     resumeId: checked.value as number,
     positionId: positionId.value
@@ -485,7 +502,7 @@ const onClickLeft = () => history.back();
                     </van-radio-group>
                   </div>
                   <div class="btn-wrap">
-                    <div class="btn c-ffffff just-center fs-14" @click="delivery(item.positionId)">
+                    <div class="btn c-ffffff just-center fs-14" @click="delivery()">
                       确认投递</div>
                   </div>
                 </div>

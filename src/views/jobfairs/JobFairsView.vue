@@ -59,7 +59,7 @@
 
         <JobFairsNav title="招聘企业" class="mt-38">
           <template #header>
-            <span class="fs-14 c-747474">查看全部 ></span>
+            <span class="fs-14 c-747474" @click="jump('/companyList')">查看全部 ></span>
           </template>
           <template #content>
             <van-swipe class="my-swipe" :touchable="true" :lazy-render="true" :autoplay="4000" indicator-color="white">

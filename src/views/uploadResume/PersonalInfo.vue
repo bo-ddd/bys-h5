@@ -565,7 +565,7 @@ const to = (path: string) => {
   }
   .foot-box {
     width: 100%;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     .btn-box {
       width: 100%;

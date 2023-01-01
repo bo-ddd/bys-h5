@@ -164,7 +164,6 @@ let show = ref(false);
 let isResumeShow = ref(false);
 const apply = function (id:number) {
   positionId.value = id;
-  console.log(positionId.value);
   if (!token) {
     showCount.value = true
   } else {
@@ -182,15 +181,14 @@ const deliveryJob = async (params: any) => {
   }
 }
 // 确认投递
-const delivery = function () {
+const delivery = function (id :number) {
   deliveryJob({
     resumeId: checked.value as number,
     positionId: positionId.value
   });
-  getSelectPosition(getJobIndustry.value);
   isResumeShow.value = false;
-  // window.location.href = '/position'
   Toast('投递成功')
+  getSelectPosition(getJobIndustry.value);
 }
 
 

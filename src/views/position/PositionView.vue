@@ -22,12 +22,12 @@
     </header>
     <main class="container">
 
-      <Card.Wrap class="card-bg" v-if="cardList.length">
+      <Card.Wrap class="card-bg" v-if="cardList.length ">
         <Card.Item :resume="resInfo" :onlineResumeInfo="onlineResume" :class="index ? 'mt-5' : ''" v-for="item, index in cardList" :key="item.companyId"
           :options="item" @click="jump('/positionDetail', item.positionId)"></Card.Item>
       </Card.Wrap>
 
-      <div v-show="!cardList.length">
+      <div v-if="!cardList.length">
         <div class="just-center mt-150">
           <img class="icon-position" src="@/assets/images/icon-positionjob.png" alt="">
         </div>

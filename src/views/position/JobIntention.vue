@@ -349,8 +349,8 @@ const submit = (): void => {
         }
         setModifyJobIntent({
             wishAddr: [...new Set(showArea.value)].join(','),
-            wishIndustryLeft: JSON.parse(localStorage.getItem('modifyIndustryInfo')!).wishIndustryLeft.replace(/,$/, ''),
-            wishIndustryRight: JSON.parse(localStorage.getItem('modifyIndustryInfo')!).wishIndustryRight.replace(/,$/, ''),
+            wishIndustryLeft: localStorage.getItem('modifyIndustryInfo')?JSON.parse(localStorage.getItem('modifyIndustryInfo')!).wishIndustryLeft.replace(/,$/, ''):'',
+            wishIndustryRight:localStorage.getItem('modifyIndustryInfo')? JSON.parse(localStorage.getItem('modifyIndustryInfo')!).wishIndustryRight.replace(/,$/, ''):'',
             wishMoneyLeft: wishMoneyLeft,
             wishMoneyRight: wishMoneyRight,
             wishNature: wishNature.value,

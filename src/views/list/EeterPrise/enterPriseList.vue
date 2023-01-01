@@ -264,7 +264,7 @@ onMounted(()=>{
     <div class="enterprise">
         <van-nav-bar title="企业列表" :left-arrow="true" @click-left="back" />
         <div class="banner">
-            <img src="@/assets/images/banner-1.png">
+            <img src="@/assets/images/banner-1.png" style="width:100vw;">
         </div>
         <div class="search-wrap">
             <div class="search">

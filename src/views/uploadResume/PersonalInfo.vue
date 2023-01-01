@@ -178,7 +178,13 @@
     </van-popup>
     <!-- 毕业年份 -->
     <van-popup v-model:show="show8" position="bottom" :style="{ height: '50%' }">
-      <van-picker :columns="yearList" @confirm="selectYear" @cancel="onCancel" />
+      {{userYear}}
+      <van-picker
+        :columns="yearList"
+        @confirm="selectYear"
+        @cancel="onCancel"
+        :default-index="defaultYear"
+      />
     </van-popup>
   </div>
 </template>
@@ -255,6 +261,20 @@ const setNation = (item: any, index: number) => {
   nationDefault.value = index;
   show3.value = false;
 };
+
+//年份
+const maxDate = new Date();
+const userYear: any = ref("");
+const yearLength = maxDate.getFullYear() + 11 - 1970;
+const yearList = Array(yearLength)
+  .fill(0)
+  .map((item, i) => {
+    return String(1970 + i);
+  });
+const selectYear = (value: any) => {
+  show8.value = false;
+  userYear.value = value;
+};
 //获取个人信息
 const getInfo = async function () {
   let res = await use.getOnlineResume({});
@@ -279,6 +299,12 @@ const getInfo = async function () {
       value: res.data.userProfessionalId,
     };
     userYear.value = res.data.userYear;
+    console.log(userYear.value);
+    console.log(yearList);
+    
+    defaultYear.value = yearList.indexOf(userYear.value);
+    console.log(defaultYear.value);
+    
   }
 };
 const clearUserInfo = function () {
@@ -328,6 +354,7 @@ const clearKeep = function () {
   clearSchool();
   clearMajor();
 };
+const defaultYear = ref(0);
 //姓名
 const userName = ref("");
 //邮箱
@@ -363,7 +390,6 @@ const gerSexList = async function () {
 };
 //生日
 const minDate = new Date(1970, 0, 1);
-const maxDate = new Date(2032, 11, 31);
 const userBirthday = ref("");
 const setDay = (value: any) => {
   userBirthday.value = formatDay(value);
@@ -425,18 +451,6 @@ const selectEducation = (item: any) => {
   educationValue.value = item.value;
   show5.value = false;
 };
-//年份
-const userYear = ref("");
-const yearList = [
-  1990, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
-  2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014,
-  2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027,
-  2028, 2029, 2030,
-];
-const selectYear = (value: any) => {
-  show8.value = false;
-  userYear.value = value;
-};
 //学校和专业
 const userSchool: any = ref("");
 const userProfessional: any = ref("");
@@ -477,26 +491,27 @@ const updateUserInfo = async () => {
 };
 //校验
 const checkForm = function () {
-  let emailReg = /^[a-zA-Z0-9]+([-_.][A-Za-zd]+)*@([a-zA-Z0-9]+[-.])+[A-Za-zd]{2,5}$/;
+  let emailReg =
+    /^[a-zA-Z0-9]+([-_.][A-Za-zd]+)*@([a-zA-Z0-9]+[-.])+[A-Za-zd]{2,5}$/;
   if (!avaterImg.value) {
     Toast("请选择头像");
     return;
-  }else if (!userName.value) {
+  } else if (!userName.value) {
     Toast("请输入姓名");
     return;
-  }else if (!userEmail.value) {
+  } else if (!userEmail.value) {
     Toast("请输入联系邮箱");
     return;
-  }else if(!emailReg.test(userEmail.value)){
+  } else if (!emailReg.test(userEmail.value)) {
     Toast("邮箱格式不对");
-    return
+    return;
   } else if (!userBirthday.value) {
     Toast("请选择出生年月");
     return;
   } else if (!userNational.value) {
     Toast("请选择民族");
     return;
-  }else if (!userSex.value) {
+  } else if (!userSex.value) {
     Toast("请选择性别");
     return;
   } else if (!userAddr.value) {

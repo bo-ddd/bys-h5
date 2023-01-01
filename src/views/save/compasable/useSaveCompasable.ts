@@ -72,7 +72,8 @@ export default function () {
     }
     //获取职位的列表
     const getSaveList = async () => {
-        const res:Res<{data:any,maxCount:number}> = await SaveStore.getSaveList(positionPayload);
+        
+        const res:Res<{data:Position[],maxCount:number}> = await SaveStore.getSaveList(positionPayload);
         if (res.code == 200) {
             positionList.value.push(...((res.data).data));
             positionCount.value = res.data.maxCount;

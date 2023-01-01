@@ -61,7 +61,7 @@
                     </van-radio-group>
                   </div>
                   <div class="btn-wrap">
-                    <div class="btn c-ffffff just-center fs-14" @click="delivery(item.positionId)">
+                    <div class="btn c-ffffff just-center fs-14" @click="delivery()">
                       确认投递</div>
                   </div>
                 </div>
@@ -177,11 +177,12 @@ const apply = function (id: number) {
 const deliveryJob = async (params: any) => {
   let res: any = await useJob.deliveryPosition(params);
   if (res.code == 200) {
+    getSelectPosition(getJobIndustry.value);
     isResumeShow.value = false;
   }
 }
 // 确认投递
-const delivery = function (id: number) {
+const delivery = function () {
   deliveryJob({
     resumeId: checked.value as number,
     positionId: positionId.value

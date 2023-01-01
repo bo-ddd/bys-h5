@@ -8,7 +8,7 @@
         <div class="mt-10 text-center fs-14 color-gray">最多可上传3份简历</div>
       </div>
       <div v-else>
-        <div class="head-tip">最多可以上传3份简历</div>
+        <div class="head-tip">最多可以上传3份简历 ( pdf,doc,docx类型 )</div>
         <div class="list mt-10">
           <div
             class="item ptb-20 bord-bottom-gray just-between"

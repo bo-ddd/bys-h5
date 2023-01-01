@@ -70,10 +70,18 @@
                     </div>
                     <div class="btn mt-20">
                       <van-button
+                        v-if="!item.isDelivery"
                         type="primary"
                         size="small"
                         @click.stop="checkToken(applyPosition,item.positionId)"
                       >申请</van-button>
+                      <van-button
+                        class="disabled-btn"
+                        v-else
+                        type="primary"
+                        size="small"
+                        @click.stop
+                      >已申请</van-button>
                     </div>
                   </div>
                 </div>
@@ -378,6 +386,10 @@ const delStarPosition = async () => {
             font-size: 1.4rem;
             padding: 0.6rem 1rem;
             font-weight: 700;
+          }
+          .disabled-btn {
+            cursor: not-allowed;
+            opacity: 0.5;
           }
         }
       }

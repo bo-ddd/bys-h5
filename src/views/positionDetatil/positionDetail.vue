@@ -40,7 +40,7 @@
                     <div class="fs-14">{{ parsePosition(positionDetail?.positionAddr as string) }}</div>
                 </div>
             </div>
-            <div class="company-profile" @click="jump('/companyDetails')">
+            <div class="company-profile" @click="jump('/companyDetails',positionDetail?.companyId as number)">
                 <h2 class="fs-20">企业简介</h2>
                 <div class="msg mt-20">
                     <img :src="positionDetail?.companyLogoUrl" class="icon-40">
@@ -123,8 +123,13 @@ const showPopup = ref(!loginStatus.value);
 let back = () => {
     router.go(-1);
 }
-let jump = (url: string) => {
-    router.push({ path: url })
+let jump = (url: string,componyId:number) => {
+    router.push({ 
+        path: url,
+        query:{
+            componyId:componyId,
+        }
+    })
 }
 interface Resume{
     createTime: string,
@@ -175,6 +180,7 @@ async function getPositionDetail() {
 getPositionDetail();
 // 收藏职位的接口
 async function setStarPosition() {
+    if(loginStatus.value == false) return;
     let res: Res<any> = await positionDetailStore.setStarPosition({
         positionId: positionId.value,
     });
@@ -206,6 +212,9 @@ async function getOnlineResume() {
         resumeList.value.sort((a : any,b :any)=>{
             return b.isOnline - a.isOnline;
         });
+    }
+    if(res.code == 401){
+        Toast('请登录');
     }
 }
 getOnlineResume();

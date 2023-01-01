@@ -81,7 +81,7 @@ let jump = (url: string,companyId:number) => {
     router.push({
          path: url,
          query:{
-            companyId:companyId
+            componyId:companyId
          }
      })
 }

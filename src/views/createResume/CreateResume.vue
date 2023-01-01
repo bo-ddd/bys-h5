@@ -16,7 +16,7 @@
             type="primary"
             color="#2471fa"
             block
-            @click="to('/uploadResumeChoice')"
+            @click="to('/appendixResume')"
           >上传</van-button>
         </div>
       </div>

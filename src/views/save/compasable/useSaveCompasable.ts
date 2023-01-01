@@ -1,6 +1,6 @@
-import { useSaveStore } from "@/stores/save";
 import { reactive, ref,type Ref } from "vue";
 import { Toast } from 'vant';
+import { useSaveStore } from "@/stores/save";
 export default function () {
     interface Res<T>{
         code:number;
@@ -45,7 +45,7 @@ export default function () {
         pageSize:3,
         pageIndex:1,
     })
-    let SaveStore: any = useSaveStore();
+    let SaveStore = useSaveStore();
     let active = ref();
     let count = ref(1);
     const loading = ref(false);
@@ -82,6 +82,7 @@ export default function () {
     //获取公司的列表
     const getCompanyList = async () => {
         const res:Res<{data:any,maxCount:number}> = await SaveStore.getSaveList(companyPayload);
+        console.log('---------我是公司列表--------------');
         if(res.code == 200){
             companyList.value.push(...((res.data).data));
             companyCount.value = res.data.maxCount;

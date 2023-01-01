@@ -123,10 +123,10 @@ const selectCompletion = async ()=>{
             }
         }
 }
-getOnlineResume();
-selectCompletion();
-getSaveList();
-getCompanyList();
+    getOnlineResume();
+    selectCompletion();
+    getSaveList();
+    getCompanyList();
 </script>
 <template>
     <div class="save">

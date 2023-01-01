@@ -6,7 +6,7 @@
           <h1>登录毕业申</h1>
         </div>
         <div>
-          <van-button type="primary" class="ft" @click="to('/login')">手机号码验证登录</van-button>
+          <van-button type="primary" class="ft" @click="jump('/login')">手机号码验证登录</van-button>
         </div>
         <div class="c-747474" @click="wxLogin()">微信账号快捷登录</div>
       </div>
@@ -107,7 +107,7 @@
           <van-icon name="star-o" size="2.5rem" color="#666666" />
           <span>已收藏</span>
         </div>
-        <van-button v-else type="primary" block @click="checkToken(starPosition)">收藏</van-button>
+        <van-button v-else type="primary" block @click="checkToken(starPosition,null)">收藏</van-button>
       </div>
     </div>
 
@@ -136,7 +136,7 @@
             </van-radio-group>
           </div>
           <div class="btn-wrap">
-            <div class="btn c-ffffff just-center fs-14" @click="deliveryResume(checkedResume)">确认投递</div>
+            <div class="btn c-ffffff just-center fs-14" @click="deliveryResume">确认投递</div>
           </div>
         </div>
       </div>
@@ -170,6 +170,9 @@ const checkedResume = ref(null);
 const use = useResumeStore();
 let router = useRouter();
 let route = useRoute();
+const wxLogin=()=>{
+
+}
 let jump = (url: string) => {
   router.push({ path: url });
 };
@@ -205,10 +208,10 @@ const applyPosition = (id: number) => {
   positionId.value = id;
   showResume.value = true;
 };
-const deliveryResume = async (id: number) => {
+const deliveryResume = async () => {
   let res = await use.deliveryPosition({
     positionId: positionId.value,
-    resumeId: id,
+    resumeId: checkedResume.value,
   });
   if (res.code == 200) {
     Toast.success("投递成功");
@@ -249,7 +252,7 @@ onMounted(() => {
   getResumeList();
 });
 let token = sessionStorage.getItem("token");
-const checkToken = function (fun: Function, id: number) {
+const checkToken = function (fun: Function, id: number|null) {
   if (!token) {
     showPop();
   } else {

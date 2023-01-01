@@ -32,7 +32,7 @@
 }}</p>
             <p v-if="item.isDelivery" class="mt-30 fs-12 c-a8a8a8">已申请</p>
             <van-button v-if="!item.isDelivery" class="mt-20 btn fw-600 btn-apply" size="mini" type="primary"
-              @click.stop="apply()">申请</van-button>
+              @click.stop="apply(item.positionId)">申请</van-button>
             <van-action-sheet @click.prevent.stop="" v-model:show="isResumeShow" title="确认投递简历">
               <div class="content" v-show="!(resumeInfo.length == 0)">
                 <div class="pop">
@@ -49,7 +49,7 @@
                                 <span class="c-5d5d5d">完成度:</span>
                                 <span class="c-2979ff">{{ onlineResume ? onlineResume * 100
     : ''
-}}%</span>
+}}%</span>                    
                               </div>
                             </div>
                             <div class="btm fs-12 c-5d5d5d">
@@ -62,7 +62,7 @@
                   </div>
                   <div class="btn-wrap">
                     <div class="btn c-ffffff just-center fs-14" @click="delivery(item.positionId)">
-                      {{ item.positionId }}确认投递</div>
+                        确认投递</div>
                   </div>
                 </div>
               </div>
@@ -133,6 +133,12 @@ const router = useRouter();
 const useJob = useJobStore();
 const showCount = ref(false);
 
+
+
+let positionId = ref();
+
+
+
 const jump = (src: string, params?: number) => {
   if (src == '/jobIntention' && intention.value) {
     showCount.value = true;
@@ -156,7 +162,9 @@ const wxLogin = () => {
 const token = sessionStorage.getItem("token");
 let show = ref(false);
 let isResumeShow = ref(false);
-const apply = function () {
+const apply = function (id:number) {
+  positionId.value = id;
+  console.log(positionId.value);
   if (!token) {
     showCount.value = true
   } else {
@@ -169,16 +177,15 @@ const apply = function () {
 // 申请职位接口
 const deliveryJob = async (params: any) => {
   let res: any = await useJob.deliveryPosition(params);
-  console.log(res)
   if (res.code == 200) {
     isResumeShow.value = false;
   }
 }
 // 确认投递
-const delivery = function (id: number) {
+const delivery = function () {
   deliveryJob({
     resumeId: checked.value as number,
-    positionId: id + ''
+    positionId: positionId.value
   });
   getSelectPosition(getJobIndustry.value);
   isResumeShow.value = false;

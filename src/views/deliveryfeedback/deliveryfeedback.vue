@@ -30,6 +30,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useFeedbackStore } from "@/stores/feedBack";
+import { Toast } from 'vant';
 let active = ref(0);
 const onClickLeft = () => history.back();
 let useFeedBack = useFeedbackStore();
@@ -47,6 +48,12 @@ let list:any = ref([]);
     let res:any = await useFeedBack.selectDelivery({deliveryStatus:active.value});
     if(res.code == 200){
        list.value = res.data;
+    }
+    if(res.code == 401){
+      Toast({
+            message: '登录失效，请重新登录',
+            position: 'top',
+          });
     }
  }
  selectDelivery();

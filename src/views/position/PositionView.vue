@@ -22,7 +22,7 @@
     </header>
     <main class="container">
 
-      <Card.Wrap class="card-bg" v-if="cardList.length">
+      <Card.Wrap class="card-bg">
         <Card.Item :class="index ? 'mt-5' : ''" v-for="item, index in cardList" :key="item.companyId" :options="item"
           @click="jump('/positionDetail', item.positionId)">
           <!-- 按钮 -->
@@ -92,7 +92,7 @@
         </Card.Item>
       </Card.Wrap>
 
-      <div v-if="!cardList.length && cardList[0]">
+      <div v-if="isCardList">
         <div class="just-center mt-150">
           <img class="icon-position" src="@/assets/images/icon-positionjob.png" alt="">
         </div>
@@ -280,19 +280,25 @@ const getJobIntent = async () => {
   } else {
     isShow.value = false;
     intention.value = true;
-    getSelectPosition({});
+    ({});
 
   }
 }
 getJobIntent();
 // 获取推荐职位列表
-let cardList = ref([]) as Ref<CardItem[]>;
+let cardList = ref();
 
+
+let isCardList = ref(false);
 const getSelectPosition = async (params: any) => {
   let res: any = await useJob.getSelectPositionList(params);
-  console.log(res)
   if (res.code == 200) {
-    cardList.value = cardList.value.concat(res.data);
+    cardList.value = res.data;
+    if(res.data.length){
+      isCardList.value = false;
+    }else{
+      isCardList.value = true;
+    }
   }
 }
 

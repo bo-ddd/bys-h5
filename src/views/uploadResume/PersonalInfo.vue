@@ -477,20 +477,27 @@ const updateUserInfo = async () => {
 };
 //校验
 const checkForm = function () {
-  if (!userName.value) {
+  let emailReg = /^[a-zA-Z0-9]+([-_.][A-Za-zd]+)*@([a-zA-Z0-9]+[-.])+[A-Za-zd]{2,5}$/;
+  if (!avaterImg.value) {
+    Toast("请选择头像");
+    return;
+  }else if (!userName.value) {
     Toast("请输入姓名");
     return;
-  } else if (!userEmail.value) {
+  }else if (!userEmail.value) {
     Toast("请输入联系邮箱");
     return;
-  } else if (!userSex.value) {
-    Toast("请选择性别");
-    return;
+  }else if(!emailReg.test(userEmail.value)){
+    Toast("邮箱格式不对");
+    return
   } else if (!userBirthday.value) {
     Toast("请选择出生年月");
     return;
   } else if (!userNational.value) {
     Toast("请选择民族");
+    return;
+  }else if (!userSex.value) {
+    Toast("请选择性别");
     return;
   } else if (!userAddr.value) {
     Toast("请选择生源地");

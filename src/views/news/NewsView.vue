@@ -42,7 +42,7 @@
     </div>
     <div v-if="loginStatus&&newsList.length!=0" class="news-box2">
       <van-cell-group>
-        <van-cell class="just-between" v-for="item in newsList" :key="item.companyId">
+        <van-cell class="just-between" v-for="item in newsList" :key="item.positionId">
           <template #title>
             <div class="new-item">
               <div
@@ -58,7 +58,7 @@
             </div>
           </template>
           <template #value>
-            <van-button type="primary" size="small" @click="showResume=true">投递</van-button>
+            <van-button type="primary" size="small" @click="applyPosition(item.positionId)">投递</van-button>
           </template>
         </van-cell>
       </van-cell-group>
@@ -78,7 +78,7 @@
                       >{{ /在线简历/.test(item.resumeName) ? '在线简历' : item.resumeName }}</div>
                       <div class="fs-12 ml-40" v-if="item.isOnline">
                         <span class="c-5d5d5d">完成度:</span>
-                        <!-- <span class="c-2979ff">{{ onlineResume ? onlineResume * 100 :''}}%</span> -->
+                        <span class="c-2979ff">{{item.completion * 100}}%</span>
                       </div>
                     </div>
                     <div class="btm fs-12 c-5d5d5d">{{ item.modifyTime }}{{item.isOnline?'更新':'上传'}}</div>
@@ -88,7 +88,7 @@
             </van-radio-group>
           </div>
           <div class="btn-wrap">
-            <!-- <div class="btn c-ffffff just-center fs-14" @click="delivery(options.positionId)">确认投递</div> -->
+            <div class="btn c-ffffff just-center fs-14" @click="deliveryResume(checkedResume)">确认投递</div>
           </div>
         </div>
       </div>
@@ -105,6 +105,7 @@
 </template>
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
+import type { Ref } from "vue";
 import { useRouter } from "vue-router";
 import { parseAssetFile } from "@/assets/util";
 import { useResumeStore } from "@/stores/resume";
@@ -115,6 +116,7 @@ const loginStatus = ref(false);
 const resumeList: any = ref({});
 const showResume = ref(false);
 const checkedResume = ref(null);
+const positionId: Ref<null | number> = ref(null);
 loginStatus.value = sessionStorage.getItem("token") ? true : false;
 const showPopup = ref(!loginStatus.value);
 const to = function (path: any) {
@@ -145,6 +147,26 @@ const getPerfectionNum = async () => {
     averageScore.value = res.data.averageScore;
   }
 };
+// 申请职位接口
+const applyPosition = (id: number) => {
+  positionId.value = id;
+  showResume.value = true;
+};
+const deliveryResume = async (id: number) => {
+  let res = await use.deliveryPosition({
+    positionId: positionId.value,
+    resumeId: id,
+  });
+  console.log(res);
+  if (res.code == 200) {
+    Toast.success("投递成功");
+  }else{
+    Toast.success("投递失败");
+  }
+    showResume.value = false;
+    getNewsList();
+};
+
 onMounted(() => {
   getNewsList();
   getPerfectionNum();

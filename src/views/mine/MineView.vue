@@ -51,13 +51,13 @@
 
 
         <!-- 正常跳转页面的模板 -->
-        <template #title v-else-if="!item.ispopup">
+        <template #title v-if="!item.ispopup">
           <van-icon :name="parseAssetFile(item.icon)" />
           <span class="custom-title">{{ item.title }}</span>
         </template>
 
         <!-- 点击求职状态弹层的模板-------------------------- -->
-        <template #title v-else>
+        <template #title v-if="item.id == 7">
           <div class="van-cell__title">
             <van-icon :name="parseAssetFile(item.icon)" />
             <span class="custom-title" @click="showPopup">{{ item.title }}</span>
@@ -70,16 +70,15 @@
         </template>
 
         <!-- 动态修改求职状态value -->
-        <template #value v-else-if="item.ispopup">
+        <template #value v-if="item.id == 7">
           <span @click="showPopup">{{ userStatusName }}</span>
         </template>
         <!-- 求职状态结束------------------------- -->
 
         <!-- 动态修改 站点设置的value -->
-        <template #value v-else-if="item.title == '站点设置'">
+        <template #value v-if="item.id == 9">
           <span>{{ userSite }}</span>
         </template>
-        <!-- 求职状态结束------------------------- -->
       </van-cell>
 
       <!-- 弹层组件 -->
@@ -200,7 +199,7 @@ let list = reactive([
     link: '/siteSettings',
     icon: 'icon-site.png',
     ispopup: false,
-    isLogin: true
+    isLogin: false
   },
 ])
 

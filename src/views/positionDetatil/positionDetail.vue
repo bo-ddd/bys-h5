@@ -106,7 +106,7 @@
 
 <script lang="ts" setup>
 import { useRouter, useRoute } from "vue-router";
-import { ref, type Ref } from "vue";
+import { ref, type Ref } from "vue";    
 import { usePositionDetailStore } from "@/stores/positonDetail";
 import { parseAssetFile } from "@/assets/util";
 import { Toast } from 'vant';

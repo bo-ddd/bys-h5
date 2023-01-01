@@ -135,7 +135,7 @@ getCompanyList();
         <!-- 这个是选择 -->
         <van-tabs v-model:active="active" color="#75a5fd" title-active-color="#75a5fd">
             <van-tab title="职位" class="position">
-                <div class="container" v-show="!positionList.length">
+                <div class="container" v-if="!positionList.length">
                     <div class="none-content">
                         <img src="@/assets/images/icon-save.png">
                         <p>暂无收藏职位</p>

@@ -56,7 +56,11 @@
                       <span v-else>{{item.positionMonth.split(',').join('-')}}元/天</span>
                     </div>
                     <div class="btn mt-20">
-                      <van-button type="primary" size="small" @click="apply">申请</van-button>
+                      <van-button
+                        type="primary"
+                        size="small"
+                        @click.stop="applyPosition(item.positionId)"
+                      >申请</van-button>
                     </div>
                   </div>
                 </div>
@@ -101,7 +105,7 @@
                       >{{ /在线简历/.test(item.resumeName) ? '在线简历' : item.resumeName }}</div>
                       <div class="fs-12 ml-40" v-if="item.isOnline">
                         <span class="c-5d5d5d">完成度:</span>
-                        <!-- <span class="c-2979ff">{{ onlineResume ? onlineResume * 100 :''}}%</span> -->
+                        <span class="c-2979ff">{{ item.completion * 100}}%</span>
                       </div>
                     </div>
                     <div class="btm fs-12 c-5d5d5d">{{ item.modifyTime }}{{item.isOnline?'更新':'上传'}}</div>
@@ -111,8 +115,8 @@
             </van-radio-group>
           </div>
           <div class="btn-wrap">
+            <div class="btn c-ffffff just-center fs-14" @click="deliveryResume(checkedResume)">确认投递</div>
           </div>
-            <!-- <div class="btn c-ffffff just-center fs-14" @click="(options.positionId)">确认投递</div> -->
         </div>
       </div>
       <div class="sheet-content" v-show="resumeList.length == 0">
@@ -127,7 +131,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {Toast,Dialog } from "vant";
+import { Toast, Dialog } from "vant";
+import type { Ref } from "vue";
 import { onMounted, reactive, ref } from "vue";
 import { parseAssetFile } from "@/assets/util";
 import { useRouter, useRoute } from "vue-router";
@@ -135,6 +140,7 @@ import { useResumeStore } from "@/stores/resume"; //接口
 import Card from "@/components/card";
 let onClickLeft1 = () => history.back();
 const active = ref(0);
+const positionId: Ref<null | number> = ref(null);
 const container = ref(null);
 const showResume = ref(false);
 const resumeList: any = ref({});
@@ -162,22 +168,32 @@ let getResumeList = async function () {
     checkedResume.value = resumeList.value[0].resumeId;
   }
 };
-const share=function(){
-    Dialog.alert({
-      title: "提示",
-      message: "该功能暂不支持",
-      confirmButtonColor: "#3b81fb",
-    }).then(() => {});
+const share = function () {
+  Dialog.alert({
+    title: "提示",
+    message: "该功能暂不支持",
+    confirmButtonColor: "#3b81fb",
+  }).then(() => {});
+};
 
-}
 // 申请职位接口
-const deliveryJob = async (positionId: number) => {
-    let res: any = await use.deliveryPosition({ positionId  });
-    if (res.code == 200) {
-        showResume.value = false;
-        Toast('投递成功')
-    }
-}
+const applyPosition = (id: number) => {
+  positionId.value = id;
+  showResume.value = true;
+};
+const deliveryResume = async (id: number) => {
+  let res = await use.deliveryPosition({
+    positionId: positionId.value,
+    resumeId: id,
+  });
+  if (res.code == 200) {
+    Toast.success("投递成功");
+  } else {
+    Toast.success("投递失败");
+  }
+  showResume.value = false;
+  getComInfo()
+};
 interface CompanyInfo {
   companyAddr: string;
   companyFullName: string;
@@ -228,10 +244,6 @@ const delStarPosition = async () => {
   } else {
     Toast.fail("取消失败");
   }
-};
-const apply = function (event:any) {
-  event.cancelBubble = true;
-  showResume.value = true;
 };
 </script>
 <style lang="scss" scoped>
@@ -450,6 +462,13 @@ const apply = function (event:any) {
   .to-resume {
     min-height: 55vh;
   }
+  
+.btn {
+  margin-top: 3rem;
+  border-radius: 0.5rem;
+  padding: 1.4rem 1rem;
+  background-color: #3b7dff;
+}
 }
 
 .icon-30 {

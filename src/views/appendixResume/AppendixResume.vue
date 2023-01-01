@@ -20,6 +20,7 @@
                 <img v-if="item.resumeType=='pdf'" src="@/assets/images/icon-pdf.png" />
                 <img v-else-if="item.resumeType=='doc'" src="@/assets/images/icon-doc.png" />
                 <img v-else-if="item.resumeType=='docx'" src="@/assets/images/icon-doc.png" />
+                <img v-else src="@/assets/images/icon-doc.png" />
               </div>
               <div>
                 <div class="title fs-16">{{item.resumeName}}</div>

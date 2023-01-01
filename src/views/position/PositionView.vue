@@ -62,7 +62,7 @@
                   </div>
                   <div class="btn-wrap">
                     <div class="btn c-ffffff just-center fs-14" @click="delivery(item.positionId)">
-                      {{ item.positionId }}确认投递</div>
+                      {{ item.positionId }}   {{index}}确认投递</div>
                   </div>
                 </div>
               </div>

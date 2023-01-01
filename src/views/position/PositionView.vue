@@ -49,7 +49,7 @@
                                 <span class="c-5d5d5d">完成度:</span>
                                 <span class="c-2979ff">{{ onlineResume ? onlineResume * 100
     : ''
-}}%</span>                    
+}}%</span>
                               </div>
                             </div>
                             <div class="btm fs-12 c-5d5d5d">
@@ -62,12 +62,12 @@
                   </div>
                   <div class="btn-wrap">
                     <div class="btn c-ffffff just-center fs-14" @click="delivery(item.positionId)">
-                        确认投递</div>
+                      确认投递</div>
                   </div>
                 </div>
               </div>
               <div class="content" v-show="resumeInfo.length == 0">
-                <div class="just-center flex">
+                <div class="just-center flex sheet-content">
                   <p class="fs-14 c-747474">还未填写简历，点击<a href="" @click="jump('/createResume')" class="c-2979ff">去填写</a>
                   </p>
                 </div>
@@ -162,7 +162,7 @@ const wxLogin = () => {
 const token = sessionStorage.getItem("token");
 let show = ref(false);
 let isResumeShow = ref(false);
-const apply = function (id:number) {
+const apply = function (id: number) {
   positionId.value = id;
   if (!token) {
     showCount.value = true
@@ -181,7 +181,7 @@ const deliveryJob = async (params: any) => {
   }
 }
 // 确认投递
-const delivery = function (id :number) {
+const delivery = function (id: number) {
   deliveryJob({
     resumeId: checked.value as number,
     positionId: positionId.value
@@ -208,6 +208,7 @@ let intention = ref(false);
 const getJobIntent = async () => {
   let res: any = await useJob.getJobIntentList({});
   if (res.code == 200) {
+    console.log(res)
     if (res.data != "[]") {
       if (res.data.wishAddr.length) {
         isShow.value = true;
@@ -275,12 +276,13 @@ const getJobIntent = async () => {
       });
     } else {
       isShow.value = false
+      // isShow.value = true;
       getSelectPosition({});
     }
   } else {
     isShow.value = false;
     intention.value = true;
-    ({});
+    getSelectPosition({});
 
   }
 }
@@ -294,9 +296,9 @@ const getSelectPosition = async (params: any) => {
   let res: any = await useJob.getSelectPositionList(params);
   if (res.code == 200) {
     cardList.value = res.data;
-    if(res.data.length){
+    if (res.data.length) {
       isCardList.value = false;
-    }else{
+    } else {
       isCardList.value = true;
     }
   }
@@ -459,7 +461,9 @@ selectCompletion();
     }
   }
 }
-
+.sheet-content{
+  height: 44vh;
+}
 .pop {
   height: 44rem;
   padding: 0 2rem;

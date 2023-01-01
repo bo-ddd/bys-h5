@@ -180,7 +180,10 @@ async function getPositionDetail() {
 getPositionDetail();
 // 收藏职位的接口
 async function setStarPosition() {
-    if(loginStatus.value == false) return;
+    if(loginStatus.value == false){
+        show.value = true;
+        return;
+    } 
     let res: Res<any> = await positionDetailStore.setStarPosition({
         positionId: positionId.value,
     });

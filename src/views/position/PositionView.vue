@@ -22,7 +22,7 @@
     </header>
     <main class="container">
 
-      <Card.Wrap class="card-bg" v-if="cardList.length">
+      <Card.Wrap class="card-bg">
         <Card.Item :class="index ? 'mt-5' : ''" v-for="item, index in cardList" :key="item.companyId" :options="item"
           @click="jump('/positionDetail', item.positionId)">
           <!-- 按钮 -->
@@ -32,7 +32,7 @@
 }}</p>
             <p v-if="item.isDelivery" class="mt-30 fs-12 c-a8a8a8">已申请</p>
             <van-button v-if="!item.isDelivery" class="mt-20 btn fw-600 btn-apply" size="mini" type="primary"
-              @click.stop="apply()">申请</van-button>
+              @click.stop="apply(item.positionId)">申请</van-button>
             <van-action-sheet @click.prevent.stop="" v-model:show="isResumeShow" title="确认投递简历">
               <div class="content" v-show="!(resumeInfo.length == 0)">
                 <div class="pop">
@@ -62,12 +62,12 @@
                   </div>
                   <div class="btn-wrap">
                     <div class="btn c-ffffff just-center fs-14" @click="delivery(item.positionId)">
-                      {{ item.positionId }}确认投递</div>
+                      确认投递</div>
                   </div>
                 </div>
               </div>
               <div class="content" v-show="resumeInfo.length == 0">
-                <div class="just-center flex">
+                <div class="just-center flex sheet-content">
                   <p class="fs-14 c-747474">还未填写简历，点击<a href="" @click="jump('/createResume')" class="c-2979ff">去填写</a>
                   </p>
                 </div>
@@ -92,7 +92,7 @@
         </Card.Item>
       </Card.Wrap>
 
-      <div v-if="!cardList.length && cardList[0]">
+      <div v-if="isCardList">
         <div class="just-center mt-150">
           <img class="icon-position" src="@/assets/images/icon-positionjob.png" alt="">
         </div>
@@ -133,6 +133,12 @@ const router = useRouter();
 const useJob = useJobStore();
 const showCount = ref(false);
 
+
+
+let positionId = ref();
+
+
+
 const jump = (src: string, params?: number) => {
   if (src == '/jobIntention' && intention.value) {
     showCount.value = true;
@@ -156,7 +162,8 @@ const wxLogin = () => {
 const token = sessionStorage.getItem("token");
 let show = ref(false);
 let isResumeShow = ref(false);
-const apply = function () {
+const apply = function (id: number) {
+  positionId.value = id;
   if (!token) {
     showCount.value = true
   } else {
@@ -169,7 +176,6 @@ const apply = function () {
 // 申请职位接口
 const deliveryJob = async (params: any) => {
   let res: any = await useJob.deliveryPosition(params);
-  console.log(res)
   if (res.code == 200) {
     isResumeShow.value = false;
   }
@@ -178,12 +184,11 @@ const deliveryJob = async (params: any) => {
 const delivery = function (id: number) {
   deliveryJob({
     resumeId: checked.value as number,
-    positionId: id + ''
+    positionId: positionId.value
   });
-  getSelectPosition(getJobIndustry.value);
   isResumeShow.value = false;
-  // window.location.href = '/position'
   Toast('投递成功')
+  getSelectPosition(getJobIndustry.value);
 }
 
 
@@ -203,6 +208,7 @@ let intention = ref(false);
 const getJobIntent = async () => {
   let res: any = await useJob.getJobIntentList({});
   if (res.code == 200) {
+    console.log(res)
     if (res.data != "[]") {
       if (res.data.wishAddr.length) {
         isShow.value = true;
@@ -270,6 +276,7 @@ const getJobIntent = async () => {
       });
     } else {
       isShow.value = false
+      // isShow.value = true;
       getSelectPosition({});
     }
   } else {
@@ -281,13 +288,19 @@ const getJobIntent = async () => {
 }
 getJobIntent();
 // 获取推荐职位列表
-let cardList = ref([]) as Ref<CardItem[]>;
+let cardList = ref();
 
+
+let isCardList = ref(false);
 const getSelectPosition = async (params: any) => {
   let res: any = await useJob.getSelectPositionList(params);
-  console.log(res)
   if (res.code == 200) {
-    cardList.value = cardList.value.concat(res.data);
+    cardList.value = res.data;
+    if (res.data.length) {
+      isCardList.value = false;
+    } else {
+      isCardList.value = true;
+    }
   }
 }
 
@@ -448,7 +461,9 @@ selectCompletion();
     }
   }
 }
-
+.sheet-content{
+  height: 44vh;
+}
 .pop {
   height: 44rem;
   padding: 0 2rem;

@@ -351,7 +351,7 @@ const onClickLeft = () => history.back();
 
 
         <Card.Wrap>
-            <Card.Item class="mt-5" v-for="item in cardList" @click="jump('/positionDetail', item.positionId)"
+            <Card.Item  v-for="item in cardList"  class="mt-5" @click="jump('/positionDetail', item.positionId)"
                 :resumeInfo="resumeInfo" :options="item"></Card.Item>
         </Card.Wrap>
 

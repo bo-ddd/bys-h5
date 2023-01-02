@@ -123,10 +123,10 @@ const selectCompletion = async ()=>{
             }
         }
 }
-getOnlineResume();
-selectCompletion();
-getSaveList();
-getCompanyList();
+    getOnlineResume();
+    selectCompletion();
+    getSaveList();
+    getCompanyList();
 </script>
 <template>
     <div class="save">
@@ -135,13 +135,13 @@ getCompanyList();
         <!-- 这个是选择 -->
         <van-tabs v-model:active="active" color="#75a5fd" title-active-color="#75a5fd">
             <van-tab title="职位" class="position">
-                <div class="container" v-show="!positionList.length">
+                <div class="container" v-if="!positionList.length">
                     <div class="none-content">
                         <img src="@/assets/images/icon-save.png">
                         <p>暂无收藏职位</p>
                     </div>
                 </div>
-                <van-pull-refresh v-model="loading" success-text="刷新成功" @refresh="onRefresh" class="refresh">
+                <van-pull-refresh v-model="loading" v-if="positionList.length" success-text="刷新成功" @refresh="onRefresh" class="refresh">
                     <!-- 这个是内容每一项 -->
                     <div class="position-item mb-5" v-for="item in positionList" :key="item.positionId"
                         @click="jump('positionDetail',{positionId:item.positionId} as any)">
@@ -185,10 +185,10 @@ getCompanyList();
                         <p>暂无收藏企业</p>
                     </div>
                 </div>
-                <van-pull-refresh v-model="companyLoading" success-text="刷新成功" @refresh="onRefreshCompany"
+                <van-pull-refresh v-if="companyList.length"  v-model="companyLoading" success-text="刷新成功" @refresh="onRefreshCompany"
                     class="refresh">
                     <!-- 这个是内容每一项 -->
-                    <div class="enterprise-item mb-5" v-for="item in companyList" :key="item.companyId" @click="jump('companyDetails',{componyId:item.companyId})">
+                    <div  class="enterprise-item mb-5" v-for="item in companyList" :key="item.companyId" @click="jump('companyDetails',{componyId:item.companyId})">
                         <div class="left">
                             <img :src="item.companyLogoUrl" class="icon">
                         </div>

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import Api from "@/assets/api/hs-api";
 
-export const useCompanyListStore = defineStore('feedback', () => {
+export const useCompanyListStore = defineStore('companyListStore', () => {
     /**
     * @description 这个是获取收藏列表的接口
     * @param params 

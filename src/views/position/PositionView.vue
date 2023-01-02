@@ -14,7 +14,7 @@
         <van-button class="btn-plain" size="mini" color="#3b80fb" plain @click="jump('/jobIntention')">去填写</van-button>
       </div>
     </header>
-    <header class=" wrap just-between" v-if="isShow && !intention">
+    <header class=" wrap just-between" v-if="isShow">
       <p class="fs-16 fw-700 job">{{ wishPositionRight.replace(/、$/, '') }}</p>
       <p class="fs-14 c-747474 area"><span v-for="item, index in area" :key="index">{{ item }}</span></p>
       <p class="fs-14 c-5d5d5d money"><span>{{ salary }}</span> <img class="icon-fillin" @click="jump('/jobIntention')"
@@ -138,13 +138,13 @@ const showCount = ref(false);
 let positionId = ref();
 
 const jump = (src: string, params?: number) => {
-  if (src == '/jobIntention' && intention.value) {
+  if (src == '/jobIntention' && !sessionStorage.getItem('token')) {
     showCount.value = true;
   } else {
-    if (params) {
-      router.push({ path: src, query: { positionId: params } })
-    }else if(src=='/jobIntention'){
+    if (src=='/jobIntention') {
       router.push({ path: src, query: { route: '/position' } })
+    }else if(params){
+      router.push({ path: src, query: { positionId: params } })
     }
      else {
       router.push({ path: src })
@@ -203,14 +203,12 @@ if (localStorage.getItem('jobIndustry')) {
 
 // 获取求职意向
 let getJobIndustry: any = ref();
-let intention = ref(sessionStorage.getItem('token')?false:true);
+let intention = ref(false);
 const getJobIntent = async () => {
   let res: any = await useJob.getJobIntentList({});
   if (res.code == 200) {
-    if (!res.data.length) {
-      if (res.data.wishAddr.length) {
+    if (res.data.length!=0) {
         isShow.value = true;
-      }
       // 地区
       area.value = (res.data.wishAddr);
       // 职位
@@ -273,12 +271,14 @@ const getJobIntent = async () => {
         wishPositionLeft: res.data.wishPositionTypeLeft,
       });
     } else {
-      isShow.value = false
-      getSelectPosition({});
       intention.value = true;
+      isShow.value = false;
+      // isShow.value = true;
+      getSelectPosition({});
     }
   } else {
     isShow.value = false;
+    showCount.value = false;
     intention.value = true;
     getSelectPosition({});
 
@@ -287,8 +287,6 @@ const getJobIntent = async () => {
 getJobIntent();
 // 获取推荐职位列表
 let cardList = ref();
-
-
 let isCardList = ref(false);
 const getSelectPosition = async (params: any) => {
   let res: any = await useJob.getSelectPositionList(params);

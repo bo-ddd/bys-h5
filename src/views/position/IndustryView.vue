@@ -72,6 +72,7 @@ let navCity = ref(items[activeIndex.value]);
 // 返回
 const onClickLeft = () => history.back();
 
+
 // 右侧
 let handlIndustryItem = function (item: TreeSelectChild): void {
     let bool = true;
@@ -150,7 +151,7 @@ const goBack = () => {
             wishIndustryRight: wishIndustryRighta,
         })
     );
-    router.push({ path: "/jobIntention" });
+    router.push({ path: "/jobIntention",query:{route:'/position'}});
 
 };
 </script>

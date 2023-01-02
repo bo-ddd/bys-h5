@@ -149,7 +149,7 @@ const goBack = () => {
         })
     );
     
-    router.push({ path: "/jobIntention" });
+    router.push({ path: "/jobIntention",query:{route:'/position'}});
 };
 </script>
 

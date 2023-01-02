@@ -1,7 +1,7 @@
 <template>
   <div class="append-page">
     <van-nav-bar title="附件简历" left-arrow @click-left="onClickLeft" />
-    <div class="content">
+    <div class="content overy-scoll">
       <div v-if="resumeList.length==0">
         <img class="mt-80 img" :src="parseAssetFile('file-tip.png')" />
         <div class="mt-20 text-center fs-16 fw-700">您还没有附件简历,请点击下方按钮上传</div>
@@ -33,11 +33,17 @@
           </div>
         </div>
       </div>
-      <van-uploader class="upload-btn" v-if="resumeList.length<3" :after-read="afterRead" accept=".pdf, .doc, .docx" >
+    </div>
+    <div class="foot-box">
+      <van-uploader
+        v-if="resumeList.length<3"
+        class="upload-btn"
+        :after-read="afterRead"
+        accept=".pdf, .doc, .docx"
+      >
         <van-button type="primary">上传附件简历</van-button>
       </van-uploader>
-      
-        <van-button class="upload-btn" @click="updateResume" v-else type="primary">上传附件简历</van-button>
+      <van-button v-else class="upload-btn" @click="updateResume" type="primary">上传附件简历</van-button>
     </div>
     <van-action-sheet
       v-model:show="deleteShow"
@@ -80,24 +86,25 @@ const showDeleteOption = function (id: number) {
 
 const afterRead = async (file: any) => {
   if (
-    file.file.type == "application/pdf" ||
-    file.file.type == "application/msword" ||
-    file.file.type ==
+    file.file.type !== "application/pdf" &&
+    file.file.type !== "application/msword" &&
+    file.file.type !==
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
   ) {
+    Toast("文件格式不正确");
+  } else if (file.file.size > 20 * 1024 * 1024) {
+    Toast("文件不能超过20MB");
+  } else {
     let formData = new FormData();
     formData.append("resumeName", file.file.name);
     formData.append("resume", file.file);
-
     let res = await use.addResume(formData);
     if (res.code == 200) {
       Toast.success("上传成功");
-      getResumeList()
+      getResumeList();
     } else {
       Toast.fail(res.msg);
     }
-  } else {
-    Toast("文件格式不正确");
   }
 };
 const deleteRemuse = function () {
@@ -116,27 +123,52 @@ const deleteRemuseApi = async function () {
     resumeId: resumeId.value,
   });
   if (res.code == 200) {
-    Toast.success("删除成功");
     getResumeList();
+    Toast.success("删除成功");
   } else {
     Toast.fail("删除失败");
   }
 };
 const updateResume = function () {
-    Dialog.alert({
-      title: "提示",
-      message: "最多只能保留3份附件简历。如需删除简历请点击右侧···",
-      confirmButtonColor: "#3b81fb",
-    }).then(() => {});
-    return false
+  Dialog.alert({
+    title: "提示",
+    message: "最多只能保留3份附件简历。如需删除简历请点击右侧···",
+    confirmButtonColor: "#3b81fb",
+  }).then(() => {});
+  return false;
 };
 getResumeList();
 </script>
 <style lang="scss" scoped>
 .append-page {
   height: 100vh;
+  position: relative;
   display: grid;
   grid-template-rows: 4.6rem auto;
+  .overy-scoll {
+    height: 100%;
+    overflow-y: scroll;
+  }
+
+  .foot-box {
+    width: 100%;
+    position: fixed;
+    bottom: 2rem;
+    padding: 0 2rem;
+    // }
+    .upload-btn {
+      width: calc(100% - 4rem);
+      .van-uploader__wrapper {
+        width: 100%;
+      }
+      :deep(.van-uploader__input-wrapper) {
+        width: 100%;
+      }
+      :deep(.van-button--normal) {
+        width: 100%;
+      }
+    }
+  }
 }
 .flex-noshrink {
   flex-shrink: 0;
@@ -145,7 +177,7 @@ getResumeList();
 .content {
   box-sizing: border-box;
   padding: 2rem;
-  position: relative;
+  height: calc(100vh - 4.6rem);
   .head-tip {
     color: #a9a9ab;
   }
@@ -211,22 +243,7 @@ getResumeList();
   .text-center {
     text-align: center;
   }
-  .upload-btn {
-    // width: 100%;
-    position: absolute;
-    bottom: 2rem;
-    width:calc(100% - 4rem);
-    .van-uploader__wrapper {
-      // display: block;
-      width: 100%;
-    }
-    :deep(.van-uploader__input-wrapper) {
-      width: 100%;
-    }
-    :deep(.van-button--normal) {
-      width: 100%;
-    }
-  }
+
   .fs-14 {
     font-size: 1.4rem;
   }

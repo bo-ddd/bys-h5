@@ -1,7 +1,7 @@
 <template>
   <van-cell class="all-width pb-20" center @click="show = true">
     <template #title>
-      <div class="fs-16 color-gray">性别</div>
+      <div class="fs-16 color-black">性别</div>
     </template>
     <template #label>
       <div class="just-between">

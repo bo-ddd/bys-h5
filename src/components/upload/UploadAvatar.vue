@@ -5,7 +5,7 @@
         <div class="fs-18">头像</div>
       </template>
       <template #label>
-        <div class="fs-14 mt-10">上传真实头像通过Hr初筛率更高</div>
+        <div class="fs-14 mt-10">上传真实头像通过hr初筛率更高</div>
       </template>
       <template #value>
         <img class="img-8 bord-rad-100" :src="avaterImg||parseAssetFile('icon-avater1.png')" />
@@ -16,7 +16,7 @@
 <script lang="ts" setup>
 import { useResumeStore } from "@/stores/resume";
 import { parseAssetFile } from "@/assets/util";
-import { toRef } from "vue";
+import { toRef, ref } from "vue";
 import { Toast } from "vant";
 let props = defineProps<{
   avaterImg: string;
@@ -25,27 +25,32 @@ const use = useResumeStore();
 const avaterImg = toRef(props, "avaterImg");
 const afterRead = (file: any) => {
   // 此时可以自行将文件上传至服务器
-  if(file.file.type=='image/jpeg'||file.file.type=='image/png'){
-    uploadAvater(file.file);
+  const imageformat = /image\/(png|jpg|jpeg)$/;
+  if (!imageformat.test(file.file.type)) {
+    Toast("图片格式不正确");
+  } else if(file.file.size>20*1024*1024) {
+      Toast('图片大小不能超过20MB');
   }else{
-    Toast('图片格式不正确')
+    Toast('图片大小'+file.file.size);
+      uploadAvater(file.file);
   }
 };
 const uploadAvater = async function (file: any) {
   let formData = new FormData();
   formData.append("userLogo", file);
-
   const res = await use.updateLogo(formData);
   if (res.code == 200) {
     success(res.data);
+  }else{
+    Toast.fail('网络错误')
   }
 };
-const emit  = defineEmits(['success']);
+const emit = defineEmits(["success"]);
 
-const success=(img:string)=>{
+const success = (img: string) => {
   //传递给父组件
-  emit('success',img)
-}
+  emit("success", img);
+};
 </script>
 <style scoped lang="scss">
 .upload {

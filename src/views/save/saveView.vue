@@ -5,7 +5,7 @@ import { usePositionDetailStore } from "@/stores/positonDetail";
 import type { Ref } from "vue";
 import { ref } from "vue";
 
-let { active, count, loading, companyList, positionList, onRefresh, getSaveList, parseStr, parseCompanyDesc, getCompanyList, onRefreshCompany, companyLoading, parseAddr,companyCount,positionCount,parseMoney} = useSaveCompasable();
+let { active, count, loading, companyList, positionList, onRefresh, getSaveList, parseStr, parseCompanyDesc, getCompanyList, onRefreshCompany, companyLoading, parseAddr,companyCount,positionCount,parseMoney,positionPayload,companyPayload} = useSaveCompasable();
 let router = useRouter();
 const positionDetailStore = usePositionDetailStore();
 interface Res<T> {
@@ -58,6 +58,9 @@ const jump = (url: string, query:any) => {
         query:query,
     })
 }
+const to = (url:string)=>{
+    router.push(url);
+}
 const showResume = (PositionId:number) => {
     show.value = !show.value;
     positionId.value = PositionId;
@@ -65,6 +68,7 @@ const showResume = (PositionId:number) => {
         positionDetail.value.isDelivery = true;
     }
     getPositionDetail();
+    getSaveList();
 }
 // 获取职位详情的接口
 async function getPositionDetail() {
@@ -123,6 +127,8 @@ const selectCompletion = async ()=>{
             }
         }
 }
+positionPayload.pageIndex = 1;
+companyPayload.pageIndex = 1;
 getOnlineResume();
 selectCompletion();
 getSaveList();
@@ -135,13 +141,13 @@ getCompanyList();
         <!-- 这个是选择 -->
         <van-tabs v-model:active="active" color="#75a5fd" title-active-color="#75a5fd">
             <van-tab title="职位" class="position">
-                <div class="container" v-show="!positionList.length">
+                <div class="container" v-if="!positionList.length">
                     <div class="none-content">
                         <img src="@/assets/images/icon-save.png">
                         <p>暂无收藏职位</p>
                     </div>
                 </div>
-                <van-pull-refresh v-model="loading" success-text="刷新成功" @refresh="onRefresh" class="refresh">
+                <van-pull-refresh v-model="loading" v-if="positionList.length" success-text="刷新成功" @refresh="onRefresh" class="refresh">
                     <!-- 这个是内容每一项 -->
                     <div class="position-item mb-5" v-for="item in positionList" :key="item.positionId"
                         @click="jump('positionDetail',{positionId:item.positionId} as any)">
@@ -185,10 +191,10 @@ getCompanyList();
                         <p>暂无收藏企业</p>
                     </div>
                 </div>
-                <van-pull-refresh v-model="companyLoading" success-text="刷新成功" @refresh="onRefreshCompany"
+                <van-pull-refresh v-if="companyList.length"  v-model="companyLoading" success-text="刷新成功" @refresh="onRefreshCompany"
                     class="refresh">
                     <!-- 这个是内容每一项 -->
-                    <div class="enterprise-item mb-5" v-for="item in companyList" :key="item.companyId" @click="jump('companyDetails',{componyId:item.companyId})">
+                    <div  class="enterprise-item mb-5" v-for="item in companyList" :key="item.companyId" @click="jump('companyDetails',{componyId:item.companyId})">
                         <div class="left">
                             <img :src="item.companyLogoUrl" class="icon">
                         </div>
@@ -221,7 +227,8 @@ getCompanyList();
         <van-popup v-model:show="show" round position="bottom"  v-if="!positionDetail?.isDelivery">
             <div class="pop">
                 <div class="container-resume">
-                    <h3 class="pd-10_0">确认投递简历</h3>
+                    <h3 class="pd-10_0 text-center">确认投递简历</h3>
+                    <p class="fs-14 text-center" v-if="!resumeList.length">还未填写简历,<a class="cl-blue" @click="to('createResume')">点击去填写</a></p>
                     <van-radio-group v-model="checked">
                         <div class="resume-item mt-5 pd-20_0" v-for="item in resumeList" :key="item.resumeId">
                             <van-radio :name="item.resumeId" icon-size="2rem">
@@ -243,7 +250,7 @@ getCompanyList();
                     </van-radio-group>
                 </div>
                 <div class="btn-wrap">
-                    <div class="btn cl-fff flex-center fs-14" @click="Delivery">确认投递</div>
+                    <div v-if="resumeList.length" class="btn cl-fff flex-center fs-14" @click="Delivery">确认投递</div>
                 </div>
             </div>
         </van-popup>
@@ -533,6 +540,9 @@ getCompanyList();
     }
     .ml-40{
         margin-left: 4rem;
+    }
+    .text-center{
+        text-align: center;
     }
 }
 </style>

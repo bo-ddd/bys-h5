@@ -6,7 +6,7 @@
         <UploadAvatar :avaterImg="avaterImg" @success="setAvater"></UploadAvatar>
         <van-cell class="all-width pb-20" center>
           <template #title>
-            <div class="fs-16 color-gray">姓名</div>
+            <div class="fs-16 color-black">姓名</div>
           </template>
           <template #label>
             <van-field class="fs-16" clearable v-model="userName" label="文本" placeholder="请填写真实姓名" />
@@ -14,7 +14,7 @@
         </van-cell>
         <van-cell class="all-width pb-20" center>
           <template #title>
-            <div class="fs-16 color-gray">联系邮箱</div>
+            <div class="fs-16 color-black">联系邮箱</div>
           </template>
           <template #label>
             <van-field class="fs-16" clearable v-model="userEmail" label="文本" placeholder="请输入邮箱" />
@@ -22,7 +22,7 @@
         </van-cell>
         <van-cell class="all-width pb-20" center @click="show2 = true">
           <template #title>
-            <div class="fs-16 color-gray">出生年月</div>
+            <div class="fs-16 color-black">出生年月</div>
           </template>
           <template #label>
             <div class="just-between">
@@ -36,7 +36,7 @@
         </van-cell>
         <van-cell class="all-width pb-20" center @click="show3 = true">
           <template #title>
-            <div class="fs-16 color-gray">民族</div>
+            <div class="fs-16 color-black">民族</div>
           </template>
           <template #label>
             <div class="just-between">
@@ -52,7 +52,7 @@
         <SelectCom :select="userSex" :dataList="sexList" placeholder="请填写性别" @onSelect="setSex"></SelectCom>
         <van-cell class="all-width pb-20" center @click="show4 = true">
           <template #title>
-            <div class="fs-16 color-gray">生源地</div>
+            <div class="fs-16 color-black">生源地</div>
           </template>
           <template #label>
             <div class="just-between">
@@ -69,7 +69,7 @@
       <van-cell-group class="mt-10">
         <van-cell class="all-width pb-20" center @click="show5 = true">
           <template #title>
-            <div class="fs-16 color-gray">最高学历</div>
+            <div class="fs-16 color-black">最高学历</div>
           </template>
           <template #label>
             <div class="just-between">
@@ -83,12 +83,12 @@
         </van-cell>
         <van-cell class="all-width pb-20" center @click="to('/schoolList')">
           <template #title>
-            <div class="fs-16 color-gray">最高学历的学校</div>
+            <div class="fs-16 color-black">最高学历的学校</div>
           </template>
           <template #label>
             <div class="just-between">
               <div class="fs-16 color-bl">
-                <span v-if="userSchool">{{userSchool.name}}</span>
+                <span v-if="userSchool.value">{{userSchool.name}}</span>
                 <span class="color-gr" v-else>请填写最高学历的学校</span>
               </div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
@@ -97,12 +97,12 @@
         </van-cell>
         <van-cell class="all-width pb-20" center @click="to('/majorList')">
           <template #title>
-            <div class="fs-16 color-gray">最高学历的专业</div>
+            <div class="fs-16 color-black">最高学历的专业</div>
           </template>
           <template #label>
             <div class="just-between">
               <div class="fs-16 color-bl">
-                <span v-if="userProfessional">{{userProfessional.name}}</span>
+                <span v-if="userProfessional.value">{{userProfessional.name}}</span>
                 <span class="color-gr" v-else>请填写最高学历的专业</span>
               </div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
@@ -111,7 +111,7 @@
         </van-cell>
         <van-cell class="all-width pb-20" center @click="show8 = true">
           <template #title>
-            <div class="fs-16 color-gray">毕业年份</div>
+            <div class="fs-16 color-black">毕业年份</div>
           </template>
           <template #label>
             <div class="just-between">
@@ -565,7 +565,7 @@ const to = (path: string) => {
   }
   .foot-box {
     width: 100%;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     .btn-box {
       width: 100%;

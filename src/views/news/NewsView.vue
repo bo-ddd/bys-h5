@@ -29,8 +29,8 @@
       <div class="text-tip mt-10">
         <span v-if="perfectionNum==0">请先填写个人基本信息，企业才能向您抛出橄榄枝</span>
         <span
-          v-else-if="perfectionNum<averageScore"
-        >您的在线简历完善度只有{{perfectionNum*100}}分，低于平均分{{averageScore*100}}。在线简历完善后，就能吸引更多企业</span>
+          v-else-if="Math.floor(perfectionNum*100)<Math.floor(averageScore*100)"
+        >您的在线简历完善度只有{{Math.floor(perfectionNum*100)}}分，低于平均分{{Math.floor(averageScore*100)}}。在线简历完善后，就能吸引更多企业</span>
         <span v-else>建议您主动出击，寻找合适机会</span>
       </div>
       <div v-if="perfectionNum<averageScore" class="btn-box mt-20">
@@ -84,7 +84,7 @@
                       >{{ /在线简历/.test(item.resumeName) ? '在线简历' : item.resumeName }}</div>
                       <div class="fs-12 ml-40" v-if="item.isOnline">
                         <span class="c-5d5d5d">完成度:</span>
-                        <span class="c-2979ff">{{item.completion * 100}}%</span>
+                        <span class="c-2979ff">{{Math.floor(item.completion) * 100}}%</span>
                       </div>
                     </div>
                     <div class="btm fs-12 c-5d5d5d">{{ item.modifyTime }}{{item.isOnline?'更新':'上传'}}</div>

@@ -25,7 +25,7 @@
           <img class="img-10 mt-5" :src="parseAssetFile('icon-pen.png')" />
         </template>
       </van-cell>
-      <van-cell to='/jobIntention' is-link class="pad-25-15">
+      <van-cell to="/jobIntention" is-link class="pad-25-15">
         <template #title>
           <div class="intention">
             <div class="fs-20 color-black">求职意向</div>
@@ -33,20 +33,25 @@
               <span class="color-gray">填写完求职意向，我们会推荐你期望的相关职位哦 ~</span>
             </div>
             <div v-else>
-            <div class="align-center mt-10">
-              <img class="mr-10" :src="parseAssetFile('icon-job.png')" /> web前端开发
-            </div>
-            <div class="align-center mt-10">
-              <img class="mr-10" :src="parseAssetFile('icon-industry.png')" />不限
-            </div>
-            <div class="align-center mt-10">
-              <img class="mr-10" :src="parseAssetFile('icon-salary.png')" />3000-50000元
-              <span class="plr-15">|</span>
-              <img class="mr-10" :src="parseAssetFile('icon-square.png')" />全职和实习
-            </div>
-            <div class="align-center mt-10">
-              <img class="mr-10" :src="parseAssetFile('icon-position.png')" />山西省-临汾市、北京-北京市
-            </div>
+              <div class="align-center mt-10">
+                <img class="mr-10" :src="parseAssetFile('icon-job.png')" />
+                <span>{{jobIntent.wishIndustry}}</span>
+              </div>
+              <div class="align-center mt-10">
+                <img class="mr-10" :src="parseAssetFile('icon-industry.png')" />
+                <span>{{jobIntent.wishPosition}}</span>
+              </div>
+              <div class="align-center mt-10">
+                <img class="mr-10" :src="parseAssetFile('icon-salary.png')" />
+                <span>{{jobIntent.wishMoney}}元</span>
+                <span class="plr-15">|</span>
+                <img class="mr-10" :src="parseAssetFile('icon-square.png')" />
+                <span>{{jobIntent.wishNature}}</span>
+              </div>
+              <div class="align-center mt-10">
+                <img class="mr-10" :src="parseAssetFile('icon-position.png')" />
+                <span class="line-h-18">{{jobIntent.wishAddr}}</span>
+              </div>
             </div>
           </div>
         </template>
@@ -97,37 +102,41 @@ import { parseAssetFile } from "@/assets/util";
 import { onActivated, onMounted, ref } from "vue";
 import type { Ref } from "vue";
 import { useResumeStore } from "@/stores/resume";
-import { useJobStore } from "@/stores/job"//接口
+import { useJobStore } from "@/stores/job"; //接口
 const use = useResumeStore();
 const useJob = useJobStore();
-const jobStatus=ref(false)
-const onClickLeft1 = () => 
+const jobStatus = ref(false);
+const jobIntent = ref({});
+const onClickLeft1 = () =>
   router.push({
-    path:'/mine'
-    }
-  );
+    path: "/mine",
+  });
 const router = useRouter();
 const to = function (path: any) {
   router.push(path);
 };
 const onClickLeft = () => {
   router.push({
-    path:'/mine'
-    }
-  )
+    path: "/mine",
+  });
 };
 onMounted(() => {});
 onActivated(() => {
-  getJobList()
+  getJobList();
   getExperience();
   getScrollValue();
+  getJobList()
 });
-onBeforeRouteLeave((to, from, next) => {
-  if (to.name == "createResume" || to.name == "mine") {
-    clearKeep();
-  } else {
+onBeforeRouteLeave((to:any, from, next) => {
+  let toArr=['personalInfo','editInfo','editDescribe']
+  if (toArr.indexOf(to.name)) {
     setScrollValue();
+  } else {
+    clearKeep();
+    clearJobIntent();
+    clearCard()
   }
+  
   next();
 });
 const scrollRef: any = ref(null); //父级盒子
@@ -157,17 +166,55 @@ const userHobby = ref("");
 const educationData: any = ref([]);
 const internShipData: any = ref([]);
 const projectnData: any = ref([]);
-//获取求职状态
-const getJobList=async()=>{
-  let res: any = await useJob.getJobIntentList({});
-  if(res.data!=='[]'){
-    jobStatus.value=true;
-  }
+const clearJobIntent=()=>{
+  jobIntent.value={}
 }
+const clearCard=()=>{
+  educationData.value=[];
+  internShipData.value=[];
+  projectnData.value=[];
+  userSchoolPractice.value='';
+  userProfessionalSkill.value='';
+  userStar.value='';
+  userHobby.value=''
+}
+//获取求职状态
+const getJobList = async () => {
+  let res: any = await useJob.getJobIntentList({});
+  if (res.data !== "[]") {
+    jobStatus.value = true;
+    jobIntent.value = getJobIntent(res.data);
+  }
+};
+//获取求职状态
+const getJobIntent = (data: any) => {
+  let obj: any = {};
+  obj.wishIndustry = data.wishIndustry.map((item: any) => {
+    return item.industryNameDown;
+  }).join('、');
+  obj.wishPosition = data.wishPosition.map((item: any) => {
+    return item.positionNameDown;
+  }).join('、');
+  obj.wishMoney = data.wishMoney.split(",").join("-");
+  obj.wishNature = getJobNature(data.wishNature);
+  obj.wishAddr = data.wishAddr.join("、");
+  return obj
+};
+const getJobNature = (num: string) => {
+  switch (num) {
+    case '0':
+      return "全职";
+      break;
+    case '1':
+      return "实习";
+      break;
+    case '2':
+      return "全职和实习";
+  }
+};
 //获取个人信息
 const getExperience = async () => {
-  let res = await use.getOnlineResume({
-  });
+  let res = await use.getOnlineResume({});
   if (res.code == 200) {
     userName.value = res.data.userName;
     userLogoUrl.value = res.data.userLogoUrl;
@@ -180,12 +227,9 @@ const getExperience = async () => {
     userStar.value = res.data.userStar;
     userHobby.value = res.data.userHobby;
   }
-  let res1 = await use.getEducation({
-  });
-  let res2 = await use.getInternShip({
-  });
-  let res3 = await use.getProject({
-  });
+  let res1 = await use.getEducation({});
+  let res2 = await use.getInternShip({});
+  let res3 = await use.getProject({});
   if (res1.code == 200) {
     educationData.value = res1.data;
   }
@@ -298,5 +342,8 @@ const getExperience = async () => {
 }
 .bord-rad-100 {
   border-radius: 100%;
+}
+.line-h-18 {
+  line-height: 1.8rem;
 }
 </style>

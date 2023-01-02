@@ -74,7 +74,6 @@ export default function () {
     const getSaveList = async () => {
         const res:Res<{data:Position[],maxCount:number}> = await SaveStore.getSaveList(positionPayload);
         if (res.code == 200) {
-            console.log('我是获取职位的列表');
             positionList.value.length = 0;
             positionList.value.push(...((res.data).data));
             positionCount.value = res.data.maxCount;
@@ -84,7 +83,6 @@ export default function () {
     //获取公司的列表
     const getCompanyList = async () => {
         const res:Res<{data:any,maxCount:number}> = await SaveStore.getSaveList(companyPayload);
-        console.log('---------我是公司列表--------------');
         if(res.code == 200){
             companyList.value.length = 0;
             companyList.value.push(...((res.data).data));

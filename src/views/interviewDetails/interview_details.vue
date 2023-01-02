@@ -56,7 +56,7 @@
                     <li>
                         <label class="mr-1">备注信息</label>
                         <span>
-                            无
+                            {{ interviewData.interviewNote }}
                         </span>
                     </li>
                 </ul>

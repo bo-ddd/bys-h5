@@ -28,11 +28,10 @@ const afterRead = (file: any) => {
   const imageformat = /image\/(png|jpg|jpeg)$/;
   if (!imageformat.test(file.file.type)) {
     Toast("图片格式不正确");
-  } else if(file.file.size>20*1024*1024) {
-      Toast('图片大小不能超过20MB');
-  }else{
-    Toast('图片大小'+file.file.size);
-      uploadAvater(file.file);
+  } else if (file.file.size > 2 * 1024 * 1024) {
+    Toast("图片大小不能超过2MB");
+  } else {
+    uploadAvater(file.file);
   }
 };
 const uploadAvater = async function (file: any) {
@@ -41,8 +40,8 @@ const uploadAvater = async function (file: any) {
   const res = await use.updateLogo(formData);
   if (res.code == 200) {
     success(res.data);
-  }else{
-    Toast.fail('网络错误')
+  } else {
+    Toast.fail("网络错误");
   }
 };
 const emit = defineEmits(["success"]);

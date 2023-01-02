@@ -5,7 +5,7 @@
       <div v-if="resumeList.length==0">
         <img class="mt-80 img" :src="parseAssetFile('file-tip.png')" />
         <div class="mt-20 text-center fs-16 fw-700">您还没有附件简历,请点击下方按钮上传</div>
-        <div class="mt-10 text-center fs-14 color-gray">最多可上传3份简历</div>
+        <div class="mt-10 text-center fs-14 color-gray">最多可上传3份简历(doc,docx,pdf类型)</div>
       </div>
       <div v-else>
         <div class="head-tip">最多可以上传3份简历 ( pdf,doc,docx类型 )</div>
@@ -95,14 +95,21 @@ const afterRead = async (file: any) => {
   } else if (file.file.size > 20 * 1024 * 1024) {
     Toast("文件不能超过20MB");
   } else {
+    Toast.loading({
+      duration: 0,
+      forbidClick: true,
+      message: "上传中",
+    });
     let formData = new FormData();
     formData.append("resumeName", file.file.name);
     formData.append("resume", file.file);
     let res = await use.addResume(formData);
     if (res.code == 200) {
+      Toast.clear();
       Toast.success("上传成功");
       getResumeList();
     } else {
+      Toast.clear();
       Toast.fail(res.msg);
     }
   }

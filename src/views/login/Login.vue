@@ -16,12 +16,16 @@ const submitLogin = async () => {
         smsCode: smsCode.value
     })
     if (res.code == 200) {
-        sessionStorage.setItem('token', res.data);
         Toast({
             message: '登录成功',
             position: 'top',
         });
-        jump('/');
+        let loginTime = setTimeout(() => {
+            sessionStorage.setItem('token', res.data);
+            clearTimeout(loginTime);
+            jump('/');
+        }, 1000);
+
     } else {
         Toast({
             message: res.msg,
@@ -31,13 +35,13 @@ const submitLogin = async () => {
 }
 
 const getSmsFn = async () => {
-    if(!regPhone.test(phoneInput.value)){ 
+    if (!regPhone.test(phoneInput.value)) {
         Toast({
             message: "请输入手机号",
             position: 'top',
         });
-       return;
-     };
+        return;
+    };
     const res: any = await userHome.getSms(phoneInput.value);
     if (res.code == 200) {
         isSecond.value = true;
@@ -88,8 +92,8 @@ const smCode = () => {
                         <template #button>
                             <van-button size="small" class="" type="primary" v-if="!isSecond"
                                 @click="getSmsFn()">发送验证码</van-button>
-                            <van-button size="small" class="btn" type="primary" disabled
-                                v-show="isSecond">{{ second }}s后重试</van-button>
+                            <van-button size="small" class="btn" type="primary" disabled v-show="isSecond">{{ second
+}}s后重试</van-button>
                         </template>
                     </van-field>
 
@@ -110,7 +114,7 @@ const smCode = () => {
     padding: 1.8rem 0;
 }
 
-.btn{
+.btn {
     width: 8rem;
 }
 

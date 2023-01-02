@@ -58,7 +58,7 @@ export default function () {
         Toast('刷新成功');
         loading.value = false;
         if(positionPayload.pageIndex*positionPayload.pageSize < positionCount.value){
-            positionPayload.pageIndex++;
+            positionPayload.pageSize+= 3;
             getSaveList();
         }
     }
@@ -66,15 +66,16 @@ export default function () {
         Toast('刷新成功');
         companyLoading.value = false;
         if(companyPayload.pageIndex*companyPayload.pageSize < companyCount.value){
-            companyPayload.pageIndex++;
+            companyPayload.pageSize+= 3;
             getCompanyList();
         }
     }
     //获取职位的列表
     const getSaveList = async () => {
-        
         const res:Res<{data:Position[],maxCount:number}> = await SaveStore.getSaveList(positionPayload);
         if (res.code == 200) {
+            console.log('我是获取职位的列表');
+            positionList.value.length = 0;
             positionList.value.push(...((res.data).data));
             positionCount.value = res.data.maxCount;
             positionList.value = [...new Set(...[positionList.value])];
@@ -85,6 +86,7 @@ export default function () {
         const res:Res<{data:any,maxCount:number}> = await SaveStore.getSaveList(companyPayload);
         console.log('---------我是公司列表--------------');
         if(res.code == 200){
+            companyList.value.length = 0;
             companyList.value.push(...((res.data).data));
             companyCount.value = res.data.maxCount;
             companyList.value = [...new Set(...[companyList.value])];
@@ -120,5 +122,5 @@ export default function () {
     const parseCompanyDesc:(str:string)=>string=(str:string)=>{
         return str.replace(/\s*\-\s*/,'/');
     }
-    return { active, count, loading, companyList, positionList, onRefresh, getSaveList,parseStr,parseCompanyDesc,getCompanyList,onRefreshCompany,companyLoading,parseAddr,companyCount,positionCount,parseMoney}
+    return { active, count, loading, companyList, positionList, onRefresh, getSaveList,parseStr,parseCompanyDesc,getCompanyList,onRefreshCompany,companyLoading,parseAddr,companyCount,positionCount,parseMoney,positionPayload,companyPayload}
 }

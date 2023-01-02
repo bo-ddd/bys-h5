@@ -88,7 +88,7 @@
           <template #label>
             <div class="just-between">
               <div class="fs-16 color-bl">
-                <span v-if="userSchool">{{userSchool.name}}</span>
+                <span v-if="userSchool.value">{{userSchool.name}}</span>
                 <span class="color-gr" v-else>请填写最高学历的学校</span>
               </div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />
@@ -102,7 +102,7 @@
           <template #label>
             <div class="just-between">
               <div class="fs-16 color-bl">
-                <span v-if="userProfessional">{{userProfessional.name}}</span>
+                <span v-if="userProfessional.value">{{userProfessional.name}}</span>
                 <span class="color-gr" v-else>请填写最高学历的专业</span>
               </div>
               <van-icon name="arrow" class="search-icon mt-10" size="1.8rem" color="#c9c9c9" />

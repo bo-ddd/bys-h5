@@ -86,8 +86,8 @@ const showDeleteOption = function (id: number) {
 
 const afterRead = async (file: any) => {
   if (
-    file.file.type !== "application/pdf" ||
-    file.file.type !== "application/msword" ||
+    file.file.type !== "application/pdf" &&
+    file.file.type !== "application/msword" &&
     file.file.type !==
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
   ) {

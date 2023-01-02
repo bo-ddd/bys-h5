@@ -32,7 +32,7 @@ const afterRead = (file: any) => {
       Toast('图片大小不能超过20MB');
   }else{
     Toast('图片大小'+file.file.size);
-      // uploadAvater(file.file);3413099
+      uploadAvater(file.file);
   }
 };
 const uploadAvater = async function (file: any) {

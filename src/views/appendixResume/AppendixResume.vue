@@ -95,14 +95,21 @@ const afterRead = async (file: any) => {
   } else if (file.file.size > 20 * 1024 * 1024) {
     Toast("文件不能超过20MB");
   } else {
+    Toast.loading({
+      duration: 0,
+      forbidClick: true,
+      message: "上传中",
+    });
     let formData = new FormData();
     formData.append("resumeName", file.file.name);
     formData.append("resume", file.file);
     let res = await use.addResume(formData);
     if (res.code == 200) {
+      Toast.clear();
       Toast.success("上传成功");
       getResumeList();
     } else {
+      Toast.clear();
       Toast.fail(res.msg);
     }
   }

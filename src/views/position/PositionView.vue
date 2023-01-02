@@ -14,7 +14,7 @@
         <van-button class="btn-plain" size="mini" color="#3b80fb" plain @click="jump('/jobIntention')">去填写</van-button>
       </div>
     </header>
-    <header class=" wrap just-between" v-if="isShow">
+    <header class=" wrap just-between" v-if="isShow && !intention">
       <p class="fs-16 fw-700 job">{{ wishPositionRight.replace(/、$/, '') }}</p>
       <p class="fs-14 c-747474 area"><span v-for="item, index in area" :key="index">{{ item }}</span></p>
       <p class="fs-14 c-5d5d5d money"><span>{{ salary }}</span> <img class="icon-fillin" @click="jump('/jobIntention')"
@@ -124,7 +124,7 @@
 import { reactive, ref, inject, provide } from 'vue';
 import type { Ref } from 'vue'
 import Card from '@/components/card';
-import { useRouter } from 'vue-router';
+import { useRouter,useRoute } from 'vue-router';
 import { useJobStore } from "@/stores/job";//接口
 import type { JobInfo } from './types/jobInfo';
 import type { CardItem } from './types/card';
@@ -132,14 +132,10 @@ import { Toast } from 'vant';
 import { usePositionDetailStore } from "@/stores/positonDetail";
 const positionDetailStore = usePositionDetailStore();
 const router = useRouter();
+const route = useRoute();
 const useJob = useJobStore();
 const showCount = ref(false);
-
-
-
 let positionId = ref();
-
-
 
 const jump = (src: string, params?: number) => {
   if (src == '/jobIntention' && intention.value) {
@@ -147,7 +143,10 @@ const jump = (src: string, params?: number) => {
   } else {
     if (params) {
       router.push({ path: src, query: { positionId: params } })
-    } else {
+    }else if(src=='/jobIntention'){
+      router.push({ path: src, query: { route: '/position' } })
+    }
+     else {
       router.push({ path: src })
     };
   }
@@ -193,8 +192,6 @@ const delivery = function (id: number) {
   getSelectPosition(getJobIndustry.value);
 }
 
-
-
 let isShow = ref(false)
 let area: any = ref();//地区
 let wishPositionRight = ref('');//职业右
@@ -210,7 +207,6 @@ let intention = ref(false);
 const getJobIntent = async () => {
   let res: any = await useJob.getJobIntentList({});
   if (res.code == 200) {
-    console.log(res)
     if (res.data != "[]") {
       if (res.data.wishAddr.length) {
         isShow.value = true;

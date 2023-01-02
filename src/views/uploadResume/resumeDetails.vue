@@ -25,7 +25,7 @@
           <img class="img-10 mt-5" :src="parseAssetFile('icon-pen.png')" />
         </template>
       </van-cell>
-      <van-cell to="/jobIntention" is-link class="pad-25-15">
+      <van-cell @click="toJob" is-link class="pad-25-15">
         <template #title>
           <div class="intention">
             <div class="fs-20 color-black">求职意向</div>
@@ -115,6 +115,14 @@ const router = useRouter();
 const to = function (path: any) {
   router.push(path);
 };
+const toJob=()=>{
+   router.push({
+    path:'/jobIntention',
+    query:{
+      route:'/resumeDetails'
+    }
+   });
+}
 const onClickLeft = () => {
   router.push({
     path: "/mine",

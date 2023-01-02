@@ -85,17 +85,19 @@ const showDeleteOption = function (id: number) {
 };
 
 const afterRead = async (file: any) => {
-  Toast("文件格式不正确");
   if (
-    file.file.type == "application/pdf" ||
-    file.file.type == "application/msword" ||
-    file.file.type ==
+    file.file.type !== "application/pdf" ||
+    file.file.type !== "application/msword" ||
+    file.file.type !==
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
   ) {
+    Toast("文件格式不正确");
+  } else if (file.file.size > 20 * 1024 * 1024) {
+    Toast("文件不能超过20MB");
+  } else {
     let formData = new FormData();
     formData.append("resumeName", file.file.name);
     formData.append("resume", file.file);
-
     let res = await use.addResume(formData);
     if (res.code == 200) {
       Toast.success("上传成功");
@@ -103,8 +105,6 @@ const afterRead = async (file: any) => {
     } else {
       Toast.fail(res.msg);
     }
-  } else {
-    Toast("文件格式不正确");
   }
 };
 const deleteRemuse = function () {
@@ -123,8 +123,8 @@ const deleteRemuseApi = async function () {
     resumeId: resumeId.value,
   });
   if (res.code == 200) {
-    Toast.success("删除成功");
     getResumeList();
+    Toast.success("删除成功");
   } else {
     Toast.fail("删除失败");
   }
@@ -154,7 +154,7 @@ getResumeList();
     width: 100%;
     position: fixed;
     bottom: 2rem;
-      padding: 0 2rem;
+    padding: 0 2rem;
     // }
     .upload-btn {
       width: calc(100% - 4rem);

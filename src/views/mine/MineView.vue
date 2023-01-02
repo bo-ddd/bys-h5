@@ -1,10 +1,8 @@
 <template>
   <div class>
     <!-- 头部 -->
-    <header
-      class="wrap header c-ffffff"
-      @click="token ? jump(isUserInfoData?'/resumeDetails':'/createResume') : showCount = true"
-    >
+    <header class="wrap header c-ffffff"
+      @click="token ? jump(isUserInfoData ? '/resumeDetails' : '/createResume') : showCount = true">
       <div class="container just-between">
         <div class="title" v-if="token && !isUserInfoData">
           <p class="fs-22 fw-600">
@@ -28,20 +26,14 @@
           </p>
           <span class="fs-12">
             <span>
-              {{ userInfo.userSchoolName }}/{{ userInfo.userEducation }}/{{
-              userInfo.userProfessionalName
-              }}
+              {{ userInfo.userSchoolName }}/{{ userInfo.userEducation }}/
+              {{ userInfo.userProfessionalName }}
             </span>
           </span>
         </div>
         <div class="upload flex-ja-center">
-          <img
-            v-if="!token || !isUserInfoData"
-            class="icon-camera"
-            src="@/assets/images/icon-camera.png"
-            alt
-          />
-          <img v-else class="icon-user" :src="userInfo.userLogoUrl" alt />
+          <img v-if="!token || !isUserInfoData" class="icon-camera" src="@/assets/images/icon-camera.png" />
+          <img v-else class="icon-user" :src="userInfo.userLogoUrl" />
         </div>
       </div>
     </header>
@@ -61,15 +53,8 @@
     </van-popup>
     <!-- list -->
     <main>
-      <van-cell
-        center
-        :border="false"
-        class="mt-20 fs-16"
-        v-for="item in list"
-        :key="item.id"
-        :value="item.value"
-        @click="isLogin(item)"
-      >
+      <van-cell center :border="false" class="mt-20 fs-16" v-for="item in list" :key="item.id" :value="item.value"
+        @click="isLogin(item)">
         <template #title v-if="item.id == 1">
           <van-icon :name="parseAssetFile(item.icon)" />
           <span v-if="!token" class="custom-title">在线简历</span>
@@ -84,7 +69,7 @@
         </template>
 
         <!-- 点击求职状态弹层的模板-------------------------- -->
-        <template #title v-show="item.id == 7">
+        <template #title v-show="item.id == 6">
           <div class="van-cell__title">
             <van-icon :name="parseAssetFile(item.icon)" />
             <span class="custom-title" @click="showPopup">{{ item.title }}</span>
@@ -99,13 +84,13 @@
         </template>
 
         <!-- 动态修改求职状态value -->
-        <template #value v-if="item.id == 7">
+        <template #value v-if="item.id == 6">
           <span @click="showPopup">{{ userStatusName }}</span>
         </template>
         <!-- 求职状态结束------------------------- -->
 
         <!-- 动态修改 站点设置的value -->
-        <template #value v-if="item.id == 9">
+        <template #value v-if="item.id == 8">
           <span>{{ userSite }}</span>
         </template>
       </van-cell>
@@ -169,15 +154,6 @@ let list = reactive([
   },
   {
     id: 3,
-    title: "职业测评",
-    value: "",
-    link: "/evaluation",
-    icon: "icon-occupation.png",
-    ispopup: false,
-    isLogin: false,
-  },
-  {
-    id: 4,
     title: "投递反馈",
     value: "",
     link: "/deliveryfeedback",
@@ -186,7 +162,7 @@ let list = reactive([
     isLogin: false,
   },
   {
-    id: 5,
+    id: 4,
     title: "我的收藏",
     value: "",
     link: "/collection",
@@ -195,7 +171,7 @@ let list = reactive([
     isLogin: false,
   },
   {
-    id: 6,
+    id: 5,
     title: "我的面试",
     value: "",
     link: "/inter",
@@ -204,7 +180,7 @@ let list = reactive([
     isLogin: false,
   },
   {
-    id: 7,
+    id: 6,
     title: "求职状态",
     value: "",
     link: "",
@@ -213,7 +189,7 @@ let list = reactive([
     isLogin: false,
   },
   {
-    id: 8,
+    id: 7,
     title: "意见反馈",
     value: "",
     link: "/feedBack",
@@ -222,7 +198,7 @@ let list = reactive([
     isLogin: true,
   },
   {
-    id: 9,
+    id: 8,
     title: "站点设置",
     value: "",
     link: "/siteSettings",
@@ -412,12 +388,12 @@ footer {
 .popup-header {
   padding: 1rem 1.4rem 3rem 1.4rem;
 
-  & > .dialog {
+  &>.dialog {
     color: #cccccc;
     font-size: 1.5rem;
   }
 
-  & > .popupIsok {
+  &>.popupIsok {
     color: #427de3;
     font-size: 1.5rem;
   }

@@ -83,7 +83,7 @@
                 <div class="item" v-for="item in data.positionNameList" @click="jump('/positionLIst',item.positionId,item.positionName)">{{ item }}</div>
               </div>
               <div class="is-open">
-                <span @click="isOpenFn">{{ isOpen ? 'close' : "open" }}</span>
+                <span @click="isOpenFn">{{ isOpen ? '展开全部' : "收起" }}</span>
               </div>
             </div>
           </template>

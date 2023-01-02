@@ -5,7 +5,7 @@
       <div v-if="resumeList.length==0">
         <img class="mt-80 img" :src="parseAssetFile('file-tip.png')" />
         <div class="mt-20 text-center fs-16 fw-700">您还没有附件简历,请点击下方按钮上传</div>
-        <div class="mt-10 text-center fs-14 color-gray">最多可上传3份简历</div>
+        <div class="mt-10 text-center fs-14 color-gray">最多可上传3份简历(doc,docx,pdf类型)</div>
       </div>
       <div v-else>
         <div class="head-tip">最多可以上传3份简历 ( pdf,doc,docx类型 )</div>

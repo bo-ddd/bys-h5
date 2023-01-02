@@ -55,9 +55,9 @@
                   <div class="item-left">
                     <div class="title">{{item.positionName}}</div>
                     <div class="info mt-5">
-                      北京市-朝阳区
-                      <span>|</span>
-                      Java工程师
+                      <span>{{item.positionAddr.split(',')[0]+'-'+item.positionAddr.split(',')[1]}}</span>
+                      <span> | </span>
+                      <span>{{item.positionIndustry}}</span>
                     </div>
                     <div class="type mt-5">{{item.positionEducation }}</div>
                   </div>

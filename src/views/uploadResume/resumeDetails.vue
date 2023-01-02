@@ -189,7 +189,7 @@ const clearCard=()=>{
 //获取求职状态
 const getJobList = async () => {
   let res: any = await useJob.getJobIntentList({});
-  if (res.data !== "[]") {
+  if (res.data !== []) {
     jobStatus.value = true;
     jobIntent.value = getJobIntent(res.data);
   }

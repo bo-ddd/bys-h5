@@ -97,7 +97,7 @@ const positionSelect = async () => {
         wishMoneyRight:wishMoneyRight.value,
 
         wishIndustryLeft: Number((wishIndustry as {id:number}).id),
-        wishPositionLeft:activeId.value || "",
+        wishPositionLeft:activeId.value,
         wishAddr: wishAddrStr.value || "不限",
     })
     if (res.code == 200) {
@@ -116,7 +116,13 @@ const positionSelect = async () => {
  const position = async(positionId:number)=>{
     
     let res: any = await useJob.selectPositionList({
-        wishIndustryLeft: Number(positionId)
+        wishIndustryLeft: Number(positionId),
+        wishNature: checkNatur?.label,
+        wishEducation: eduation.value,
+        wishMoneyLeft:wishMoneyLeft.value,
+        wishMoneyRight:wishMoneyRight.value,
+        wishPositionLeft:activeId.value,
+        wishAddr: wishAddrStr.value || "不限",
     })
     if (res.code == 200) {
         cardList.value = res.data;
@@ -131,7 +137,7 @@ const positionSelect = async () => {
         wishMoneyRight:wishMoneyRight.value,
 
         wishIndustryLeft: Number((wishIndustry as {id:number}).id),
-        wishPositionLeft:activeId.value || "",
+        wishPositionLeft:activeId.value,
         wishAddr: wishAddrStr.value || "不限",
     })
     if (res.code == 200) {
@@ -176,7 +182,7 @@ const onConfirm = async (e: { name: string, code: string }[]) => {
         wishMoneyRight:wishMoneyRight.value,
 
         wishIndustryLeft: Number((wishIndustry as {id:number}).id),
-        wishPositionLeft:activeId.value || "",
+        wishPositionLeft:activeId.value,
         wishAddr: wishAddrStr.value || "不限",
     })
     if (res.code == 200) {

@@ -340,7 +340,7 @@ const delStarPosition = async () => {
         .num {
           position: absolute;
           top: -0.8rem;
-          right: -1.4rem;
+          left: 6.5rem;
           font-size: 1.2rem;
           color: gray;
         }

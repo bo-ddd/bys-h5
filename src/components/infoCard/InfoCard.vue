@@ -21,7 +21,7 @@
             <template #right-icon>
               <div class="align-start">
                 <div class="align-center">
-                  <div class="fs-14 color-gr mr-5">2018.09-2021.06</div>
+                  <div class="fs-14 color-gr mr-5">{{item.startTime.slice(0,7).split('-').join('.')+'-'+item.endTime.slice(0,7).split('-').join('.')}}</div>
                   <van-icon name="arrow" class="search-icon" size="1.6rem" color="#979797" />
                 </div>
               </div>
@@ -44,7 +44,7 @@
             <template #right-icon>
               <div class="align-start">
                 <div class="align-center">
-                  <div class="fs-14 color-gr mr-5">2018.09-2021.06</div>
+                  <div class="fs-14 color-gr mr-5">{{item.startTime.slice(0,7).split('-').join('.')+'-'+item.endTime.slice(0,7).split('-').join('.')}}</div>
                   <van-icon name="arrow" class="search-icon" size="1.6rem" color="#979797" />
                 </div>
               </div>
@@ -66,7 +66,7 @@
             <template #right-icon>
               <div class="align-start">
                 <div class="align-center">
-                  <div class="fs-14 color-gr mr-5">2018.09-2021.06</div>
+                  <div class="fs-14 color-gr mr-5">{{item.startTime.slice(0,7).split('-').join('.')+'-'+item.endTime.slice(0,7).split('-').join('.')}}</div>
                   <van-icon name="arrow" class="search-icon" size="1.6rem" color="#979797" />
                 </div>
               </div>

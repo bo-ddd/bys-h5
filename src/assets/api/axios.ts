@@ -23,10 +23,7 @@ instance.interceptors.response.use(function (response) {
 }, function (error) {
     // 对响应错误做点什么
     console.log('get error:', error)
-    return {
-        code: -1,
-        msg: '网络异常'
-    }
+    return error
 });
 
 

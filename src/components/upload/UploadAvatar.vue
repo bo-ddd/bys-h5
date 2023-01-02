@@ -46,7 +46,10 @@ const uploadAvater = async function (file: any) {
   const res = await use.updateLogo(formData);
   // c.value=res
   if (res.code == 200) {
+
     success(res.data);
+  }else{
+    Toast(res)
   }
 };
 const emit = defineEmits(["success"]);

@@ -203,7 +203,7 @@ if (localStorage.getItem('jobIndustry')) {
 
 // 获取求职意向
 let getJobIndustry: any = ref();
-let intention = ref(false);
+let intention = ref(sessionStorage.getItem('token')?false:true);
 const getJobIntent = async () => {
   let res: any = await useJob.getJobIntentList({});
   if (res.code == 200) {

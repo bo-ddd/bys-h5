@@ -2,10 +2,10 @@
   <van-uploader class="upload" accept="image/png, image/jpeg" :after-read="afterRead">
     <van-cell class="upload-cell" center>
       <template #title>
-        <div class="fs-18">头像{{a}}</div>
+        <div class="fs-18">头像</div>
       </template>
       <template #label>
-        <div class="fs-14 mt-10">{{b}}{{c}}</div>
+        <div class="fs-14 mt-10">请上传真实头像</div>
       </template>
       <template #value>
         <img class="img-8 bord-rad-100" :src="avaterImg||parseAssetFile('icon-avater1.png')" />
@@ -44,7 +44,7 @@ const uploadAvater = async function (file: any) {
   let formData = new FormData();
   formData.append("userLogo", file);
   const res = await use.updateLogo(formData);
-  c.value=res
+  // c.value=res
   if (res.code == 200) {
     success(res.data);
   }

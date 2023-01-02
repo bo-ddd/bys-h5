@@ -372,7 +372,7 @@ let modifyjobInfo = { activeId: [], columnsJob: [], job: [] } as JobInfo;
 const getJobIntent = async () => {
     let res: any = await useJob.getJobIntentList({});
     if (res.code == 200) {
-        if (res.data != '[]') {
+        if (!res.data.length) {
             // 清空原来的 避免重复
             if (jobInfo) {
                 jobInfo.activeId.length = 0;

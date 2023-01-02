@@ -207,7 +207,7 @@ let intention = ref(sessionStorage.getItem('token')?false:true);
 const getJobIntent = async () => {
   let res: any = await useJob.getJobIntentList({});
   if (res.code == 200) {
-    if (res.data != "[]") {
+    if (!res.data.length) {
       if (res.data.wishAddr.length) {
         isShow.value = true;
       }
@@ -274,8 +274,8 @@ const getJobIntent = async () => {
       });
     } else {
       isShow.value = false
-      // isShow.value = true;
       getSelectPosition({});
+      intention.value = true;
     }
   } else {
     isShow.value = false;

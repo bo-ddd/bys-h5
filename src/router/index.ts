@@ -43,18 +43,6 @@ const router = createRouter({
       component: () => import('@/views/appendixResume/AppendixResume.vue')
     },
     {
-      // 职业测评 未完成测评
-      path: "/evaluation",
-      name: "evaluation",
-      component: () => import('@/views/evaluation/EvaluationView.vue')
-    },
-    {
-      // 职业测评 去测评页面
-      path: "/question",
-      name: "question",
-      component: () => import('@/views/evaluation/QuestionView.vue')
-    },
-    {
       // 投递反馈
       path: "/deliveryfeedback",
       name: "deliveryfeedback",

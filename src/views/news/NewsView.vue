@@ -171,7 +171,6 @@ const deliveryResume = async () => {
     positionId: positionId.value,
     resumeId: checkedResume.value,
   });
-  console.log(res);
   if (res.code == 200) {
     Toast.success("投递成功");
   } else {

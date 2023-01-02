@@ -214,8 +214,6 @@ const onConfirmSalary = (value: any) => {//确认
     wishMoneyRight = value[1].text;
 };
 const handleMoney = function (value: any): string {
-    console.log((value[1].text).replace(/\D+/, ''))
-    console.log(((value[0].text) / 1000) + '-' + ((value[1].text).replace(/\D+/, '') / 1000) + 'k')
     return ((value[0].text) / 1000) + '-' + ((value[1].text).replace(/\D+/, '') / 1000) + 'k';
 }
 const onCancelSalary = () => {//取消

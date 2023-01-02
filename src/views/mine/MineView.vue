@@ -169,15 +169,6 @@ let list = reactive([
   },
   {
     id: 3,
-    title: "职业测评",
-    value: "",
-    link: "/evaluation",
-    icon: "icon-occupation.png",
-    ispopup: false,
-    isLogin: false,
-  },
-  {
-    id: 4,
     title: "投递反馈",
     value: "",
     link: "/deliveryfeedback",
@@ -186,7 +177,7 @@ let list = reactive([
     isLogin: false,
   },
   {
-    id: 5,
+    id: 4,
     title: "我的收藏",
     value: "",
     link: "/collection",
@@ -195,7 +186,7 @@ let list = reactive([
     isLogin: false,
   },
   {
-    id: 6,
+    id: 5,
     title: "我的面试",
     value: "",
     link: "/inter",
@@ -204,7 +195,7 @@ let list = reactive([
     isLogin: false,
   },
   {
-    id: 7,
+    id: 6,
     title: "求职状态",
     value: "",
     link: "",
@@ -213,7 +204,7 @@ let list = reactive([
     isLogin: false,
   },
   {
-    id: 8,
+    id: 7,
     title: "意见反馈",
     value: "",
     link: "/feedBack",
@@ -222,7 +213,7 @@ let list = reactive([
     isLogin: true,
   },
   {
-    id: 9,
+    id: 8,
     title: "站点设置",
     value: "",
     link: "/siteSettings",

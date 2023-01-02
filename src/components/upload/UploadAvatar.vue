@@ -1,5 +1,4 @@
 <template>
-<div>{{a}}</div>
   <van-uploader class="upload" accept="image/png, image/jpeg" :after-read="afterRead">
     <van-cell class="upload-cell" center>
       <template #title>
@@ -22,25 +21,17 @@ import { Toast } from "vant";
 let props = defineProps<{
   avaterImg: string;
 }>();
-const a=ref({})
 const use = useResumeStore();
 const avaterImg = toRef(props, "avaterImg");
 const afterRead = (file: any) => {
   // 此时可以自行将文件上传至服务器
-    a.value={
-      type:file.file.type,
-      size:file.file.size
-    };
   const imageformat = /image\/(png|jpg|jpeg)$/;
   if (!imageformat.test(file.file.type)) {
     Toast("图片格式不正确");
-  } else if(file.file.size>20*1024*1024) {
-      Toast('图片大小不能超过20MB');
-  }else{
-    console.log(file);
-    
-    Toast('图片大小'+file.file.size);
-      uploadAvater(file.file);
+  } else if (file.file.size > 2 * 1024 * 1024) {
+    Toast("图片大小不能超过2MB");
+  } else {
+    uploadAvater(file.file);
   }
 };
 const uploadAvater = async function (file: any) {
@@ -49,8 +40,8 @@ const uploadAvater = async function (file: any) {
   const res = await use.updateLogo(formData);
   if (res.code == 200) {
     success(res.data);
-  }else{
-    Toast.fail('网络错误')
+  } else {
+    Toast.fail("网络错误");
   }
 };
 const emit = defineEmits(["success"]);

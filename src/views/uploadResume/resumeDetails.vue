@@ -189,18 +189,22 @@ const clearCard=()=>{
 //获取求职状态
 const getJobList = async () => {
   let res: any = await useJob.getJobIntentList({});
-  if (res.data !== []) {
+  if (Array.prototype.isPrototypeOf(res.data)) {
+    return
+  }else{
+    
     jobStatus.value = true;
     jobIntent.value = getJobIntent(res.data);
   }
+  
 };
 //获取求职状态
 const getJobIntent = (data: any) => {
   let obj: any = {};
-  obj.wishIndustry = data.wishIndustry.map((item: any) => {
-    return item.industryNameDown;
-  }).join('、');
-  obj.wishPosition = data.wishPosition.map((item: any) => {
+  obj.wishIndustry = data.wishIndustry.length?data.wishIndustry.map((item: any) => {
+    return item.industryNameDown
+  }).join('、'):'不限';
+  obj.wishPosition =data.wishPosition.map((item: any) => {
     return item.positionNameDown;
   }).join('、');
   obj.wishMoney = data.wishMoney.split(",").join("-");

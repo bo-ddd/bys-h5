@@ -34,8 +34,8 @@
                 </van-cell>
                 <van-action-sheet v-model:show="showSalary" title="">
                     <div class="content">
-                        <van-picker title=""
-                            :columns="columnsSalary" @confirm="onConfirmSalary" @cancel="onCancelSalary" />
+                        <van-picker title="" :columns="columnsSalary" @confirm="onConfirmSalary"
+                            @cancel="onCancelSalary" />
                     </div>
                 </van-action-sheet>
 
@@ -97,7 +97,7 @@
 
 <script setup lang="ts">
 import type { Ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import type { JobInfo } from "./types/jobInfo"
 import { reactive, ref, toRefs } from 'vue';
 import { areaList } from '@vant/area-data';//地区
@@ -105,6 +105,7 @@ import { useJobStore } from "@/stores/job"//接口
 import { Toast } from 'vant';
 
 const router = useRouter();
+const route = useRoute();
 const useJob = useJobStore();
 
 let wishIndustryLeft: string = '';
@@ -134,9 +135,10 @@ const wxLogin = () => {
     });
 }
 
+let routeInfo = route.query.route as string;
 
 // 返回
-const onClickLeft = () => { router.push({ path: '/position' }) };
+const onClickLeft = () => { router.push({ path: routeInfo }); };
 // 期望职位
 let columnsJob: any[] = reactive([]);
 let columnJob: any[] = reactive([]);
@@ -212,9 +214,9 @@ const onConfirmSalary = (value: any) => {//确认
     wishMoneyRight = value[1].text;
 };
 const handleMoney = function (value: any): string {
-    console.log((value[1].text).replace(/\D+/,''))
-    console.log(((value[0].text) / 1000) + '-' + ((value[1].text).replace(/\D+/,'') / 1000) + 'k')
-    return ((value[0].text) / 1000) + '-' + ((value[1].text).replace(/\D+/,'')/ 1000) + 'k';
+    console.log((value[1].text).replace(/\D+/, ''))
+    console.log(((value[0].text) / 1000) + '-' + ((value[1].text).replace(/\D+/, '') / 1000) + 'k')
+    return ((value[0].text) / 1000) + '-' + ((value[1].text).replace(/\D+/, '') / 1000) + 'k';
 }
 const onCancelSalary = () => {//取消
     showSalary.value = false;
@@ -279,7 +281,7 @@ let workplace: any[] = reactive([]);
 // 右侧
 let handlWorkplaceItem = function (item: any): void {
     // let index = workplace.indexOf(item);
-    
+
     let index = -1;
     for (let i = 0; i < workplace.length; i++) {
         if (item.text == workplace[i].text) {
@@ -339,15 +341,15 @@ const submit = (): void => {
                     message: '更新成功！',
                     icon: 'success',
                 });
-                router.push({ path: "/position" });
+                router.push({ path: routeInfo });
             } else if (res.code == 401) {
                 showCount.value = true
             }
         }
         setModifyJobIntent({
             wishAddr: [...new Set(showArea.value)].join(','),
-            wishIndustryLeft: localStorage.getItem('modifyIndustryInfo')?JSON.parse(localStorage.getItem('modifyIndustryInfo')!).wishIndustryLeft.replace(/,$/, ''):'',
-            wishIndustryRight:localStorage.getItem('modifyIndustryInfo')? JSON.parse(localStorage.getItem('modifyIndustryInfo')!).wishIndustryRight.replace(/,$/, ''):'',
+            wishIndustryLeft: localStorage.getItem('modifyIndustryInfo') ? JSON.parse(localStorage.getItem('modifyIndustryInfo')!).wishIndustryLeft.replace(/,$/, '') : '',
+            wishIndustryRight: localStorage.getItem('modifyIndustryInfo') ? JSON.parse(localStorage.getItem('modifyIndustryInfo')!).wishIndustryRight.replace(/,$/, '') : '',
             wishMoneyLeft: wishMoneyLeft,
             wishMoneyRight: wishMoneyRight,
             wishNature: wishNature.value,

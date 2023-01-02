@@ -124,7 +124,7 @@
 import { reactive, ref, inject, provide } from 'vue';
 import type { Ref } from 'vue'
 import Card from '@/components/card';
-import { useRouter } from 'vue-router';
+import { useRouter,useRoute } from 'vue-router';
 import { useJobStore } from "@/stores/job";//接口
 import type { JobInfo } from './types/jobInfo';
 import type { CardItem } from './types/card';
@@ -132,6 +132,7 @@ import { Toast } from 'vant';
 import { usePositionDetailStore } from "@/stores/positonDetail";
 const positionDetailStore = usePositionDetailStore();
 const router = useRouter();
+const route = useRoute();
 const useJob = useJobStore();
 const showCount = ref(false);
 
@@ -147,7 +148,10 @@ const jump = (src: string, params?: number) => {
   } else {
     if (params) {
       router.push({ path: src, query: { positionId: params } })
-    } else {
+    }else if(src=='/jobIntention'){
+      router.push({ path: src, query: { route: '/position' } })
+    }
+     else {
       router.push({ path: src })
     };
   }

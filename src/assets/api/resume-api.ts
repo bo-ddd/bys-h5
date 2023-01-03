@@ -1,6 +1,6 @@
 import axios from './axios';
 import { postConfig } from './config'
-let serveUrl = '/api';
+let serveUrl = import.meta.env.MODE == "production" ? "http://49.235.119.92:8090/" : "/api";
 const PostFormConfig = {
     url: "",
     baseURL: serveUrl,

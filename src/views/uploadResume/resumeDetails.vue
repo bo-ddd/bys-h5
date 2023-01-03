@@ -106,7 +106,7 @@ import { useJobStore } from "@/stores/job"; //接口
 const use = useResumeStore();
 const useJob = useJobStore();
 const jobStatus = ref(false);
-const jobIntent = ref({});
+const jobIntent:any = ref({});
 const onClickLeft1 = () =>
   router.push({
     path: "/mine",

@@ -61,7 +61,7 @@
                     </van-radio-group>
                   </div>
                   <div class="btn-wrap">
-                    <div class="btn c-ffffff just-center fs-14" @click="delivery(item.positionId)">
+                    <div class="btn c-ffffff just-center fs-14" @click="delivery()">
                       确认投递</div>
                   </div>
                 </div>
@@ -177,19 +177,20 @@ const apply = function (id: number) {
 // 申请职位接口
 const deliveryJob = async (params: any) => {
   let res: any = await useJob.deliveryPosition(params);
+  isResumeShow.value = false;
   if (res.code == 200) {
-    isResumeShow.value = false;
+    Toast('投递成功');
+  getSelectPosition(getJobIndustry.value);
+  }else{
+    Toast('投递不成功，请刷新再试');
   }
 }
 // 确认投递
-const delivery = function (id: number) {
+const delivery = function () {
   deliveryJob({
     resumeId: checked.value as number,
     positionId: positionId.value
   });
-  isResumeShow.value = false;
-  Toast('投递成功')
-  getSelectPosition(getJobIndustry.value);
 }
 
 let isShow = ref(false)

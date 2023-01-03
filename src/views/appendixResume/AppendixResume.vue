@@ -92,8 +92,8 @@ const afterRead = async (file: any) => {
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
   ) {
     Toast("文件格式不正确");
-  } else if (file.file.size > 20 * 1024 * 1024) {
-    Toast("文件不能超过20MB");
+  } else if (file.file.size > 10 * 1024 * 1024) {
+    Toast("文件不能超过10MB");
   } else {
     Toast.loading({
       duration: 0,

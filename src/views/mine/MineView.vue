@@ -245,10 +245,12 @@ const onConfirm = async (value: any) => {
   let res: any = await use.ModifyJobWantedStatus({
     status: status,
   });
-  if (res.code == 200) {
+  if (res.data) {
     Toast("求职状态修改成功");
     getUnsrInfo();
     show.value = false;
+  } else {
+    Toast("请检查是否填写过简历信息！");
   }
 };
 
@@ -276,6 +278,11 @@ const isLogin = (item: any) => {
     router.push({ path: "/personalInfo" });
   } else if (item.isLogin) {
     router.push({ path: item.link });
+  } else if (item.title == '求职状态' || item.title == '站点设置') {
+    if (!userInfo.userName) {
+      router.push('createResume');
+      Toast("请先填写简历信息！");
+    }
   } else {
     if (token) {
       item.ispopup = true;

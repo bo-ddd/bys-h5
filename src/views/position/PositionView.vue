@@ -216,7 +216,7 @@ const getJobIntent = async () => {
         wishPositionRight.value += item.positionNameDown + '、';
       });
       // 薪资
-      salary.value = res.data.wishMoney.replace(/000/g, 'k').replace(/,/, '-').replace(/k/, '');
+      salary.value = res.data.wishMoney.replace(/000/g, 'k').replace(/,/, '-').replace(/k/, '').replace(/99999/,'50k以上');
       // 职位
       let jobId = 0;
       let modifyjobInfo = { activeId: [], columnsJob: [], job: [] } as JobInfo;
@@ -257,14 +257,14 @@ const getJobIntent = async () => {
         wishAddr += item.replace(/\S+-/, '') + ',';
       });
       getJobIndustry.value = {
-        wishAddr: wishAddr,
+        wishAddr: wishAddr.replace(/,$/,''),
         wishIndustryLeft: res.data.wishIndustryLeft,
         wishMoneyLeft: res.data.wishMoney.replace(/,\d+/, ''),
         wishMoneyRight: res.data.wishMoney.replace(/\d+,/, ''),
         wishPositionLeft: res.data.wishPositionTypeLeft,
       }
       getSelectPosition({
-        wishAddr: wishAddr,
+        wishAddr: wishAddr.replace(/,$/,''),
         wishIndustryLeft: res.data.wishIndustryLeft,
         wishMoneyLeft: res.data.wishMoney.replace(/,\d+/, ''),
         wishMoneyRight: res.data.wishMoney.replace(/\d+,/, ''),
@@ -408,6 +408,8 @@ selectCompletion();
 
     .icon-fillin {
       width: 1.4rem;
+      position: relative;
+      top: .2rem;
     }
   }
 

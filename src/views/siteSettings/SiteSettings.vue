@@ -57,9 +57,6 @@ import { Toast, Dialog } from "vant";
 import { useMineStore } from '@/stores/mineStores';
 const use = useMineStore();
 const router = useRouter();
-const onClickLeft = () => {
-    router.go(-1)
-};
 getUnsrInfo()
 
 // popupShow 弹层打开与否
@@ -175,22 +172,6 @@ function navJobfairs() {
 
 .mt-18 {
     margin-top: 1.8rem;
-}
-
-:deep(.nav-bar .van-nav-bar) {
-    background-color: rgba(0, 0, 0, 0);
-
-    i {
-        color: #fff;
-    }
-
-    span {
-        color: #fff;
-    }
-
-    .van-ellipsis {
-        color: #fff;
-    }
 }
 
 :deep(.field-srk) {

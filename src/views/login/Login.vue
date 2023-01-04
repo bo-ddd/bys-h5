@@ -19,13 +19,7 @@ const submitLogin = async () => {
     })
     if (res.code == 200) {
         let userSite = localStorage.getItem('userSite') ? localStorage.getItem('userSite') : '';
-        if (userSite == null || userSite == '') {
-            Toast({
-                message: '请先设置站点设置',
-                position: 'top',
-            });
-            jump('/siteSettings');
-        } else {
+        if (userSite) {
             setSite(userSite)
             Toast({
                 message: '登录成功',

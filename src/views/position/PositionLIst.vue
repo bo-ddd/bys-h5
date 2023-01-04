@@ -300,7 +300,7 @@ const submitFilter = async () => {
         wishMoneyRight:wishMoneyRight.value,
 
         wishIndustryLeft: Number((wishIndustry as {id:number}).id),
-        wishPositionLeft:Number(activeId.value),
+        wishPositionLeft:activeId.value,
         wishAddr: wishAddrStr.value || "不限",
     })
 

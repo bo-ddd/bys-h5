@@ -168,8 +168,7 @@ let formatData = (data: any[], pageSize: number): any[] => {
 
 <style lang="scss" scoped>
 .jobfairs {
-  height: 100%;
-
+  height: 100vh;
   .pt-6 {
     padding-top: .6rem;
   }
@@ -193,10 +192,9 @@ let formatData = (data: any[], pageSize: number): any[] => {
   }
 
   .main {
-    height: calc(100% - 7rem);
-    overflow: auto;
+     padding-bottom: 5rem;
+   
     background: #ffffff;
-
     .content {
       margin-top: 7rem;
       padding: 0 2rem;

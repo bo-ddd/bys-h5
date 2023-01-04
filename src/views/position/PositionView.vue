@@ -20,7 +20,7 @@
       <p class="fs-14 c-5d5d5d money"><span>{{ salary }}</span> <img class="icon-fillin" @click="jump('/jobIntention')"
           src="@/assets/images/icon-fillin.png"></p>
     </header>
-    <main class="container">
+    <main>
 
       <Card.Wrap class="card-bg">
         <Card.Item :class="index ? 'mt-5' : ''" v-for="item, index in cardList" :key="item.companyId" :options="item"
@@ -358,8 +358,7 @@ selectCompletion();
 
 <style lang="scss" scoped>
 .position {
-  height: 100%;
-
+  height: 92vh;
   header {
     height: 5.2rem;
     border-bottom: .1rem solid #e7e7e7;
@@ -415,9 +414,8 @@ selectCompletion();
   }
 
   main {
-    height: calc(100% - 7.2rem);
-    overflow: auto;
-
+overflow: auto;
+ height: 100%;
     .none {
       padding: 2rem 0 6rem;
     }

@@ -3,7 +3,7 @@
         <div class="bgd ">
             <div class="title just-between">
                 <div>
-                    <h1>毕业申</h1>
+                    <h1>榕树云</h1>
                     <div class="test mt-16">校园招聘平台/让校招更简单</div>
                 </div>
                 <div>

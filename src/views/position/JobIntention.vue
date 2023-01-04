@@ -404,7 +404,13 @@ const getJobIntent = async () => {
             });
             activeId.value = [...new Set(activeId.value)];
             // 薪资
-            salary.value = res.data.wishMoney.replace(/0/g, '').split(',').join('-') + 'k';
+            let wishMoney = res.data.wishMoney.replace(/000/g, '').split(',').join('-');
+            if (/99999/.test(wishMoney)) {
+                wishMoney = wishMoney.replace(/99999/, '50k以上');
+            } else {
+                wishMoney = wishMoney + 'k'
+            }
+            salary.value = wishMoney;
             wishMoneyLeft = res.data.wishMoney.split(',')[0];
             wishMoneyRight = res.data.wishMoney.split(',')[1];
             defaultIndex.value = Number(wishIndustryLeft.replace(/0/g, ''))

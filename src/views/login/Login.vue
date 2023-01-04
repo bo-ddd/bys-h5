@@ -87,7 +87,7 @@ const smCode = () => {
     <div class="login">
         <div class="login-wrap">
             <div>
-                <h1>毕业申网络招聘平台</h1>
+                <h1>榕树云网络招聘平台</h1>
                 <span class="c-747474">学生求职火热进行中</span>
             </div>
 

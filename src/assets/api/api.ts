@@ -26,7 +26,7 @@ export default {
         return axios.post("/phone/login", params, postConfig);
     },
     getSms: (params:{phone:string,smsType :number}) => {
-        return axios.get(`/phone/sendSms?iphone=${params.phone}&smsType=${params.smsType}`, getConfig)
+        return axios.post(`/phone/sendSms`,params, getConfig)
     },
     /**
     * 学历下拉框

@@ -56,7 +56,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from "vue-router";
-import { Dialog } from 'vant';
+import { Toast, Dialog } from "vant";
 import { useMineStore } from '@/stores/mineStores';
 const use = useMineStore();
 const router = useRouter();
@@ -109,12 +109,16 @@ function cancel() {
             // on cancel
         });
 }
-
+let userSite = localStorage.getItem('userSite') ? localStorage.getItem('userSite') : '';
 // 获取用户信息接口
 async function getUnsrInfo() {
     let res: any = await use.getUserInfo({})
     if (res.data) {
         popupValue.value = res.data.userSite;
+    } else {
+        if (userSite) {
+            popupValue.value = userSite;
+        }
     }
 }
 function navJobfairs() {
@@ -126,6 +130,7 @@ function navJobfairs() {
         }, 1500)
         return;
     } else {
+        Toast("可以开始求职了~");
         router.push('/jobfairs');
     }
 }

@@ -81,7 +81,7 @@
                 <div class="show-count_box">
                     <div class="show-wrap">
                         <div>
-                            <h1>登录毕业申</h1>
+                            <h1>登录榕树云</h1>
                         </div>
                         <div>
                             <van-button type="primary" class="ft" @click="jump('login')">手机号码验证登录</van-button>

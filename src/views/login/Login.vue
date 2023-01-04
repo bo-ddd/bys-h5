@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useHomeStore } from "@/stores/home";
+import { useMineStore } from '@/stores/mineStores';
 import { Toast } from 'vant';
 import { useRouter } from 'vue-router';
 const router = useRouter();
 let userHome = useHomeStore();
+let userMine = useMineStore();
 let phoneInput = ref();
 let smsCode = ref();
 const regPhone = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
@@ -16,21 +18,31 @@ const submitLogin = async () => {
         smsCode: smsCode.value
     })
     if (res.code == 200) {
+        sessionStorage.setItem('token', res.data);
+        let userSite = localStorage.getItem('userSite') ? localStorage.getItem('userSite') : '';
+        setSite(userSite as string)
         Toast({
             message: '登录成功',
             position: 'top',
         });
         let loginTime = setTimeout(() => {
-            sessionStorage.setItem('token', res.data);
+            // sessionStorage.setItem('token', res.data);
             clearTimeout(loginTime);
             jump('/');
         }, 1000);
-
     } else {
         Toast({
             message: res.msg,
             position: 'top',
         });
+    }
+}
+
+// 修改站点
+async function setSite(payload: string) {
+    const res: any = await userMine.setSite({ site: payload })
+    if (res.code == 200) {
+        console.log(1)
     }
 }
 
@@ -42,7 +54,7 @@ const getSmsFn = async () => {
         });
         return;
     };
-    const res: any = await userHome.getSms(phoneInput.value);
+    const res: any = await userHome.getSms({ iphone: phoneInput.value, smsType: 1 });
     if (res.code == 200) {
         isSecond.value = true;
         smCode();

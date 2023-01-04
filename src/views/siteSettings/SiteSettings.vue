@@ -1,8 +1,5 @@
 <template>
     <div class="siteSettings">
-        <div class="nav-bar">
-            <van-nav-bar title="站点设置" left-text="返回" left-arrow @click-left="onClickLeft" />
-        </div>
         <div class="bgd ">
             <div class="title just-between">
                 <div>
@@ -56,13 +53,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from "vue-router";
-import { Dialog } from 'vant';
+import { Toast, Dialog } from "vant";
 import { useMineStore } from '@/stores/mineStores';
 const use = useMineStore();
 const router = useRouter();
-const onClickLeft = () => {
-    router.go(-1)
-};
 getUnsrInfo()
 
 // popupShow 弹层打开与否
@@ -91,6 +85,7 @@ const setSite = async function (payload: setSiteType) {
     const res: any = await use.setSite(payload)
     if (res.code == 200) {
         popupValue.value = fieldText.value;
+        window.localStorage.setItem('userSite', fieldText.value);
     }
 }
 // 弹层
@@ -108,12 +103,16 @@ function cancel() {
             // on cancel
         });
 }
-
+let userSite = localStorage.getItem('userSite') ? localStorage.getItem('userSite') : '';
 // 获取用户信息接口
 async function getUnsrInfo() {
     let res: any = await use.getUserInfo({})
     if (res.data) {
         popupValue.value = res.data.userSite;
+    } else {
+        if (userSite) {
+            popupValue.value = userSite;
+        }
     }
 }
 function navJobfairs() {
@@ -125,6 +124,7 @@ function navJobfairs() {
         }, 1500)
         return;
     } else {
+        Toast("可以开始求职了~");
         router.push('/jobfairs');
     }
 }
@@ -172,22 +172,6 @@ function navJobfairs() {
 
 .mt-18 {
     margin-top: 1.8rem;
-}
-
-:deep(.nav-bar .van-nav-bar) {
-    background-color: rgba(0, 0, 0, 0);
-
-    i {
-        color: #fff;
-    }
-
-    span {
-        color: #fff;
-    }
-
-    .van-ellipsis {
-        color: #fff;
-    }
 }
 
 :deep(.field-srk) {

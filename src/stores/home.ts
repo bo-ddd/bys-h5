@@ -10,7 +10,7 @@ export const useHomeStore = defineStore('home', () => {
          return Api.login(payload);
   }
 
-  function getSms(payload:string){
+  function getSms(payload:{iphone:string,smsType:number}){
     return Api.getSms(payload);
 }
 

@@ -204,7 +204,7 @@ let list = reactive([
     link: "/siteSettings",
     icon: "icon-site.png",
     ispopup: false,
-    isLogin: false,
+    isLogin: true,
   },
 ]);
 
@@ -245,10 +245,12 @@ const onConfirm = async (value: any) => {
   let res: any = await use.ModifyJobWantedStatus({
     status: status,
   });
-  if (res.code == 200) {
+  if (res.data) {
     Toast("求职状态修改成功");
     getUnsrInfo();
     show.value = false;
+  } else {
+    Toast("请检查是否填写过简历信息！");
   }
 };
 
@@ -263,7 +265,11 @@ const logOut = () => {
   })
     .then(() => {
       sessionStorage.removeItem("token");
-      localStorage.clear();
+      localStorage.removeItem("industryInfo");
+      localStorage.removeItem("jobInfo");
+      localStorage.removeItem("modifyJobInfo");
+      localStorage.removeItem("modifyIndustryInfo");
+      localStorage.removeItem("jobIndustry");
       router.push({ path: "/" });
     })
     .catch(() => {
@@ -296,6 +302,8 @@ async function getUnsrInfo() {
     userSite.value = res.data.userSite;
     isUserInfoData.value = true;
     userInfo.value = res.data;
+  } else {
+    userSite.value = localStorage.getItem('userSite') as string;
   }
 }
 //获取完成度

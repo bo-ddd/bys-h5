@@ -265,7 +265,11 @@ const logOut = () => {
   })
     .then(() => {
       sessionStorage.removeItem("token");
-      localStorage.clear();
+      localStorage.removeItem("industryInfo");
+      localStorage.removeItem("jobInfo");
+      localStorage.removeItem("modifyJobInfo");
+      localStorage.removeItem("modifyIndustryInfo");
+      localStorage.removeItem("jobIndustry");
       router.push({ path: "/" });
     })
     .catch(() => {

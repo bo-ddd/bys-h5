@@ -61,7 +61,7 @@
                     </van-radio-group>
                   </div>
                   <div class="btn-wrap">
-                    <div class="btn c-ffffff just-center fs-14" @click="delivery()">
+                    <div class="btn c-ffffff just-center fs-14" @click="delivery(item.positionId)">
                       确认投递</div>
                   </div>
                 </div>
@@ -177,20 +177,19 @@ const apply = function (id: number) {
 // 申请职位接口
 const deliveryJob = async (params: any) => {
   let res: any = await useJob.deliveryPosition(params);
-  isResumeShow.value = false;
   if (res.code == 200) {
-    Toast('投递成功');
-  getSelectPosition(getJobIndustry.value);
-  }else{
-    Toast('投递不成功，请刷新再试');
+    isResumeShow.value = false;
   }
 }
 // 确认投递
-const delivery = function () {
+const delivery = function (id: number) {
   deliveryJob({
     resumeId: checked.value as number,
     positionId: positionId.value
   });
+  isResumeShow.value = false;
+  Toast('投递成功')
+  getSelectPosition(getJobIndustry.value);
 }
 
 let isShow = ref(false)
@@ -260,15 +259,15 @@ const getJobIntent = async () => {
       getJobIndustry.value = {
         wishAddr: wishAddr.replace(/,$/,''),
         wishIndustryLeft: res.data.wishIndustryLeft,
-        wishMoneyLeft: res.data.wishMoney.replace(/,\d+/, ''),
-        wishMoneyRight: res.data.wishMoney.replace(/\d+,/, ''),
+        wishMoneyLeft:Number( res.data.wishMoney.replace(/,\d+/, '')),
+        wishMoneyRight: Number(res.data.wishMoney.replace(/\d+,/, '')),
         wishPositionLeft: res.data.wishPositionTypeLeft,
       }
       getSelectPosition({
         wishAddr: wishAddr.replace(/,$/,''),
         wishIndustryLeft: res.data.wishIndustryLeft,
-        wishMoneyLeft: res.data.wishMoney.replace(/,\d+/, ''),
-        wishMoneyRight: res.data.wishMoney.replace(/\d+,/, ''),
+        wishMoneyLeft:Number( res.data.wishMoney.replace(/,\d+/, '')),
+        wishMoneyRight: Number(res.data.wishMoney.replace(/\d+,/, '')),
         wishPositionLeft: res.data.wishPositionTypeLeft,
       });
     } else {

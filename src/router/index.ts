@@ -209,4 +209,15 @@ const router = createRouter({
   ]
 })
 
+
+router.beforeEach((to) => {
+  if (to.name == 'jobfairs') {
+    if (localStorage.getItem('userSite') == null || localStorage.getItem('userSite') == undefined) {
+      return { name: 'siteSettings' };
+    } else {
+      return true;
+    }
+  }
+})
+
 export default router

@@ -26,7 +26,6 @@ const submitLogin = async () => {
             position: 'top',
         });
         let loginTime = setTimeout(() => {
-            // sessionStorage.setItem('token', res.data);
             clearTimeout(loginTime);
             jump('/');
         }, 1000);

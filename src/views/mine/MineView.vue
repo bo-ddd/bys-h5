@@ -245,12 +245,10 @@ const onConfirm = async (value: any) => {
   let res: any = await use.ModifyJobWantedStatus({
     status: status,
   });
-  if (res.data) {
+  if (res.code == 200 && res.msg == '修改成功') {
     Toast("求职状态修改成功");
     getUnsrInfo();
     show.value = false;
-  } else {
-    Toast("请检查是否填写过简历信息！");
   }
 };
 
@@ -303,7 +301,7 @@ async function getUnsrInfo() {
     isUserInfoData.value = true;
     userInfo.value = res.data;
   } else {
-    userSite.value = localStorage.getItem('userSite') as string;
+    userSite.value = sessionStorage.getItem('userSite') as string;
   }
 }
 //获取完成度

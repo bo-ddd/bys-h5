@@ -61,7 +61,7 @@
                     </van-radio-group>
                   </div>
                   <div class="btn-wrap">
-                    <div class="btn c-ffffff just-center fs-14" @click="delivery(item.positionId)">
+                    <div class="btn c-ffffff just-center fs-14" @click="delivery()">
                       确认投递</div>
                   </div>
                 </div>
@@ -186,12 +186,11 @@ const deliveryJob = async (params: any) => {
   }
 }
 // 确认投递
-const delivery = function (id: number) {
+const delivery = function () {
   deliveryJob({
     resumeId: checked.value as number,
     positionId: positionId.value
   });
-
 }
 
 let isShow = ref(false)

@@ -3,12 +3,12 @@
         <div class="container">
             <div class="header">
                 <p class="fs-16">{{ options.positionName }}</p>
-                <div class="align-center  mt-14">
+                <div class="align-center  mt-10 pt-8">
                     <span class="fs-14 c-747474">{{ options.positionAddr.split(',').splice(1,).join('-') }}</span>
                     <span class="fs-12 c-747474 gang">|</span>
-                    <span class="fs-14 c-747474">{{ options.positionIndustry }}</span>
+                    <span class="fs-14 c-747474 ">{{ options.positionIndustry }}</span>
                 </div>
-                <p class="fs-12  c-747474 education flex-ja-center mt-5">{{ options.positionEducationName }}</p>
+                <p class="fs-12  c-747474 education  flex-ja-center">{{ options.positionEducationName }}</p>
             </div>
             <div class="footer mt-14 align-center ">
                 <img class="icon" :src="options.companyLogoUrl" alt="">
@@ -156,7 +156,9 @@ const wxLogin = () => {
             padding-top: 1.5rem;
 
             .education {
-                width: 3.2rem;
+                // max-width: 6rem;
+                display: inline ;
+                padding: .2rem .5rem;
                 height: 2rem;
                 background-color: #f2f3f5;
             }

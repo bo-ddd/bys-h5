@@ -91,6 +91,7 @@ const setSite = async function (payload: setSiteType) {
     const res: any = await use.setSite(payload)
     if (res.code == 200) {
         popupValue.value = fieldText.value;
+        window.localStorage.setItem('userSite', fieldText.value);
     }
 }
 // 弹层

@@ -204,7 +204,7 @@ let list = reactive([
     link: "/siteSettings",
     icon: "icon-site.png",
     ispopup: false,
-    isLogin: false,
+    isLogin: true,
   },
 ]);
 
@@ -278,11 +278,6 @@ const isLogin = (item: any) => {
     router.push({ path: "/personalInfo" });
   } else if (item.isLogin) {
     router.push({ path: item.link });
-  } else if (item.title == '求职状态' || item.title == '站点设置') {
-    if (!userInfo.userName) {
-      router.push('createResume');
-      Toast("请先填写简历信息！");
-    }
   } else {
     if (token) {
       item.ispopup = true;
@@ -303,6 +298,8 @@ async function getUnsrInfo() {
     userSite.value = res.data.userSite;
     isUserInfoData.value = true;
     userInfo.value = res.data;
+  } else {
+    userSite.value = localStorage.getItem('userSite') as string;
   }
 }
 //获取完成度

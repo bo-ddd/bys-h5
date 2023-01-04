@@ -98,6 +98,6 @@ let tabbar = [
     height: 6rem;
 }
 .router-view{
-    height: calc(100vh - 3.5rem);
+    height: calc(100vh - 6rem);
 }
 </style>

@@ -20,7 +20,7 @@
       <p class="fs-14 c-5d5d5d money"><span>{{ salary }}</span> <img class="icon-fillin" @click="jump('/jobIntention')"
           src="@/assets/images/icon-fillin.png"></p>
     </header>
-    <main class="container">
+    <main>
 
       <Card.Wrap class="card-bg">
         <Card.Item :class="index ? 'mt-5' : ''" v-for="item, index in cardList" :key="item.companyId" :options="item"
@@ -61,7 +61,7 @@
                     </van-radio-group>
                   </div>
                   <div class="btn-wrap">
-                    <div class="btn c-ffffff just-center fs-14" @click="delivery(item.positionId)">
+                    <div class="btn c-ffffff just-center fs-14" @click="delivery()">
                       确认投递</div>
                   </div>
                 </div>
@@ -177,19 +177,20 @@ const apply = function (id: number) {
 // 申请职位接口
 const deliveryJob = async (params: any) => {
   let res: any = await useJob.deliveryPosition(params);
+  isResumeShow.value = false;
   if (res.code == 200) {
-    isResumeShow.value = false;
+    Toast('投递成功');
+    getSelectPosition(getJobIndustry.value);
+  }else{
+    Toast('投递不成功,请刷新再试试');
   }
 }
 // 确认投递
-const delivery = function (id: number) {
+const delivery = function () {
   deliveryJob({
     resumeId: checked.value as number,
     positionId: positionId.value
   });
-  isResumeShow.value = false;
-  Toast('投递成功')
-  getSelectPosition(getJobIndustry.value);
 }
 
 let isShow = ref(false)
@@ -357,8 +358,7 @@ selectCompletion();
 
 <style lang="scss" scoped>
 .position {
-  height: 100%;
-
+  height: 92vh;
   header {
     height: 5.2rem;
     border-bottom: .1rem solid #e7e7e7;
@@ -414,9 +414,8 @@ selectCompletion();
   }
 
   main {
-    height: calc(100% - 7.2rem);
-    overflow: auto;
-
+overflow: auto;
+ height: 100%;
     .none {
       padding: 2rem 0 6rem;
     }

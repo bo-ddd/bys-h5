@@ -18,13 +18,19 @@ const submitLogin = async () => {
         smsCode: smsCode.value
     })
     if (res.code == 200) {
-        Toast({
-            message: '登录成功',
-            position: 'top',
-        });
         let userSite = localStorage.getItem('userSite') ? localStorage.getItem('userSite') : '';
-        if (userSite) {
+        if (userSite == null || userSite == '') {
+            Toast({
+                message: '请先设置站点设置',
+                position: 'top',
+            });
+            jump('/siteSettings');
+        } else {
             setSite(userSite)
+            Toast({
+                message: '登录成功',
+                position: 'top',
+            });
         }
     } else {
         Toast({

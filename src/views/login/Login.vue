@@ -18,13 +18,24 @@ const submitLogin = async () => {
         smsCode: smsCode.value
     })
     if (res.code == 200) {
-        Toast({
-            message: '登录成功',
-            position: 'top',
-        });
-        let userSite = localStorage.getItem('userSite');
-        if (userSite) {
+        let userSite = localStorage.getItem('userSite') ? localStorage.getItem('userSite') : '';
+        if (userSite == null || userSite == '') {
+            Toast({
+                message: '请先设置站点设置',
+                position: 'top',
+            });
+            jump('/siteSettings');
+        } else {
             setSite(userSite)
+            Toast({
+                message: '登录成功',
+                position: 'top',
+            });
+            let loginTime = setTimeout(() => {
+                sessionStorage.setItem('token', res.data);
+                clearTimeout(loginTime);
+                jump('/');
+            }, 1000);
         }
     } else {
         Toast({
@@ -36,14 +47,9 @@ const submitLogin = async () => {
 
 // 修改站点
 async function setSite(payload: string) {
-    const res: any = await userMine.setSite({site:payload})
+    const res: any = await userMine.setSite({ site: payload })
     if (res.code == 200) {
         window.localStorage.setItem('userSite', payload);
-        let loginTime = setTimeout(() => {
-            sessionStorage.setItem('token', res.data);
-            clearTimeout(loginTime);
-            jump('/');
-        }, 1000);
     }
 }
 

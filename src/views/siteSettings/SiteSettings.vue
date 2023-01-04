@@ -1,8 +1,5 @@
 <template>
     <div class="siteSettings">
-        <div class="nav-bar">
-            <van-nav-bar title="站点设置" left-text="返回" left-arrow @click-left="onClickLeft" />
-        </div>
         <div class="bgd ">
             <div class="title just-between">
                 <div>

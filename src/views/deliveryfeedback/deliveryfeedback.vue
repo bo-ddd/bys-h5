@@ -5,10 +5,11 @@
             <van-tab  v-for="item in stageTitl"  :title="item.label" @click="selectDelivery()">
                 <van-empty v-if="!list.length" image="error" description="空空如也" />
               <div v-else>
+              
                <div class="cord-box" v-for="item in list">
                   <div class="header">
                      <div class=""><h3>{{ item.companyName }}</h3></div>
-                     <div class="red-ft">{{ item.positionMoney.split(",")[0] }}-{{item.positionMoney.split(",")[1]  }}</div>
+                     <div class="red-ft">{{ formPostionMoney(item)  }}</div>
                   </div>
                   <div class="count">
                      <div class="count-gs">
@@ -57,6 +58,17 @@ let list:any = ref([]);
     }
  }
  selectDelivery();
+
+  const formPostionMoney = (item:any)=> {
+       let res = "";
+       if(item.positionMoney == null){
+          return res;
+       }else{
+         res =   `${item.positionMoney.split(",")[0]}  - ${item.positionMoney.split(",")[1]}`
+       }
+       return res;
+  }
+
 
 </script>
     

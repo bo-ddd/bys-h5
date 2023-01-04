@@ -31,6 +31,11 @@ const submitLogin = async () => {
                 message: '登录成功',
                 position: 'top',
             });
+            let loginTime = setTimeout(() => {
+                sessionStorage.setItem('token', res.data);
+                clearTimeout(loginTime);
+                jump('/');
+            }, 1000);
         }
     } else {
         Toast({
@@ -45,11 +50,6 @@ async function setSite(payload: string) {
     const res: any = await userMine.setSite({ site: payload })
     if (res.code == 200) {
         window.localStorage.setItem('userSite', payload);
-        let loginTime = setTimeout(() => {
-            sessionStorage.setItem('token', res.data);
-            clearTimeout(loginTime);
-            jump('/');
-        }, 1000);
     }
 }
 

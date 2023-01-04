@@ -42,7 +42,7 @@ const getSmsFn = async () => {
         });
         return;
     };
-    const res: any = await userHome.getSms(phoneInput.value);
+    const res: any = await userHome.getSms({iphone:phoneInput.value,smsType:1});
     if (res.code == 200) {
         isSecond.value = true;
         smCode();

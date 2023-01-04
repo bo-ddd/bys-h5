@@ -22,7 +22,7 @@ const submitLogin = async () => {
             message: '登录成功',
             position: 'top',
         });
-        let userSite = localStorage.getItem('userSite');
+        let userSite = localStorage.getItem('userSite') ? localStorage.getItem('userSite') : '';
         if (userSite) {
             setSite(userSite)
         }
@@ -36,7 +36,7 @@ const submitLogin = async () => {
 
 // 修改站点
 async function setSite(payload: string) {
-    const res: any = await userMine.setSite({site:payload})
+    const res: any = await userMine.setSite({ site: payload })
     if (res.code == 200) {
         window.localStorage.setItem('userSite', payload);
         let loginTime = setTimeout(() => {

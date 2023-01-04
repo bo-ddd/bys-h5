@@ -39,10 +39,7 @@ const submitLogin = async () => {
 
 // 修改站点
 async function setSite(payload: string) {
-    const res: any = await userMine.setSite({ site: payload })
-    if (res.code == 200) {
-        console.log(1)
-    }
+    return await userMine.setSite({ site: payload })
 }
 
 const getSmsFn = async () => {

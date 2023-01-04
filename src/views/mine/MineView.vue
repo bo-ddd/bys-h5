@@ -301,7 +301,7 @@ async function getUnsrInfo() {
     isUserInfoData.value = true;
     userInfo.value = res.data;
   } else {
-    userSite.value = sessionStorage.getItem('userSite') as string;
+    userSite.value = localStorage.getItem('userSite') as string;
   }
 }
 //获取完成度

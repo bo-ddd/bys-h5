@@ -18,19 +18,18 @@ const submitLogin = async () => {
         smsCode: smsCode.value
     })
     if (res.code == 200) {
+        sessionStorage.setItem('token', res.data);
         let userSite = localStorage.getItem('userSite') ? localStorage.getItem('userSite') : '';
-        if (userSite) {
-            setSite(userSite)
-            Toast({
-                message: '登录成功',
-                position: 'top',
-            });
-            let loginTime = setTimeout(() => {
-                sessionStorage.setItem('token', res.data);
-                clearTimeout(loginTime);
-                jump('/');
-            }, 1000);
-        }
+        setSite(userSite as string)
+        Toast({
+            message: '登录成功',
+            position: 'top',
+        });
+        let loginTime = setTimeout(() => {
+            // sessionStorage.setItem('token', res.data);
+            clearTimeout(loginTime);
+            jump('/');
+        }, 1000);
     } else {
         Toast({
             message: res.msg,
@@ -43,7 +42,7 @@ const submitLogin = async () => {
 async function setSite(payload: string) {
     const res: any = await userMine.setSite({ site: payload })
     if (res.code == 200) {
-        window.localStorage.setItem('userSite', payload);
+        console.log(1)
     }
 }
 

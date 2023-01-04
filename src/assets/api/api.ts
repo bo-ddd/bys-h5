@@ -25,7 +25,7 @@ export default {
     login: (params: { phone: string, smsCode: string }) => {
         return axios.post("/phone/login", params, postConfig);
     },
-    getSms: (params:{phone:string,smsType :number}) => {
+    getSms: (params:{iphone:string,smsType :number}) => {
         return axios.post(`/phone/sendSms`,params, getConfig)
     },
     /**
